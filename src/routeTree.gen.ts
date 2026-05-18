@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AppRouteImport } from './routes/app'
 import { Route as MarketingRouteImport } from './routes/_marketing'
 import { Route as MarketingIndexRouteImport } from './routes/_marketing.index'
 import { Route as MarketingSignupRouteImport } from './routes/_marketing.signup'
@@ -18,6 +19,11 @@ import { Route as MarketingGdprRouteImport } from './routes/_marketing.gdpr'
 import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.features'
 import { Route as MarketingDocsInstallRouteImport } from './routes/_marketing.docs.install'
 
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MarketingRoute = MarketingRouteImport.update({
   id: '/_marketing',
   getParentRoute: () => rootRouteImport,
@@ -60,6 +66,7 @@ const MarketingDocsInstallRoute = MarketingDocsInstallRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof MarketingIndexRoute
+  '/app': typeof AppRoute
   '/features': typeof MarketingFeaturesRoute
   '/gdpr': typeof MarketingGdprRoute
   '/login': typeof MarketingLoginRoute
@@ -68,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/docs/install': typeof MarketingDocsInstallRoute
 }
 export interface FileRoutesByTo {
+  '/app': typeof AppRoute
   '/features': typeof MarketingFeaturesRoute
   '/gdpr': typeof MarketingGdprRoute
   '/login': typeof MarketingLoginRoute
@@ -79,6 +87,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_marketing': typeof MarketingRouteWithChildren
+  '/app': typeof AppRoute
   '/_marketing/features': typeof MarketingFeaturesRoute
   '/_marketing/gdpr': typeof MarketingGdprRoute
   '/_marketing/login': typeof MarketingLoginRoute
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/app'
     | '/features'
     | '/gdpr'
     | '/login'
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/docs/install'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/app'
     | '/features'
     | '/gdpr'
     | '/login'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_marketing'
+    | '/app'
     | '/_marketing/features'
     | '/_marketing/gdpr'
     | '/_marketing/login'
@@ -120,10 +132,18 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   MarketingRoute: typeof MarketingRouteWithChildren
+  AppRoute: typeof AppRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_marketing': {
       id: '/_marketing'
       path: ''
@@ -209,6 +229,7 @@ const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   MarketingRoute: MarketingRouteWithChildren,
+  AppRoute: AppRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
