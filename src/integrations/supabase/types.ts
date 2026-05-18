@@ -14,16 +14,455 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      alert_rules: {
+        Row: {
+          channel: Database["public"]["Enums"]["alert_channel"]
+          config: Json
+          created_at: string
+          enabled: boolean
+          id: string
+          target_account_id: string | null
+          workspace_id: string
+        }
+        Insert: {
+          channel: Database["public"]["Enums"]["alert_channel"]
+          config?: Json
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          target_account_id?: string | null
+          workspace_id: string
+        }
+        Update: {
+          channel?: Database["public"]["Enums"]["alert_channel"]
+          config?: Json
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          target_account_id?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alert_rules_target_account_id_fkey"
+            columns: ["target_account_id"]
+            isOneToOne: false
+            referencedRelation: "target_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alert_rules_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      companies: {
+        Row: {
+          country: string | null
+          created_at: string
+          domain: string
+          id: string
+          industry: string | null
+          logo_url: string | null
+          name: string
+          size: string | null
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          domain: string
+          id?: string
+          industry?: string | null
+          logo_url?: string | null
+          name: string
+          size?: string | null
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          domain?: string
+          id?: string
+          industry?: string | null
+          logo_url?: string | null
+          name?: string
+          size?: string | null
+        }
+        Relationships: []
+      }
+      identify_events: {
+        Row: {
+          consent_proof: Json | null
+          created_at: string
+          id: string
+          person_id: string
+          session_id: string
+          source: Database["public"]["Enums"]["consent_source"]
+        }
+        Insert: {
+          consent_proof?: Json | null
+          created_at?: string
+          id?: string
+          person_id: string
+          session_id: string
+          source: Database["public"]["Enums"]["consent_source"]
+        }
+        Update: {
+          consent_proof?: Json | null
+          created_at?: string
+          id?: string
+          person_id?: string
+          session_id?: string
+          source?: Database["public"]["Enums"]["consent_source"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "identify_events_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "identify_events_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      integrations: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          id: string
+          settings: Json
+          type: Database["public"]["Enums"]["integration_type"]
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          settings?: Json
+          type: Database["public"]["Enums"]["integration_type"]
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          settings?: Json
+          type?: Database["public"]["Enums"]["integration_type"]
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integrations_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pageviews: {
+        Row: {
+          id: string
+          referrer: string | null
+          session_id: string
+          title: string | null
+          ts: string
+          url: string
+        }
+        Insert: {
+          id?: string
+          referrer?: string | null
+          session_id: string
+          title?: string | null
+          ts?: string
+          url: string
+        }
+        Update: {
+          id?: string
+          referrer?: string | null
+          session_id?: string
+          title?: string | null
+          ts?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pageviews_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      people: {
+        Row: {
+          company_id: string | null
+          consent_source: Database["public"]["Enums"]["consent_source"]
+          consent_ts: string
+          created_at: string
+          email: string
+          id: string
+          name: string | null
+          workspace_id: string
+        }
+        Insert: {
+          company_id?: string | null
+          consent_source: Database["public"]["Enums"]["consent_source"]
+          consent_ts?: string
+          created_at?: string
+          email: string
+          id?: string
+          name?: string | null
+          workspace_id: string
+        }
+        Update: {
+          company_id?: string | null
+          consent_source?: Database["public"]["Enums"]["consent_source"]
+          consent_ts?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "people_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "people_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sessions: {
+        Row: {
+          anon_id: string
+          company_id: string | null
+          country: string | null
+          id: string
+          ip_hash: string | null
+          last_seen_at: string
+          person_id: string | null
+          site_id: string
+          started_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          anon_id: string
+          company_id?: string | null
+          country?: string | null
+          id?: string
+          ip_hash?: string | null
+          last_seen_at?: string
+          person_id?: string | null
+          site_id: string
+          started_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          anon_id?: string
+          company_id?: string | null
+          country?: string | null
+          id?: string
+          ip_hash?: string | null
+          last_seen_at?: string
+          person_id?: string | null
+          site_id?: string
+          started_at?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sessions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sites: {
+        Row: {
+          created_at: string
+          domain: string
+          id: string
+          tracking_id: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          domain: string
+          id?: string
+          tracking_id?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          domain?: string
+          id?: string
+          tracking_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sites_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      target_accounts: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          domain_pattern: string | null
+          id: string
+          label: string | null
+          workspace_id: string
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          domain_pattern?: string | null
+          id?: string
+          label?: string | null
+          workspace_id: string
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          domain_pattern?: string | null
+          id?: string
+          label?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "target_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "target_accounts_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_members: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["workspace_role"]
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["workspace_role"]
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["workspace_role"]
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_members_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspaces: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          plan: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          plan?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          plan?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_workspace_role: {
+        Args: {
+          _roles: Database["public"]["Enums"]["workspace_role"][]
+          _user_id: string
+          _workspace_id: string
+        }
+        Returns: boolean
+      }
+      is_workspace_member: {
+        Args: { _user_id: string; _workspace_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      alert_channel: "slack" | "teams" | "webhook"
+      consent_source: "form_submit" | "email_link" | "logged_in" | "cmp_signal"
+      integration_type: "slack" | "teams" | "webhook"
+      workspace_role: "owner" | "admin" | "member"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +589,11 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      alert_channel: ["slack", "teams", "webhook"],
+      consent_source: ["form_submit", "email_link", "logged_in", "cmp_signal"],
+      integration_type: ["slack", "teams", "webhook"],
+      workspace_role: ["owner", "admin", "member"],
+    },
   },
 } as const
