@@ -9,27 +9,155 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MarketingRouteImport } from './routes/_marketing'
+import { Route as MarketingIndexRouteImport } from './routes/_marketing.index'
+import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricing'
+import { Route as MarketingGdprRouteImport } from './routes/_marketing.gdpr'
+import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.features'
+import { Route as MarketingDocsInstallRouteImport } from './routes/_marketing.docs.install'
 
-export interface FileRoutesByFullPath {}
-export interface FileRoutesByTo {}
+const MarketingRoute = MarketingRouteImport.update({
+  id: '/_marketing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketingIndexRoute = MarketingIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MarketingRoute,
+} as any)
+const MarketingPricingRoute = MarketingPricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => MarketingRoute,
+} as any)
+const MarketingGdprRoute = MarketingGdprRouteImport.update({
+  id: '/gdpr',
+  path: '/gdpr',
+  getParentRoute: () => MarketingRoute,
+} as any)
+const MarketingFeaturesRoute = MarketingFeaturesRouteImport.update({
+  id: '/features',
+  path: '/features',
+  getParentRoute: () => MarketingRoute,
+} as any)
+const MarketingDocsInstallRoute = MarketingDocsInstallRouteImport.update({
+  id: '/docs/install',
+  path: '/docs/install',
+  getParentRoute: () => MarketingRoute,
+} as any)
+
+export interface FileRoutesByFullPath {
+  '/': typeof MarketingIndexRoute
+  '/features': typeof MarketingFeaturesRoute
+  '/gdpr': typeof MarketingGdprRoute
+  '/pricing': typeof MarketingPricingRoute
+  '/docs/install': typeof MarketingDocsInstallRoute
+}
+export interface FileRoutesByTo {
+  '/features': typeof MarketingFeaturesRoute
+  '/gdpr': typeof MarketingGdprRoute
+  '/pricing': typeof MarketingPricingRoute
+  '/': typeof MarketingIndexRoute
+  '/docs/install': typeof MarketingDocsInstallRoute
+}
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_marketing': typeof MarketingRouteWithChildren
+  '/_marketing/features': typeof MarketingFeaturesRoute
+  '/_marketing/gdpr': typeof MarketingGdprRoute
+  '/_marketing/pricing': typeof MarketingPricingRoute
+  '/_marketing/': typeof MarketingIndexRoute
+  '/_marketing/docs/install': typeof MarketingDocsInstallRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: never
+  fullPaths: '/' | '/features' | '/gdpr' | '/pricing' | '/docs/install'
   fileRoutesByTo: FileRoutesByTo
-  to: never
-  id: '__root__'
+  to: '/features' | '/gdpr' | '/pricing' | '/' | '/docs/install'
+  id:
+    | '__root__'
+    | '/_marketing'
+    | '/_marketing/features'
+    | '/_marketing/gdpr'
+    | '/_marketing/pricing'
+    | '/_marketing/'
+    | '/_marketing/docs/install'
   fileRoutesById: FileRoutesById
 }
-export interface RootRouteChildren {}
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {}
+export interface RootRouteChildren {
+  MarketingRoute: typeof MarketingRouteWithChildren
 }
 
-const rootRouteChildren: RootRouteChildren = {}
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/_marketing': {
+      id: '/_marketing'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof MarketingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_marketing/': {
+      id: '/_marketing/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof MarketingIndexRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/pricing': {
+      id: '/_marketing/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof MarketingPricingRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/gdpr': {
+      id: '/_marketing/gdpr'
+      path: '/gdpr'
+      fullPath: '/gdpr'
+      preLoaderRoute: typeof MarketingGdprRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/features': {
+      id: '/_marketing/features'
+      path: '/features'
+      fullPath: '/features'
+      preLoaderRoute: typeof MarketingFeaturesRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/docs/install': {
+      id: '/_marketing/docs/install'
+      path: '/docs/install'
+      fullPath: '/docs/install'
+      preLoaderRoute: typeof MarketingDocsInstallRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+  }
+}
+
+interface MarketingRouteChildren {
+  MarketingFeaturesRoute: typeof MarketingFeaturesRoute
+  MarketingGdprRoute: typeof MarketingGdprRoute
+  MarketingPricingRoute: typeof MarketingPricingRoute
+  MarketingIndexRoute: typeof MarketingIndexRoute
+  MarketingDocsInstallRoute: typeof MarketingDocsInstallRoute
+}
+
+const MarketingRouteChildren: MarketingRouteChildren = {
+  MarketingFeaturesRoute: MarketingFeaturesRoute,
+  MarketingGdprRoute: MarketingGdprRoute,
+  MarketingPricingRoute: MarketingPricingRoute,
+  MarketingIndexRoute: MarketingIndexRoute,
+  MarketingDocsInstallRoute: MarketingDocsInstallRoute,
+}
+
+const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
+  MarketingRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  MarketingRoute: MarketingRouteWithChildren,
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
