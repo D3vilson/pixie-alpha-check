@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as MarketingRouteImport } from './routes/_marketing'
 import { Route as MarketingIndexRouteImport } from './routes/_marketing.index'
+import { Route as MarketingSignupRouteImport } from './routes/_marketing.signup'
 import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricing'
+import { Route as MarketingLoginRouteImport } from './routes/_marketing.login'
 import { Route as MarketingGdprRouteImport } from './routes/_marketing.gdpr'
 import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.features'
 import { Route as MarketingDocsInstallRouteImport } from './routes/_marketing.docs.install'
@@ -25,9 +27,19 @@ const MarketingIndexRoute = MarketingIndexRouteImport.update({
   path: '/',
   getParentRoute: () => MarketingRoute,
 } as any)
+const MarketingSignupRoute = MarketingSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => MarketingRoute,
+} as any)
 const MarketingPricingRoute = MarketingPricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
+  getParentRoute: () => MarketingRoute,
+} as any)
+const MarketingLoginRoute = MarketingLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => MarketingRoute,
 } as any)
 const MarketingGdprRoute = MarketingGdprRouteImport.update({
@@ -50,13 +62,17 @@ export interface FileRoutesByFullPath {
   '/': typeof MarketingIndexRoute
   '/features': typeof MarketingFeaturesRoute
   '/gdpr': typeof MarketingGdprRoute
+  '/login': typeof MarketingLoginRoute
   '/pricing': typeof MarketingPricingRoute
+  '/signup': typeof MarketingSignupRoute
   '/docs/install': typeof MarketingDocsInstallRoute
 }
 export interface FileRoutesByTo {
   '/features': typeof MarketingFeaturesRoute
   '/gdpr': typeof MarketingGdprRoute
+  '/login': typeof MarketingLoginRoute
   '/pricing': typeof MarketingPricingRoute
+  '/signup': typeof MarketingSignupRoute
   '/': typeof MarketingIndexRoute
   '/docs/install': typeof MarketingDocsInstallRoute
 }
@@ -65,21 +81,39 @@ export interface FileRoutesById {
   '/_marketing': typeof MarketingRouteWithChildren
   '/_marketing/features': typeof MarketingFeaturesRoute
   '/_marketing/gdpr': typeof MarketingGdprRoute
+  '/_marketing/login': typeof MarketingLoginRoute
   '/_marketing/pricing': typeof MarketingPricingRoute
+  '/_marketing/signup': typeof MarketingSignupRoute
   '/_marketing/': typeof MarketingIndexRoute
   '/_marketing/docs/install': typeof MarketingDocsInstallRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/features' | '/gdpr' | '/pricing' | '/docs/install'
+  fullPaths:
+    | '/'
+    | '/features'
+    | '/gdpr'
+    | '/login'
+    | '/pricing'
+    | '/signup'
+    | '/docs/install'
   fileRoutesByTo: FileRoutesByTo
-  to: '/features' | '/gdpr' | '/pricing' | '/' | '/docs/install'
+  to:
+    | '/features'
+    | '/gdpr'
+    | '/login'
+    | '/pricing'
+    | '/signup'
+    | '/'
+    | '/docs/install'
   id:
     | '__root__'
     | '/_marketing'
     | '/_marketing/features'
     | '/_marketing/gdpr'
+    | '/_marketing/login'
     | '/_marketing/pricing'
+    | '/_marketing/signup'
     | '/_marketing/'
     | '/_marketing/docs/install'
   fileRoutesById: FileRoutesById
@@ -104,11 +138,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketingIndexRouteImport
       parentRoute: typeof MarketingRoute
     }
+    '/_marketing/signup': {
+      id: '/_marketing/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof MarketingSignupRouteImport
+      parentRoute: typeof MarketingRoute
+    }
     '/_marketing/pricing': {
       id: '/_marketing/pricing'
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof MarketingPricingRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/login': {
+      id: '/_marketing/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof MarketingLoginRouteImport
       parentRoute: typeof MarketingRoute
     }
     '/_marketing/gdpr': {
@@ -138,7 +186,9 @@ declare module '@tanstack/react-router' {
 interface MarketingRouteChildren {
   MarketingFeaturesRoute: typeof MarketingFeaturesRoute
   MarketingGdprRoute: typeof MarketingGdprRoute
+  MarketingLoginRoute: typeof MarketingLoginRoute
   MarketingPricingRoute: typeof MarketingPricingRoute
+  MarketingSignupRoute: typeof MarketingSignupRoute
   MarketingIndexRoute: typeof MarketingIndexRoute
   MarketingDocsInstallRoute: typeof MarketingDocsInstallRoute
 }
@@ -146,7 +196,9 @@ interface MarketingRouteChildren {
 const MarketingRouteChildren: MarketingRouteChildren = {
   MarketingFeaturesRoute: MarketingFeaturesRoute,
   MarketingGdprRoute: MarketingGdprRoute,
+  MarketingLoginRoute: MarketingLoginRoute,
   MarketingPricingRoute: MarketingPricingRoute,
+  MarketingSignupRoute: MarketingSignupRoute,
   MarketingIndexRoute: MarketingIndexRoute,
   MarketingDocsInstallRoute: MarketingDocsInstallRoute,
 }
@@ -161,3 +213,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
