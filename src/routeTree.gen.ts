@@ -9,61 +9,228 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as MarketingRouteImport } from './routes/_marketing'
+import { Route as MarketingIndexRouteImport } from './routes/_marketing.index'
+import { Route as MarketingSignupRouteImport } from './routes/_marketing.signup'
+import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricing'
+import { Route as MarketingLoginRouteImport } from './routes/_marketing.login'
+import { Route as MarketingGdprRouteImport } from './routes/_marketing.gdpr'
+import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.features'
+import { Route as MarketingDocsInstallRouteImport } from './routes/_marketing.docs.install'
 
-const IndexRoute = IndexRouteImport.update({
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketingRoute = MarketingRouteImport.update({
+  id: '/_marketing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketingIndexRoute = MarketingIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => MarketingRoute,
+} as any)
+const MarketingSignupRoute = MarketingSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => MarketingRoute,
+} as any)
+const MarketingPricingRoute = MarketingPricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => MarketingRoute,
+} as any)
+const MarketingLoginRoute = MarketingLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => MarketingRoute,
+} as any)
+const MarketingGdprRoute = MarketingGdprRouteImport.update({
+  id: '/gdpr',
+  path: '/gdpr',
+  getParentRoute: () => MarketingRoute,
+} as any)
+const MarketingFeaturesRoute = MarketingFeaturesRouteImport.update({
+  id: '/features',
+  path: '/features',
+  getParentRoute: () => MarketingRoute,
+} as any)
+const MarketingDocsInstallRoute = MarketingDocsInstallRouteImport.update({
+  id: '/docs/install',
+  path: '/docs/install',
+  getParentRoute: () => MarketingRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof MarketingIndexRoute
+  '/app': typeof AppRoute
+  '/features': typeof MarketingFeaturesRoute
+  '/gdpr': typeof MarketingGdprRoute
+  '/login': typeof MarketingLoginRoute
+  '/pricing': typeof MarketingPricingRoute
+  '/signup': typeof MarketingSignupRoute
+  '/docs/install': typeof MarketingDocsInstallRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/app': typeof AppRoute
+  '/features': typeof MarketingFeaturesRoute
+  '/gdpr': typeof MarketingGdprRoute
+  '/login': typeof MarketingLoginRoute
+  '/pricing': typeof MarketingPricingRoute
+  '/signup': typeof MarketingSignupRoute
+  '/': typeof MarketingIndexRoute
+  '/docs/install': typeof MarketingDocsInstallRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_marketing': typeof MarketingRouteWithChildren
+  '/app': typeof AppRoute
+  '/_marketing/features': typeof MarketingFeaturesRoute
+  '/_marketing/gdpr': typeof MarketingGdprRoute
+  '/_marketing/login': typeof MarketingLoginRoute
+  '/_marketing/pricing': typeof MarketingPricingRoute
+  '/_marketing/signup': typeof MarketingSignupRoute
+  '/_marketing/': typeof MarketingIndexRoute
+  '/_marketing/docs/install': typeof MarketingDocsInstallRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/features'
+    | '/gdpr'
+    | '/login'
+    | '/pricing'
+    | '/signup'
+    | '/docs/install'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/app'
+    | '/features'
+    | '/gdpr'
+    | '/login'
+    | '/pricing'
+    | '/signup'
+    | '/'
+    | '/docs/install'
+  id:
+    | '__root__'
+    | '/_marketing'
+    | '/app'
+    | '/_marketing/features'
+    | '/_marketing/gdpr'
+    | '/_marketing/login'
+    | '/_marketing/pricing'
+    | '/_marketing/signup'
+    | '/_marketing/'
+    | '/_marketing/docs/install'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  MarketingRoute: typeof MarketingRouteWithChildren
+  AppRoute: typeof AppRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_marketing': {
+      id: '/_marketing'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof MarketingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_marketing/': {
+      id: '/_marketing/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof MarketingIndexRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/signup': {
+      id: '/_marketing/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof MarketingSignupRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/pricing': {
+      id: '/_marketing/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof MarketingPricingRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/login': {
+      id: '/_marketing/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof MarketingLoginRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/gdpr': {
+      id: '/_marketing/gdpr'
+      path: '/gdpr'
+      fullPath: '/gdpr'
+      preLoaderRoute: typeof MarketingGdprRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/features': {
+      id: '/_marketing/features'
+      path: '/features'
+      fullPath: '/features'
+      preLoaderRoute: typeof MarketingFeaturesRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/docs/install': {
+      id: '/_marketing/docs/install'
+      path: '/docs/install'
+      fullPath: '/docs/install'
+      preLoaderRoute: typeof MarketingDocsInstallRouteImport
+      parentRoute: typeof MarketingRoute
     }
   }
 }
 
+interface MarketingRouteChildren {
+  MarketingFeaturesRoute: typeof MarketingFeaturesRoute
+  MarketingGdprRoute: typeof MarketingGdprRoute
+  MarketingLoginRoute: typeof MarketingLoginRoute
+  MarketingPricingRoute: typeof MarketingPricingRoute
+  MarketingSignupRoute: typeof MarketingSignupRoute
+  MarketingIndexRoute: typeof MarketingIndexRoute
+  MarketingDocsInstallRoute: typeof MarketingDocsInstallRoute
+}
+
+const MarketingRouteChildren: MarketingRouteChildren = {
+  MarketingFeaturesRoute: MarketingFeaturesRoute,
+  MarketingGdprRoute: MarketingGdprRoute,
+  MarketingLoginRoute: MarketingLoginRoute,
+  MarketingPricingRoute: MarketingPricingRoute,
+  MarketingSignupRoute: MarketingSignupRoute,
+  MarketingIndexRoute: MarketingIndexRoute,
+  MarketingDocsInstallRoute: MarketingDocsInstallRoute,
+}
+
+const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
+  MarketingRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  MarketingRoute: MarketingRouteWithChildren,
+  AppRoute: AppRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
