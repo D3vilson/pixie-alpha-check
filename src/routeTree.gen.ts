@@ -22,6 +22,7 @@ import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricin
 import { Route as MarketingLoginRouteImport } from './routes/_marketing.login'
 import { Route as MarketingGdprRouteImport } from './routes/_marketing.gdpr'
 import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.features'
+import { Route as ApiPublicTDotjsRouteImport } from './routes/api.public.t[.]js'
 import { Route as MarketingDocsInstallRouteImport } from './routes/_marketing.docs.install'
 
 const AppRoute = AppRouteImport.update({
@@ -88,6 +89,11 @@ const MarketingFeaturesRoute = MarketingFeaturesRouteImport.update({
   path: '/features',
   getParentRoute: () => MarketingRoute,
 } as any)
+const ApiPublicTDotjsRoute = ApiPublicTDotjsRouteImport.update({
+  id: '/api/public/t.js',
+  path: '/api/public/t.js',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MarketingDocsInstallRoute = MarketingDocsInstallRouteImport.update({
   id: '/docs/install',
   path: '/docs/install',
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/app/target-accounts': typeof AppTargetAccountsRoute
   '/app/': typeof AppIndexRoute
   '/docs/install': typeof MarketingDocsInstallRoute
+  '/api/public/t.js': typeof ApiPublicTDotjsRoute
 }
 export interface FileRoutesByTo {
   '/features': typeof MarketingFeaturesRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/': typeof MarketingIndexRoute
   '/app': typeof AppIndexRoute
   '/docs/install': typeof MarketingDocsInstallRoute
+  '/api/public/t.js': typeof ApiPublicTDotjsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/_marketing/': typeof MarketingIndexRoute
   '/app/': typeof AppIndexRoute
   '/_marketing/docs/install': typeof MarketingDocsInstallRoute
+  '/api/public/t.js': typeof ApiPublicTDotjsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
     | '/app/target-accounts'
     | '/app/'
     | '/docs/install'
+    | '/api/public/t.js'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/features'
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/docs/install'
+    | '/api/public/t.js'
   id:
     | '__root__'
     | '/_marketing'
@@ -186,11 +197,13 @@ export interface FileRouteTypes {
     | '/_marketing/'
     | '/app/'
     | '/_marketing/docs/install'
+    | '/api/public/t.js'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   MarketingRoute: typeof MarketingRouteWithChildren
   AppRoute: typeof AppRouteWithChildren
+  ApiPublicTDotjsRoute: typeof ApiPublicTDotjsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -286,6 +299,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketingFeaturesRouteImport
       parentRoute: typeof MarketingRoute
     }
+    '/api/public/t.js': {
+      id: '/api/public/t.js'
+      path: '/api/public/t.js'
+      fullPath: '/api/public/t.js'
+      preLoaderRoute: typeof ApiPublicTDotjsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_marketing/docs/install': {
       id: '/_marketing/docs/install'
       path: '/docs/install'
@@ -341,6 +361,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   MarketingRoute: MarketingRouteWithChildren,
   AppRoute: AppRouteWithChildren,
+  ApiPublicTDotjsRoute: ApiPublicTDotjsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
