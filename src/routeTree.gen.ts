@@ -13,6 +13,7 @@ import { Route as AppRouteImport } from './routes/app'
 import { Route as MarketingRouteImport } from './routes/_marketing'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as MarketingIndexRouteImport } from './routes/_marketing.index'
+import { Route as AppCompaniesRouteImport } from './routes/app.companies'
 import { Route as MarketingSignupRouteImport } from './routes/_marketing.signup'
 import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricing'
 import { Route as MarketingLoginRouteImport } from './routes/_marketing.login'
@@ -38,6 +39,11 @@ const MarketingIndexRoute = MarketingIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => MarketingRoute,
+} as any)
+const AppCompaniesRoute = AppCompaniesRouteImport.update({
+  id: '/companies',
+  path: '/companies',
+  getParentRoute: () => AppRoute,
 } as any)
 const MarketingSignupRoute = MarketingSignupRouteImport.update({
   id: '/signup',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof MarketingLoginRoute
   '/pricing': typeof MarketingPricingRoute
   '/signup': typeof MarketingSignupRoute
+  '/app/companies': typeof AppCompaniesRoute
   '/app/': typeof AppIndexRoute
   '/docs/install': typeof MarketingDocsInstallRoute
 }
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/login': typeof MarketingLoginRoute
   '/pricing': typeof MarketingPricingRoute
   '/signup': typeof MarketingSignupRoute
+  '/app/companies': typeof AppCompaniesRoute
   '/': typeof MarketingIndexRoute
   '/app': typeof AppIndexRoute
   '/docs/install': typeof MarketingDocsInstallRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/_marketing/login': typeof MarketingLoginRoute
   '/_marketing/pricing': typeof MarketingPricingRoute
   '/_marketing/signup': typeof MarketingSignupRoute
+  '/app/companies': typeof AppCompaniesRoute
   '/_marketing/': typeof MarketingIndexRoute
   '/app/': typeof AppIndexRoute
   '/_marketing/docs/install': typeof MarketingDocsInstallRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/pricing'
     | '/signup'
+    | '/app/companies'
     | '/app/'
     | '/docs/install'
   fileRoutesByTo: FileRoutesByTo
@@ -123,6 +133,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/pricing'
     | '/signup'
+    | '/app/companies'
     | '/'
     | '/app'
     | '/docs/install'
@@ -135,6 +146,7 @@ export interface FileRouteTypes {
     | '/_marketing/login'
     | '/_marketing/pricing'
     | '/_marketing/signup'
+    | '/app/companies'
     | '/_marketing/'
     | '/app/'
     | '/_marketing/docs/install'
@@ -174,6 +186,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof MarketingIndexRouteImport
       parentRoute: typeof MarketingRoute
+    }
+    '/app/companies': {
+      id: '/app/companies'
+      path: '/companies'
+      fullPath: '/app/companies'
+      preLoaderRoute: typeof AppCompaniesRouteImport
+      parentRoute: typeof AppRoute
     }
     '/_marketing/signup': {
       id: '/_marketing/signup'
@@ -245,10 +264,12 @@ const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
 )
 
 interface AppRouteChildren {
+  AppCompaniesRoute: typeof AppCompaniesRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppCompaniesRoute: AppCompaniesRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
@@ -261,3 +282,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
