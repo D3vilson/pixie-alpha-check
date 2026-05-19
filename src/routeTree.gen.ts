@@ -14,6 +14,7 @@ import { Route as MarketingRouteImport } from './routes/_marketing'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as MarketingIndexRouteImport } from './routes/_marketing.index'
 import { Route as AppTargetAccountsRouteImport } from './routes/app.target-accounts'
+import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppIntegrationsRouteImport } from './routes/app.integrations'
 import { Route as AppCompaniesRouteImport } from './routes/app.companies'
 import { Route as MarketingSignupRouteImport } from './routes/_marketing.signup'
@@ -45,6 +46,11 @@ const MarketingIndexRoute = MarketingIndexRouteImport.update({
 const AppTargetAccountsRoute = AppTargetAccountsRouteImport.update({
   id: '/target-accounts',
   path: '/target-accounts',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AppRoute,
 } as any)
 const AppIntegrationsRoute = AppIntegrationsRouteImport.update({
@@ -98,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof MarketingSignupRoute
   '/app/companies': typeof AppCompaniesRoute
   '/app/integrations': typeof AppIntegrationsRoute
+  '/app/settings': typeof AppSettingsRoute
   '/app/target-accounts': typeof AppTargetAccountsRoute
   '/app/': typeof AppIndexRoute
   '/docs/install': typeof MarketingDocsInstallRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/signup': typeof MarketingSignupRoute
   '/app/companies': typeof AppCompaniesRoute
   '/app/integrations': typeof AppIntegrationsRoute
+  '/app/settings': typeof AppSettingsRoute
   '/app/target-accounts': typeof AppTargetAccountsRoute
   '/': typeof MarketingIndexRoute
   '/app': typeof AppIndexRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/_marketing/signup': typeof MarketingSignupRoute
   '/app/companies': typeof AppCompaniesRoute
   '/app/integrations': typeof AppIntegrationsRoute
+  '/app/settings': typeof AppSettingsRoute
   '/app/target-accounts': typeof AppTargetAccountsRoute
   '/_marketing/': typeof MarketingIndexRoute
   '/app/': typeof AppIndexRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/app/companies'
     | '/app/integrations'
+    | '/app/settings'
     | '/app/target-accounts'
     | '/app/'
     | '/docs/install'
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/app/companies'
     | '/app/integrations'
+    | '/app/settings'
     | '/app/target-accounts'
     | '/'
     | '/app'
@@ -170,6 +181,7 @@ export interface FileRouteTypes {
     | '/_marketing/signup'
     | '/app/companies'
     | '/app/integrations'
+    | '/app/settings'
     | '/app/target-accounts'
     | '/_marketing/'
     | '/app/'
@@ -216,6 +228,13 @@ declare module '@tanstack/react-router' {
       path: '/target-accounts'
       fullPath: '/app/target-accounts'
       preLoaderRoute: typeof AppTargetAccountsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/settings': {
+      id: '/app/settings'
+      path: '/settings'
+      fullPath: '/app/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/integrations': {
@@ -304,6 +323,7 @@ const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
 interface AppRouteChildren {
   AppCompaniesRoute: typeof AppCompaniesRoute
   AppIntegrationsRoute: typeof AppIntegrationsRoute
+  AppSettingsRoute: typeof AppSettingsRoute
   AppTargetAccountsRoute: typeof AppTargetAccountsRoute
   AppIndexRoute: typeof AppIndexRoute
 }
@@ -311,6 +331,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppCompaniesRoute: AppCompaniesRoute,
   AppIntegrationsRoute: AppIntegrationsRoute,
+  AppSettingsRoute: AppSettingsRoute,
   AppTargetAccountsRoute: AppTargetAccountsRoute,
   AppIndexRoute: AppIndexRoute,
 }
