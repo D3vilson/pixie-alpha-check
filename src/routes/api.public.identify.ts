@@ -14,7 +14,7 @@ const Schema = z.object({
   email: z.string().email().max(255),
   name: z.string().max(255).nullable().optional(),
   consent: z.object({
-    source: z.enum(["form", "email_link", "logged_in", "cmp"]),
+    source: z.enum(["form_submit", "email_link", "logged_in", "cmp_signal"]),
     timestamp: z.string().min(1).max(64),
     proof: z.string().max(2000).optional(),
   }),
