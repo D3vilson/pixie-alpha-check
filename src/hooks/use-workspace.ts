@@ -6,6 +6,6 @@ export function useWorkspace() {
   const bootstrap = useServerFn(bootstrapWorkspace);
   return useQuery({
     queryKey: ["workspace-bootstrap"],
-    queryFn: () => bootstrap({ data: undefined as never }),
+    queryFn: () => bootstrap(),
   });
 }
