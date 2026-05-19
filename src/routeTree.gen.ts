@@ -23,6 +23,7 @@ import { Route as MarketingLoginRouteImport } from './routes/_marketing.login'
 import { Route as MarketingGdprRouteImport } from './routes/_marketing.gdpr'
 import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.features'
 import { Route as ApiPublicTDotjsRouteImport } from './routes/api.public.t[.]js'
+import { Route as ApiPublicIdentifyRouteImport } from './routes/api.public.identify'
 import { Route as ApiPublicCollectRouteImport } from './routes/api.public.collect'
 import { Route as MarketingDocsInstallRouteImport } from './routes/_marketing.docs.install'
 
@@ -95,6 +96,11 @@ const ApiPublicTDotjsRoute = ApiPublicTDotjsRouteImport.update({
   path: '/api/public/t.js',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicIdentifyRoute = ApiPublicIdentifyRouteImport.update({
+  id: '/api/public/identify',
+  path: '/api/public/identify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCollectRoute = ApiPublicCollectRouteImport.update({
   id: '/api/public/collect',
   path: '/api/public/collect',
@@ -121,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/docs/install': typeof MarketingDocsInstallRoute
   '/api/public/collect': typeof ApiPublicCollectRoute
+  '/api/public/identify': typeof ApiPublicIdentifyRoute
   '/api/public/t.js': typeof ApiPublicTDotjsRoute
 }
 export interface FileRoutesByTo {
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/docs/install': typeof MarketingDocsInstallRoute
   '/api/public/collect': typeof ApiPublicCollectRoute
+  '/api/public/identify': typeof ApiPublicIdentifyRoute
   '/api/public/t.js': typeof ApiPublicTDotjsRoute
 }
 export interface FileRoutesById {
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/_marketing/docs/install': typeof MarketingDocsInstallRoute
   '/api/public/collect': typeof ApiPublicCollectRoute
+  '/api/public/identify': typeof ApiPublicIdentifyRoute
   '/api/public/t.js': typeof ApiPublicTDotjsRoute
 }
 export interface FileRouteTypes {
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/docs/install'
     | '/api/public/collect'
+    | '/api/public/identify'
     | '/api/public/t.js'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/docs/install'
     | '/api/public/collect'
+    | '/api/public/identify'
     | '/api/public/t.js'
   id:
     | '__root__'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/_marketing/docs/install'
     | '/api/public/collect'
+    | '/api/public/identify'
     | '/api/public/t.js'
   fileRoutesById: FileRoutesById
 }
@@ -216,6 +228,7 @@ export interface RootRouteChildren {
   MarketingRoute: typeof MarketingRouteWithChildren
   AppRoute: typeof AppRouteWithChildren
   ApiPublicCollectRoute: typeof ApiPublicCollectRoute
+  ApiPublicIdentifyRoute: typeof ApiPublicIdentifyRoute
   ApiPublicTDotjsRoute: typeof ApiPublicTDotjsRoute
 }
 
@@ -319,6 +332,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicTDotjsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/identify': {
+      id: '/api/public/identify'
+      path: '/api/public/identify'
+      fullPath: '/api/public/identify'
+      preLoaderRoute: typeof ApiPublicIdentifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/collect': {
       id: '/api/public/collect'
       path: '/api/public/collect'
@@ -382,6 +402,7 @@ const rootRouteChildren: RootRouteChildren = {
   MarketingRoute: MarketingRouteWithChildren,
   AppRoute: AppRouteWithChildren,
   ApiPublicCollectRoute: ApiPublicCollectRoute,
+  ApiPublicIdentifyRoute: ApiPublicIdentifyRoute,
   ApiPublicTDotjsRoute: ApiPublicTDotjsRoute,
 }
 export const routeTree = rootRouteImport
