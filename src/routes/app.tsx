@@ -19,7 +19,7 @@ function AppLayout() {
   const bootstrap = useServerFn(bootstrapWorkspace);
   const { data, isLoading, error } = useQuery({
     queryKey: ["workspace-bootstrap"],
-    queryFn: () => bootstrap({ data: undefined as never }),
+    queryFn: () => bootstrap(),
   });
 
   useEffect(() => {
