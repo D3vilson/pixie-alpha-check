@@ -13,6 +13,8 @@ import { Route as AppRouteImport } from './routes/app'
 import { Route as MarketingRouteImport } from './routes/_marketing'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as MarketingIndexRouteImport } from './routes/_marketing.index'
+import { Route as AppTargetAccountsRouteImport } from './routes/app.target-accounts'
+import { Route as AppIntegrationsRouteImport } from './routes/app.integrations'
 import { Route as AppCompaniesRouteImport } from './routes/app.companies'
 import { Route as MarketingSignupRouteImport } from './routes/_marketing.signup'
 import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricing'
@@ -39,6 +41,16 @@ const MarketingIndexRoute = MarketingIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => MarketingRoute,
+} as any)
+const AppTargetAccountsRoute = AppTargetAccountsRouteImport.update({
+  id: '/target-accounts',
+  path: '/target-accounts',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppIntegrationsRoute = AppIntegrationsRouteImport.update({
+  id: '/integrations',
+  path: '/integrations',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppCompaniesRoute = AppCompaniesRouteImport.update({
   id: '/companies',
@@ -85,6 +97,8 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof MarketingPricingRoute
   '/signup': typeof MarketingSignupRoute
   '/app/companies': typeof AppCompaniesRoute
+  '/app/integrations': typeof AppIntegrationsRoute
+  '/app/target-accounts': typeof AppTargetAccountsRoute
   '/app/': typeof AppIndexRoute
   '/docs/install': typeof MarketingDocsInstallRoute
 }
@@ -95,6 +109,8 @@ export interface FileRoutesByTo {
   '/pricing': typeof MarketingPricingRoute
   '/signup': typeof MarketingSignupRoute
   '/app/companies': typeof AppCompaniesRoute
+  '/app/integrations': typeof AppIntegrationsRoute
+  '/app/target-accounts': typeof AppTargetAccountsRoute
   '/': typeof MarketingIndexRoute
   '/app': typeof AppIndexRoute
   '/docs/install': typeof MarketingDocsInstallRoute
@@ -109,6 +125,8 @@ export interface FileRoutesById {
   '/_marketing/pricing': typeof MarketingPricingRoute
   '/_marketing/signup': typeof MarketingSignupRoute
   '/app/companies': typeof AppCompaniesRoute
+  '/app/integrations': typeof AppIntegrationsRoute
+  '/app/target-accounts': typeof AppTargetAccountsRoute
   '/_marketing/': typeof MarketingIndexRoute
   '/app/': typeof AppIndexRoute
   '/_marketing/docs/install': typeof MarketingDocsInstallRoute
@@ -124,6 +142,8 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/signup'
     | '/app/companies'
+    | '/app/integrations'
+    | '/app/target-accounts'
     | '/app/'
     | '/docs/install'
   fileRoutesByTo: FileRoutesByTo
@@ -134,6 +154,8 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/signup'
     | '/app/companies'
+    | '/app/integrations'
+    | '/app/target-accounts'
     | '/'
     | '/app'
     | '/docs/install'
@@ -147,6 +169,8 @@ export interface FileRouteTypes {
     | '/_marketing/pricing'
     | '/_marketing/signup'
     | '/app/companies'
+    | '/app/integrations'
+    | '/app/target-accounts'
     | '/_marketing/'
     | '/app/'
     | '/_marketing/docs/install'
@@ -186,6 +210,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof MarketingIndexRouteImport
       parentRoute: typeof MarketingRoute
+    }
+    '/app/target-accounts': {
+      id: '/app/target-accounts'
+      path: '/target-accounts'
+      fullPath: '/app/target-accounts'
+      preLoaderRoute: typeof AppTargetAccountsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/integrations': {
+      id: '/app/integrations'
+      path: '/integrations'
+      fullPath: '/app/integrations'
+      preLoaderRoute: typeof AppIntegrationsRouteImport
+      parentRoute: typeof AppRoute
     }
     '/app/companies': {
       id: '/app/companies'
@@ -265,11 +303,15 @@ const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
 
 interface AppRouteChildren {
   AppCompaniesRoute: typeof AppCompaniesRoute
+  AppIntegrationsRoute: typeof AppIntegrationsRoute
+  AppTargetAccountsRoute: typeof AppTargetAccountsRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppCompaniesRoute: AppCompaniesRoute,
+  AppIntegrationsRoute: AppIntegrationsRoute,
+  AppTargetAccountsRoute: AppTargetAccountsRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
@@ -282,3 +324,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
