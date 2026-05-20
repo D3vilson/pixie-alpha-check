@@ -15,6 +15,7 @@ import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as MarketingIndexRouteImport } from './routes/_marketing.index'
 import { Route as AppTargetAccountsRouteImport } from './routes/app.target-accounts'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
+import { Route as AppPeopleRouteImport } from './routes/app.people'
 import { Route as AppIntegrationsRouteImport } from './routes/app.integrations'
 import { Route as AppCompaniesRouteImport } from './routes/app.companies'
 import { Route as MarketingSignupRouteImport } from './routes/_marketing.signup'
@@ -22,8 +23,10 @@ import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricin
 import { Route as MarketingLoginRouteImport } from './routes/_marketing.login'
 import { Route as MarketingGdprRouteImport } from './routes/_marketing.gdpr'
 import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.features'
+import { Route as AppCompaniesCompanyIdRouteImport } from './routes/app.companies.$companyId'
 import { Route as ApiPublicTDotjsRouteImport } from './routes/api.public.t[.]js'
 import { Route as ApiPublicIdentifyRouteImport } from './routes/api.public.identify'
+import { Route as ApiPublicEraseRouteImport } from './routes/api.public.erase'
 import { Route as ApiPublicCollectRouteImport } from './routes/api.public.collect'
 import { Route as MarketingDocsInstallRouteImport } from './routes/_marketing.docs.install'
 
@@ -54,6 +57,11 @@ const AppTargetAccountsRoute = AppTargetAccountsRouteImport.update({
 const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPeopleRoute = AppPeopleRouteImport.update({
+  id: '/people',
+  path: '/people',
   getParentRoute: () => AppRoute,
 } as any)
 const AppIntegrationsRoute = AppIntegrationsRouteImport.update({
@@ -91,6 +99,11 @@ const MarketingFeaturesRoute = MarketingFeaturesRouteImport.update({
   path: '/features',
   getParentRoute: () => MarketingRoute,
 } as any)
+const AppCompaniesCompanyIdRoute = AppCompaniesCompanyIdRouteImport.update({
+  id: '/$companyId',
+  path: '/$companyId',
+  getParentRoute: () => AppCompaniesRoute,
+} as any)
 const ApiPublicTDotjsRoute = ApiPublicTDotjsRouteImport.update({
   id: '/api/public/t.js',
   path: '/api/public/t.js',
@@ -99,6 +112,11 @@ const ApiPublicTDotjsRoute = ApiPublicTDotjsRouteImport.update({
 const ApiPublicIdentifyRoute = ApiPublicIdentifyRouteImport.update({
   id: '/api/public/identify',
   path: '/api/public/identify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicEraseRoute = ApiPublicEraseRouteImport.update({
+  id: '/api/public/erase',
+  path: '/api/public/erase',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicCollectRoute = ApiPublicCollectRouteImport.update({
@@ -120,15 +138,18 @@ export interface FileRoutesByFullPath {
   '/login': typeof MarketingLoginRoute
   '/pricing': typeof MarketingPricingRoute
   '/signup': typeof MarketingSignupRoute
-  '/app/companies': typeof AppCompaniesRoute
+  '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/integrations': typeof AppIntegrationsRoute
+  '/app/people': typeof AppPeopleRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/target-accounts': typeof AppTargetAccountsRoute
   '/app/': typeof AppIndexRoute
   '/docs/install': typeof MarketingDocsInstallRoute
   '/api/public/collect': typeof ApiPublicCollectRoute
+  '/api/public/erase': typeof ApiPublicEraseRoute
   '/api/public/identify': typeof ApiPublicIdentifyRoute
   '/api/public/t.js': typeof ApiPublicTDotjsRoute
+  '/app/companies/$companyId': typeof AppCompaniesCompanyIdRoute
 }
 export interface FileRoutesByTo {
   '/features': typeof MarketingFeaturesRoute
@@ -136,16 +157,19 @@ export interface FileRoutesByTo {
   '/login': typeof MarketingLoginRoute
   '/pricing': typeof MarketingPricingRoute
   '/signup': typeof MarketingSignupRoute
-  '/app/companies': typeof AppCompaniesRoute
+  '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/integrations': typeof AppIntegrationsRoute
+  '/app/people': typeof AppPeopleRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/target-accounts': typeof AppTargetAccountsRoute
   '/': typeof MarketingIndexRoute
   '/app': typeof AppIndexRoute
   '/docs/install': typeof MarketingDocsInstallRoute
   '/api/public/collect': typeof ApiPublicCollectRoute
+  '/api/public/erase': typeof ApiPublicEraseRoute
   '/api/public/identify': typeof ApiPublicIdentifyRoute
   '/api/public/t.js': typeof ApiPublicTDotjsRoute
+  '/app/companies/$companyId': typeof AppCompaniesCompanyIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -156,16 +180,19 @@ export interface FileRoutesById {
   '/_marketing/login': typeof MarketingLoginRoute
   '/_marketing/pricing': typeof MarketingPricingRoute
   '/_marketing/signup': typeof MarketingSignupRoute
-  '/app/companies': typeof AppCompaniesRoute
+  '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/integrations': typeof AppIntegrationsRoute
+  '/app/people': typeof AppPeopleRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/target-accounts': typeof AppTargetAccountsRoute
   '/_marketing/': typeof MarketingIndexRoute
   '/app/': typeof AppIndexRoute
   '/_marketing/docs/install': typeof MarketingDocsInstallRoute
   '/api/public/collect': typeof ApiPublicCollectRoute
+  '/api/public/erase': typeof ApiPublicEraseRoute
   '/api/public/identify': typeof ApiPublicIdentifyRoute
   '/api/public/t.js': typeof ApiPublicTDotjsRoute
+  '/app/companies/$companyId': typeof AppCompaniesCompanyIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -179,13 +206,16 @@ export interface FileRouteTypes {
     | '/signup'
     | '/app/companies'
     | '/app/integrations'
+    | '/app/people'
     | '/app/settings'
     | '/app/target-accounts'
     | '/app/'
     | '/docs/install'
     | '/api/public/collect'
+    | '/api/public/erase'
     | '/api/public/identify'
     | '/api/public/t.js'
+    | '/app/companies/$companyId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/features'
@@ -195,14 +225,17 @@ export interface FileRouteTypes {
     | '/signup'
     | '/app/companies'
     | '/app/integrations'
+    | '/app/people'
     | '/app/settings'
     | '/app/target-accounts'
     | '/'
     | '/app'
     | '/docs/install'
     | '/api/public/collect'
+    | '/api/public/erase'
     | '/api/public/identify'
     | '/api/public/t.js'
+    | '/app/companies/$companyId'
   id:
     | '__root__'
     | '/_marketing'
@@ -214,20 +247,24 @@ export interface FileRouteTypes {
     | '/_marketing/signup'
     | '/app/companies'
     | '/app/integrations'
+    | '/app/people'
     | '/app/settings'
     | '/app/target-accounts'
     | '/_marketing/'
     | '/app/'
     | '/_marketing/docs/install'
     | '/api/public/collect'
+    | '/api/public/erase'
     | '/api/public/identify'
     | '/api/public/t.js'
+    | '/app/companies/$companyId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   MarketingRoute: typeof MarketingRouteWithChildren
   AppRoute: typeof AppRouteWithChildren
   ApiPublicCollectRoute: typeof ApiPublicCollectRoute
+  ApiPublicEraseRoute: typeof ApiPublicEraseRoute
   ApiPublicIdentifyRoute: typeof ApiPublicIdentifyRoute
   ApiPublicTDotjsRoute: typeof ApiPublicTDotjsRoute
 }
@@ -274,6 +311,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/app/settings'
       preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/people': {
+      id: '/app/people'
+      path: '/people'
+      fullPath: '/app/people'
+      preLoaderRoute: typeof AppPeopleRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/integrations': {
@@ -325,6 +369,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketingFeaturesRouteImport
       parentRoute: typeof MarketingRoute
     }
+    '/app/companies/$companyId': {
+      id: '/app/companies/$companyId'
+      path: '/$companyId'
+      fullPath: '/app/companies/$companyId'
+      preLoaderRoute: typeof AppCompaniesCompanyIdRouteImport
+      parentRoute: typeof AppCompaniesRoute
+    }
     '/api/public/t.js': {
       id: '/api/public/t.js'
       path: '/api/public/t.js'
@@ -337,6 +388,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/identify'
       fullPath: '/api/public/identify'
       preLoaderRoute: typeof ApiPublicIdentifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/erase': {
+      id: '/api/public/erase'
+      path: '/api/public/erase'
+      fullPath: '/api/public/erase'
+      preLoaderRoute: typeof ApiPublicEraseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/collect': {
@@ -380,17 +438,31 @@ const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
   MarketingRouteChildren,
 )
 
+interface AppCompaniesRouteChildren {
+  AppCompaniesCompanyIdRoute: typeof AppCompaniesCompanyIdRoute
+}
+
+const AppCompaniesRouteChildren: AppCompaniesRouteChildren = {
+  AppCompaniesCompanyIdRoute: AppCompaniesCompanyIdRoute,
+}
+
+const AppCompaniesRouteWithChildren = AppCompaniesRoute._addFileChildren(
+  AppCompaniesRouteChildren,
+)
+
 interface AppRouteChildren {
-  AppCompaniesRoute: typeof AppCompaniesRoute
+  AppCompaniesRoute: typeof AppCompaniesRouteWithChildren
   AppIntegrationsRoute: typeof AppIntegrationsRoute
+  AppPeopleRoute: typeof AppPeopleRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppTargetAccountsRoute: typeof AppTargetAccountsRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppCompaniesRoute: AppCompaniesRoute,
+  AppCompaniesRoute: AppCompaniesRouteWithChildren,
   AppIntegrationsRoute: AppIntegrationsRoute,
+  AppPeopleRoute: AppPeopleRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppTargetAccountsRoute: AppTargetAccountsRoute,
   AppIndexRoute: AppIndexRoute,
@@ -402,6 +474,7 @@ const rootRouteChildren: RootRouteChildren = {
   MarketingRoute: MarketingRouteWithChildren,
   AppRoute: AppRouteWithChildren,
   ApiPublicCollectRoute: ApiPublicCollectRoute,
+  ApiPublicEraseRoute: ApiPublicEraseRoute,
   ApiPublicIdentifyRoute: ApiPublicIdentifyRoute,
   ApiPublicTDotjsRoute: ApiPublicTDotjsRoute,
 }

@@ -1,7 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useWorkspace } from "@/hooks/use-workspace";
+
 import { getCompanies } from "@/lib/workspace.functions";
 import { formatDistanceToNow } from "@/lib/time";
 
@@ -41,18 +42,19 @@ function Companies() {
           </thead>
           <tbody>
             {(q.data ?? []).map((c: any) => (
-              <tr key={c.id} className="border-t border-border/40">
+              <tr key={c.id} className="border-t border-border/40 hover:bg-surface/50">
                 <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
+                  <Link to="/app/companies/$companyId" params={{ companyId: c.id }} className="flex items-center gap-2">
                     <div className="h-7 w-7 rounded bg-surface flex items-center justify-center text-xs font-semibold">
                       {c.name?.[0]}
                     </div>
                     <div>
-                      <div className="font-medium">{c.name}</div>
+                      <div className="font-medium hover:underline">{c.name}</div>
                       <div className="text-xs text-muted-foreground">{c.domain}</div>
                     </div>
-                  </div>
+                  </Link>
                 </td>
+
                 <td className="px-4 py-3 text-muted-foreground">{c.industry ?? "—"}</td>
                 <td className="px-4 py-3 text-muted-foreground">{c.size ?? "—"}</td>
                 <td className="px-4 py-3 text-muted-foreground">{c.country ?? "—"}</td>

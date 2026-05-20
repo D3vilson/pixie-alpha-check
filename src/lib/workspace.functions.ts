@@ -300,3 +300,77 @@ export const getStats = createServerFn({ method: "GET" })
       sites: siteIds.length,
     };
   });
+
+export const getPeople = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { workspaceId: string }) =>
+    z.object({ workspaceId: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: people, error } = await context.supabase
+      .from("people")
+      .select("id, email, name, consent_source, consent_ts, created_at, company_id, companies(id, name, domain, logo_url)")
+      .eq("workspace_id", data.workspaceId)
+      .order("created_at", { ascending: false })
+      .limit(500);
+    if (error) throw error;
+    return people ?? [];
+  });
+
+export const deletePerson = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { id: string }) =>
+    z.object({ id: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase.from("people").delete().eq("id", data.id);
+    if (error) throw error;
+    return { ok: true };
+  });
+
+export const getCompanyDetail = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { workspaceId: string; companyId: string }) =>
+    z
+      .object({
+        workspaceId: z.string().uuid(),
+        companyId: z.string().uuid(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: company, error: cErr } = await context.supabase
+      .from("companies")
+      .select("id, name, domain, logo_url, industry, size, country")
+      .eq("id", data.companyId)
+      .maybeSingle();
+    if (cErr) throw cErr;
+    if (!company) return null;
+
+    const { data: sites } = await context.supabase
+      .from("sites")
+      .select("id")
+      .eq("workspace_id", data.workspaceId);
+    const siteIds = (sites ?? []).map((s) => s.id);
+    if (siteIds.length === 0) return { company, sessions: [], pageviews: [] };
+
+    const { data: sessions } = await context.supabase
+      .from("sessions")
+      .select("id, started_at, last_seen_at, country, person_id, people(id, email, name)")
+      .eq("company_id", data.companyId)
+      .in("site_id", siteIds)
+      .order("last_seen_at", { ascending: false })
+      .limit(50);
+
+    const sessionIds = (sessions ?? []).map((s) => s.id);
+    const { data: pageviews } = sessionIds.length
+      ? await context.supabase
+          .from("pageviews")
+          .select("id, session_id, url, title, ts")
+          .in("session_id", sessionIds)
+          .order("ts", { ascending: false })
+          .limit(100)
+      : { data: [] as any[] };
+
+    return { company, sessions: sessions ?? [], pageviews: pageviews ?? [] };
+  });
