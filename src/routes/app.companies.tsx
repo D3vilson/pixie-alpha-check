@@ -1,7 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useWorkspace } from "@/hooks/use-workspace";
+
 import { getCompanies } from "@/lib/workspace.functions";
 import { formatDistanceToNow } from "@/lib/time";
 
