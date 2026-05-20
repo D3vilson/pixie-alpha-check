@@ -54,6 +54,21 @@ function InstallPage() {
 });`}</code>
       </pre>
 
+      <h2 className="mt-12 text-2xl">5. Honour erasure requests (Article 17)</h2>
+      <p className="mt-3 text-muted-foreground">
+        After verifying the requester (e.g. via a signed email link), POST to the erase endpoint
+        from your server. We delete the person record and unlink any sessions.
+      </p>
+      <pre className="mt-4 overflow-x-auto rounded-xl border border-border bg-primary text-primary-foreground p-5 text-sm leading-relaxed">
+        <code>{`fetch('https://app.visitorid.eu/api/public/erase', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ tracking_id: 'YOUR_ID', email: 'jane@example.com' }),
+});`}</code>
+      </pre>
+
+
+
       <div className="mt-14 rounded-xl border border-border bg-card p-6 md:p-8">
         <h3 className="text-xl">Ready?</h3>
         <p className="mt-2 text-sm text-muted-foreground">Create a workspace and grab your tracking ID.</p>
