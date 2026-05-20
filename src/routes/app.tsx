@@ -55,9 +55,11 @@ function AppLayout() {
           <nav className="flex flex-col gap-0.5 text-sm">
             <NavItem to="/app" label="Live visits" exact />
             <NavItem to="/app/companies" label="Companies" />
+            <NavItem to="/app/people" label="People" />
             <NavItem to="/app/target-accounts" label="Target accounts" />
             <NavItem to="/app/integrations" label="Integrations" />
             <NavItem to="/app/settings" label="Settings" />
+
           </nav>
           <div className="mt-auto pt-6 border-t border-border/60">
             <button
