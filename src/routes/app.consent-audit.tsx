@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -110,8 +111,8 @@ function ConsentAudit() {
               const ev = r.identify_events?.[0];
               const isOpen = expanded === r.id;
               return (
-                <>
-                  <tr key={r.id} className="border-t border-border/40 align-top">
+                <Fragment key={r.id}>
+                  <tr className="border-t border-border/40 align-top">
                     <td className="px-4 py-3">
                       <button
                         onClick={() => setExpanded(isOpen ? null : r.id)}
@@ -271,7 +272,7 @@ function ConsentAudit() {
                       </td>
                     </tr>
                   )}
-                </>
+                </Fragment>
               );
             })}
             {q.data && rows.length === 0 && (
