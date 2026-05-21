@@ -58,6 +58,7 @@ function AppLayout() {
             <NavItem to="/app/people" label="People" />
             <NavItem to="/app/target-accounts" label="Target accounts" />
             <NavItem to="/app/integrations" label="Integrations" />
+            <NavItem to="/app/consent-audit" label="Consent audit" />
             <NavItem to="/app/settings" label="Settings" />
 
           </nav>

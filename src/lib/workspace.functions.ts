@@ -374,3 +374,90 @@ export const getCompanyDetail = createServerFn({ method: "GET" })
 
     return { company, sessions: sessions ?? [], pageviews: pageviews ?? [] };
   });
+
+/**
+ * GDPR consent audit — per-session view of consent state, identification
+ * link, and proof. Joins sessions → people → identify_events scoped to
+ * workspace via sites.
+ */
+export const getConsentAudit = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { workspaceId: string }) =>
+    z.object({ workspaceId: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: sites } = await context.supabase
+      .from("sites")
+      .select("id, domain")
+      .eq("workspace_id", data.workspaceId);
+    const siteIds = (sites ?? []).map((s) => s.id);
+    if (siteIds.length === 0) return [];
+
+    const { data: sessions, error } = await context.supabase
+      .from("sessions")
+      .select(
+        "id, site_id, started_at, last_seen_at, country, anon_id, person_id, company_id, people(id, email, name, consent_source, consent_ts), companies(id, name, domain)",
+      )
+      .in("site_id", siteIds)
+      .order("last_seen_at", { ascending: false })
+      .limit(200);
+    if (error) throw error;
+
+    const sessionIds = (sessions ?? []).map((s) => s.id);
+    const { data: events } = sessionIds.length
+      ? await context.supabase
+          .from("identify_events")
+          .select("id, session_id, person_id, source, consent_proof, created_at")
+          .in("session_id", sessionIds)
+          .order("created_at", { ascending: false })
+      : { data: [] as any[] };
+
+    const byDomain = new Map<string, string>();
+    for (const s of sites ?? []) byDomain.set(s.id, s.domain);
+    const evBySession = new Map<string, any[]>();
+    for (const e of events ?? []) {
+      const list = evBySession.get(e.session_id) ?? [];
+      list.push(e);
+      evBySession.set(e.session_id, list);
+    }
+
+    return (sessions ?? []).map((s: any) => ({
+      ...s,
+      site_domain: byDomain.get(s.site_id) ?? null,
+      identify_events: evBySession.get(s.id) ?? [],
+      consent_state: s.person_id ? "identified" : "anonymous",
+    }));
+  });
+
+/**
+ * Anonymize a single session — unlinks any person_id so the visit row
+ * remains as aggregate analytics but no longer ties to a person.
+ */
+export const anonymizeSession = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { workspaceId: string; sessionId: string }) =>
+    z
+      .object({
+        workspaceId: z.string().uuid(),
+        sessionId: z.string().uuid(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    // RLS on sessions limits update to workspace members — but sessions has
+    // no UPDATE policy, so use admin client after verifying workspace scope.
+    const { data: ses } = await context.supabase
+      .from("sessions")
+      .select("id, site_id, sites!inner(workspace_id)")
+      .eq("id", data.sessionId)
+      .maybeSingle();
+    if (!ses || (ses as any).sites?.workspace_id !== data.workspaceId) {
+      throw new Error("Session not found in workspace");
+    }
+    const { error } = await supabaseAdmin
+      .from("sessions")
+      .update({ person_id: null })
+      .eq("id", data.sessionId);
+    if (error) throw error;
+    return { ok: true };
+  });
