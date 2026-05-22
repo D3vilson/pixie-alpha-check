@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Check, Shield, Building2, BellRing, ScrollText } from "lucide-react";
+import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/_marketing/")({
   head: () => ({
@@ -27,31 +28,30 @@ function HomePage() {
 }
 
 function Hero() {
+  const t = useT();
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-surface to-background" aria-hidden />
       <div className="relative mx-auto max-w-6xl px-6 pt-8 pb-24 md:pt-12 md:pb-32">
         <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs text-muted-foreground">
           <Shield className="h-3.5 w-3.5 text-accent" />
-          GDPR-native · EU-hosted · DPA in 2 clicks
+          {t.home.pill}
         </div>
         <h1 className="mt-6 max-w-3xl text-5xl leading-[1.05] tracking-tight md:text-7xl">
-          See which <span className="italic text-accent">European</span> companies visit your website.
+          {t.home.h1Pre} <span className="italic text-accent">{t.home.h1Em}</span> {t.home.h1Post}
         </h1>
-        <p className="mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">
-          Reveal — built for GDPR from day one. Identify visiting companies by default with legitimate interest. Reveal people only when they consent. No grey area, no Schrems III risk.
-        </p>
+        <p className="mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">{t.home.sub}</p>
         <div className="mt-10 flex flex-wrap items-center gap-3">
           <Link
             to="/signup"
             className="inline-flex items-center gap-2 rounded-md bg-accent px-5 py-3 text-sm font-medium text-accent-foreground hover:opacity-90 transition-opacity"
           >
-            Start free trial
+            {t.common.startFreeTrial}
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
         <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
-          {["No credit card required", "No cookies dropped on your visitors", "EU-only data residency"].map((item) => (
+          {t.home.bullets.map((item) => (
             <li key={item} className="flex items-center gap-2">
               <Check className="h-4 w-4 text-accent" />
               {item}
@@ -64,7 +64,7 @@ function Hero() {
             <span className="h-2.5 w-2.5 rounded-full bg-destructive/40" />
             <span className="h-2.5 w-2.5 rounded-full bg-chart-4/40" />
             <span className="h-2.5 w-2.5 rounded-full bg-accent/50" />
-            <span className="ml-3 text-xs text-muted-foreground">app.visitorid.eu — Live visits</span>
+            <span className="ml-3 text-xs text-muted-foreground">{t.home.sampleHeader}</span>
           </div>
           <div className="divide-y divide-border">
             {SAMPLE_VISITS.map((v) => (
@@ -76,9 +76,9 @@ function Hero() {
                   <div className="flex items-center gap-2">
                     <span className="font-medium truncate">{v.company}</span>
                     <span className="text-xs text-muted-foreground">· {v.country}</span>
-                    {v.target && <span className="rounded-full bg-accent/10 text-accent text-[10px] font-medium px-2 py-0.5">Target account</span>}
+                    {v.target && <span className="rounded-full bg-accent/10 text-accent text-[10px] font-medium px-2 py-0.5">{t.home.targetAccount}</span>}
                   </div>
-                  <div className="text-sm text-muted-foreground truncate">{v.pages} pages · {v.last}</div>
+                  <div className="text-sm text-muted-foreground truncate">{t.home.pagesAgo(v.pages, v.last)}</div>
                 </div>
                 <span className="hidden sm:inline text-xs text-muted-foreground">{v.industry}</span>
               </div>
@@ -98,12 +98,11 @@ const SAMPLE_VISITS = [
 ];
 
 function LogoStrip() {
+  const t = useT();
   return (
     <section className="border-y border-border/60 bg-surface/40 py-10">
       <div className="mx-auto max-w-6xl px-6">
-        <p className="text-center text-xs uppercase tracking-wider text-muted-foreground">
-          Designed for B2B teams across the EU
-        </p>
+        <p className="text-center text-xs uppercase tracking-wider text-muted-foreground">{t.home.logoStrip}</p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-foreground/40 font-display text-2xl">
           <span>Berlin</span><span>Paris</span><span>Amsterdam</span><span>Stockholm</span><span>Madrid</span><span>Dublin</span>
         </div>
@@ -113,16 +112,12 @@ function LogoStrip() {
 }
 
 function HowItWorks() {
-  const steps = [
-    { n: "01", title: "Drop one line of JavaScript", body: "First-party tracking script served from your domain. No third-party cookies. No fingerprinting." },
-    { n: "02", title: "We resolve the IP to a company", body: "Lawful basis: legitimate interest. The company name — not a person — is what shows up." },
-    { n: "03", title: "Get a Slack ping the moment a target account lands", body: "Filter by industry, pages, country. Forward to your CRM via webhook." },
-  ];
+  const t = useT();
   return (
     <section className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-      <h2 className="text-3xl md:text-5xl max-w-2xl">From install to first identified visit in under 5 minutes.</h2>
+      <h2 className="text-3xl md:text-5xl max-w-2xl">{t.home.howH2}</h2>
       <div className="mt-12 grid gap-6 md:grid-cols-3">
-        {steps.map((s) => (
+        {t.home.steps.map((s) => (
           <div key={s.n} className="rounded-xl border border-border bg-card p-6">
             <div className="font-display text-3xl text-accent">{s.n}</div>
             <h3 className="mt-3 text-xl">{s.title}</h3>
@@ -135,24 +130,21 @@ function HowItWorks() {
 }
 
 function Differentiator() {
+  const t = useT();
   return (
     <section className="bg-primary text-primary-foreground">
       <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
         <div className="grid gap-12 md:grid-cols-2 md:items-center">
           <div>
-            <p className="text-xs uppercase tracking-wider text-accent">Why EU-first matters</p>
-            <h2 className="mt-3 text-3xl md:text-5xl">US-style identity tools reveal people by default. Under GDPR, that's the wrong default.</h2>
+            <p className="text-xs uppercase tracking-wider text-accent">{t.home.diffPill}</p>
+            <h2 className="mt-3 text-3xl md:text-5xl">{t.home.diffH2}</h2>
             <p className="mt-5 text-primary-foreground/70 leading-relaxed">
-              US-style identity graphs match anonymous IPs to named individuals without their consent. That model has no lawful basis in the EEA. We split the problem in two: <strong className="text-primary-foreground">companies by default, people only with consent.</strong> Your sales team still gets the signal; your DPO still sleeps at night.
+              {t.home.diffBody} <strong className="text-primary-foreground">{t.home.diffEm}</strong> {t.home.diffOutro}
             </p>
           </div>
           <div className="grid gap-3 text-sm">
-            <Row good label="Reverse-IP company reveal (legitimate interest)" />
-            <Row good label="Person reveal only after explicit form-fill or login" />
-            <Row good label="IPs hashed + salted, raw events purged after 30 days" />
-            <Row good label="Honours Global Privacy Control & do-not-identify cookies" />
-            <Row good label="EU-only data residency, signed DPA, sub-processor list" />
-            <Row bad label="No third-party identity graphs. No silent person reveal." />
+            {t.home.diffRows.map((l) => <Row key={l} good label={l} />)}
+            <Row bad label={t.home.diffBad} />
           </div>
         </div>
       </div>
@@ -172,40 +164,40 @@ function Row({ good, bad, label }: { good?: boolean; bad?: boolean; label: strin
 }
 
 function FeatureGrid() {
-  const features = [
-    { icon: Building2, title: "Company-level reveal", body: "Domain, name, industry, size, country and HQ — surfaced the moment a visitor lands." },
-    { icon: ScrollText, title: "Consent-gated person reveal", body: "Form-fill or magic-link consent links the prior session to a named person." },
-    { icon: BellRing, title: "Slack & Teams alerts", body: "Per-target-account rules. Filter by pages viewed, country, industry." },
-    { icon: Shield, title: "DPA in two clicks", body: "Workspace-level DPA generation, sub-processor list, data-deletion endpoint." },
-  ];
+  const t = useT();
+  const icons = [Building2, ScrollText, BellRing, Shield];
   return (
     <section className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-      <h2 className="text-3xl md:text-5xl max-w-2xl">Everything pipeline-building needs. Nothing privacy-burning.</h2>
+      <h2 className="text-3xl md:text-5xl max-w-2xl">{t.home.featH2}</h2>
       <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {features.map((f) => (
-          <div key={f.title} className="rounded-xl border border-border bg-card p-6">
-            <f.icon className="h-6 w-6 text-accent" />
-            <h3 className="mt-4 text-lg">{f.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{f.body}</p>
-          </div>
-        ))}
+        {t.home.features.map((f, i) => {
+          const Icon = icons[i];
+          return (
+            <div key={f.title} className="rounded-xl border border-border bg-card p-6">
+              <Icon className="h-6 w-6 text-accent" />
+              <h3 className="mt-4 text-lg">{f.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{f.body}</p>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
 }
 
 function CTA() {
+  const t = useT();
   return (
     <section className="mx-auto max-w-6xl px-6 pb-24">
       <div className="rounded-2xl border border-border bg-gradient-to-br from-surface to-card p-10 md:p-16 text-center">
-        <h2 className="text-3xl md:text-5xl max-w-2xl mx-auto">Your next pipeline lead is already on the site.</h2>
-        <p className="mt-4 text-muted-foreground max-w-xl mx-auto">14 days free. Install in 5 minutes. Cancel any time, export everything.</p>
+        <h2 className="text-3xl md:text-5xl max-w-2xl mx-auto">{t.home.ctaH2}</h2>
+        <p className="mt-4 text-muted-foreground max-w-xl mx-auto">{t.home.ctaSub}</p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link to="/signup" className="inline-flex items-center gap-2 rounded-md bg-accent px-5 py-3 text-sm font-medium text-accent-foreground hover:opacity-90">
-            Start free trial <ArrowRight className="h-4 w-4" />
+            {t.common.startFreeTrial} <ArrowRight className="h-4 w-4" />
           </Link>
           <Link to="/docs/install" className="inline-flex items-center rounded-md border border-border bg-card px-5 py-3 text-sm font-medium hover:bg-surface">
-            See the snippet
+            {t.home.seeSnippet}
           </Link>
         </div>
       </div>

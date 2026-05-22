@@ -1,4 +1,6 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
+import { useT } from "@/i18n";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export const Route = createFileRoute("/_marketing")({
   component: MarketingLayout,
@@ -17,6 +19,7 @@ function MarketingLayout() {
 }
 
 function Header() {
+  const t = useT();
   return (
     <header className="border-b border-border/60 bg-background/80 backdrop-blur sticky top-0 z-30">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
@@ -25,23 +28,24 @@ function Header() {
           <span className="font-display text-xl tracking-tight">VisitorID <span className="text-accent">EU</span></span>
         </Link>
         <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
-          <Link to="/features" className="hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>Features</Link>
-          <Link to="/pricing" className="hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>Pricing</Link>
-          <Link to="/gdpr" className="hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>GDPR</Link>
-          <Link to="/docs/install" className="hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>Install</Link>
+          <Link to="/features" className="hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>{t.nav.features}</Link>
+          <Link to="/pricing" className="hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>{t.nav.pricing}</Link>
+          <Link to="/gdpr" className="hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>{t.nav.gdpr}</Link>
+          <Link to="/docs/install" className="hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>{t.nav.install}</Link>
         </nav>
         <div className="flex items-center gap-2">
+          <LanguageSwitcher />
           <Link
             to="/login"
             className="hidden sm:inline-flex items-center justify-center rounded-md border border-border bg-card/50 px-4 py-2 text-sm font-medium text-foreground hover:bg-card transition-colors"
           >
-            Log in
+            {t.common.logIn}
           </Link>
           <Link
             to="/signup"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
           >
-            Start free
+            {t.common.startFree}
           </Link>
         </div>
       </div>
@@ -50,6 +54,7 @@ function Header() {
 }
 
 function Footer() {
+  const t = useT();
   return (
     <footer className="border-t border-border/60 bg-surface">
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 py-12 md:grid-cols-4">
@@ -58,29 +63,27 @@ function Footer() {
             <Logo />
             <span className="font-display text-lg">VisitorID <span className="text-accent">EU</span></span>
           </div>
-          <p className="mt-3 text-sm text-muted-foreground max-w-xs">
-            See which European companies visit your website — built around GDPR, not around it.
-          </p>
+          <p className="mt-3 text-sm text-muted-foreground max-w-xs">{t.footer.tagline}</p>
         </div>
-        <FooterCol title="Product" items={[
-          { to: "/features", label: "Features" },
-          { to: "/pricing", label: "Pricing" },
-          { to: "/docs/install", label: "Install" },
+        <FooterCol title={t.footer.product} items={[
+          { to: "/features", label: t.nav.features },
+          { to: "/pricing", label: t.nav.pricing },
+          { to: "/docs/install", label: t.nav.install },
         ]} />
-        <FooterCol title="Trust" items={[
+        <FooterCol title={t.footer.trust} items={[
           { to: "/gdpr", label: "GDPR & DPA" },
-          { to: "/gdpr", label: "Sub-processors" },
-          { to: "/gdpr", label: "Data deletion" },
+          { to: "/gdpr", label: t.footer.subprocessors },
+          { to: "/gdpr", label: t.footer.dataDeletion },
         ]} />
-        <FooterCol title="Company" items={[
-          { to: "/login", label: "Log in" },
-          { to: "/signup", label: "Sign up" },
+        <FooterCol title={t.footer.company} items={[
+          { to: "/login", label: t.common.logIn },
+          { to: "/signup", label: t.footer.signUp },
         ]} />
       </div>
       <div className="border-t border-border/60">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-5 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
-          <span>© {new Date().getFullYear()} VisitorID EU. Built in the EU.</span>
-          <span>Lawful basis: legitimate interest (company reveal) · consent (person reveal)</span>
+          <span>© {new Date().getFullYear()} VisitorID EU. {t.footer.builtInEU}</span>
+          <span>{t.footer.lawfulBasis}</span>
         </div>
       </div>
     </footer>
