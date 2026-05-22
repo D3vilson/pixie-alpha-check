@@ -140,7 +140,7 @@ function Differentiator() {
         <div className="grid gap-12 md:grid-cols-2 md:items-center">
           <div>
             <p className="text-xs uppercase tracking-wider text-accent">Why EU-first matters</p>
-            <h2 className="mt-3 text-3xl md:text-5xl">RB2B identifies people. Under GDPR, that's the wrong default.</h2>
+            <h2 className="mt-3 text-3xl md:text-5xl">US-style identity tools reveal people by default. Under GDPR, that's the wrong default.</h2>
             <p className="mt-5 text-primary-foreground/70 leading-relaxed">
               US-style identity graphs match anonymous IPs to named individuals without their consent. That model has no lawful basis in the EEA. We split the problem in two: <strong className="text-primary-foreground">companies by default, people only with consent.</strong> Your sales team still gets the signal; your DPO still sleeps at night.
             </p>
