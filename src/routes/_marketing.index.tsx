@@ -39,7 +39,7 @@ function Hero() {
           See which <span className="italic text-accent">European</span> companies visit your website.
         </h1>
         <p className="mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">
-          RB2B-style reveal — but built for GDPR. Identify visiting companies by default with legitimate interest. Reveal people only when they consent. No grey area, no Schrems III risk.
+          Reveal — built for GDPR from day one. Identify visiting companies by default with legitimate interest. Reveal people only when they consent. No grey area, no Schrems III risk.
         </p>
         <div className="mt-10 flex flex-wrap items-center gap-3">
           <Link
