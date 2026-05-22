@@ -4,6 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { bootstrapWorkspace } from "@/lib/workspace.functions";
+import { useT } from "@/i18n";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export const Route = createFileRoute("/app")({
   head: () => ({ meta: [{ title: "Dashboard — VisitorID EU" }] }),
@@ -15,6 +17,7 @@ export const Route = createFileRoute("/app")({
 });
 
 function AppLayout() {
+  const t = useT();
   const navigate = useNavigate();
   const bootstrap = useServerFn(bootstrapWorkspace);
   const { data, isLoading, error } = useQuery({
@@ -22,14 +25,12 @@ function AppLayout() {
     queryFn: () => bootstrap(),
   });
 
-  useEffect(() => {
-    if (error) console.error(error);
-  }, [error]);
+  useEffect(() => { if (error) console.error(error); }, [error]);
 
   if (isLoading || !data) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <p className="text-sm text-muted-foreground">Loading workspace…</p>
+        <p className="text-sm text-muted-foreground">{t.app.loadingWs}</p>
       </div>
     );
   }
@@ -49,25 +50,25 @@ function AppLayout() {
               </span>
               <span className="font-display text-base">VisitorID <span className="text-accent">EU</span></span>
             </Link>
-            <p className="mt-3 text-xs uppercase tracking-wider text-muted-foreground">Workspace</p>
+            <p className="mt-3 text-xs uppercase tracking-wider text-muted-foreground">{t.app.workspace}</p>
             <p className="text-sm font-medium truncate">{ws.name}</p>
           </div>
           <nav className="flex flex-col gap-0.5 text-sm">
-            <NavItem to="/app" label="Live visits" exact />
-            <NavItem to="/app/companies" label="Companies" />
-            <NavItem to="/app/people" label="People" />
-            <NavItem to="/app/target-accounts" label="Target accounts" />
-            <NavItem to="/app/integrations" label="Integrations" />
-            <NavItem to="/app/consent-audit" label="Consent audit" />
-            <NavItem to="/app/settings" label="Settings" />
-
+            <NavItem to="/app" label={t.app.nav.liveVisits} exact />
+            <NavItem to="/app/companies" label={t.app.nav.companies} />
+            <NavItem to="/app/people" label={t.app.nav.people} />
+            <NavItem to="/app/target-accounts" label={t.app.nav.targetAccounts} />
+            <NavItem to="/app/integrations" label={t.app.nav.integrations} />
+            <NavItem to="/app/consent-audit" label={t.app.nav.consentAudit} />
+            <NavItem to="/app/settings" label={t.app.nav.settings} />
           </nav>
-          <div className="mt-auto pt-6 border-t border-border/60">
+          <div className="mt-auto pt-6 border-t border-border/60 space-y-3">
+            <LanguageSwitcher className="w-full justify-center" />
             <button
               onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/login" }); }}
               className="w-full rounded-md px-3 py-2 text-left text-sm text-muted-foreground hover:bg-background hover:text-foreground"
             >
-              Sign out
+              {t.common.signOut}
             </button>
           </div>
         </aside>

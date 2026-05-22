@@ -1,12 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/_marketing/docs/install")({
   head: () => ({
     meta: [
       { title: "Install the tracking snippet — VisitorID EU" },
       { name: "description", content: "Drop one script tag in your <head>. First-party, GDPR-compliant, honours Global Privacy Control." },
-      { property: "og:title", content: "Install — VisitorID EU" },
-      { property: "og:description", content: "One-line install. First-party. GPC-aware." },
     ],
   }),
   component: InstallPage,
@@ -17,35 +16,29 @@ const SNIPPET = `<script async
   data-site="YOUR_TRACKING_ID"></script>`;
 
 function InstallPage() {
+  const t = useT();
   return (
     <div className="mx-auto max-w-3xl px-6 py-16 md:py-24">
-      <p className="text-xs uppercase tracking-wider text-accent">Docs</p>
-      <h1 className="mt-3 text-4xl md:text-6xl">Install in 60 seconds.</h1>
-      <p className="mt-5 text-lg text-muted-foreground">
-        One <code className="rounded bg-surface px-1.5 py-0.5">&lt;script&gt;</code> tag in your site's <code className="rounded bg-surface px-1.5 py-0.5">&lt;head&gt;</code>. No bundler config, no consent banner changes, no third-party cookies.
-      </p>
+      <p className="text-xs uppercase tracking-wider text-accent">{t.install.pill}</p>
+      <h1 className="mt-3 text-4xl md:text-6xl">{t.install.h1}</h1>
+      <p className="mt-5 text-lg text-muted-foreground">{t.install.sub}</p>
 
-      <h2 className="mt-12 text-2xl">1. Paste the snippet</h2>
+      <h2 className="mt-12 text-2xl">{t.install.h2_1}</h2>
       <pre className="mt-4 overflow-x-auto rounded-xl border border-border bg-primary text-primary-foreground p-5 text-sm leading-relaxed">
         <code>{SNIPPET}</code>
       </pre>
-      <p className="mt-3 text-sm text-muted-foreground">
-        Your <code className="rounded bg-surface px-1.5 py-0.5">YOUR_TRACKING_ID</code> appears on the install screen once you've created your workspace.
-      </p>
+      <p className="mt-3 text-sm text-muted-foreground">{t.install.snippetNote}</p>
 
-      <h2 className="mt-12 text-2xl">2. Verify in the dashboard</h2>
-      <p className="mt-3 text-muted-foreground">Visit your site once in a non-incognito browser. Within seconds the live feed in your workspace will show the visit.</p>
+      <h2 className="mt-12 text-2xl">{t.install.h2_2}</h2>
+      <p className="mt-3 text-muted-foreground">{t.install.p2}</p>
 
-      <h2 className="mt-12 text-2xl">3. What runs in your visitor's browser</h2>
+      <h2 className="mt-12 text-2xl">{t.install.h2_3}</h2>
       <ul className="mt-3 space-y-2 text-muted-foreground list-disc pl-5">
-        <li>A first-party cookie scoped to your site, ~6KB, expires after 12 months.</li>
-        <li>One POST per pageview to <code className="rounded bg-surface px-1.5 py-0.5">app.visitorid.eu/api/public/collect</code>.</li>
-        <li>No third-party cookies, no localStorage cross-site sync, no fingerprinting.</li>
-        <li>The script returns immediately and respects <code className="rounded bg-surface px-1.5 py-0.5">Sec-GPC: 1</code>.</li>
+        {t.install.runs.map((r) => <li key={r}>{r}</li>)}
       </ul>
 
-      <h2 className="mt-12 text-2xl">4. Identify visitors who give consent</h2>
-      <p className="mt-3 text-muted-foreground">When someone submits a form, call:</p>
+      <h2 className="mt-12 text-2xl">{t.install.h2_4}</h2>
+      <p className="mt-3 text-muted-foreground">{t.install.p4}</p>
       <pre className="mt-4 overflow-x-auto rounded-xl border border-border bg-primary text-primary-foreground p-5 text-sm leading-relaxed">
         <code>{`window.VisitorID && window.VisitorID.identify({
   email: 'jane@example.com',
@@ -54,11 +47,8 @@ function InstallPage() {
 });`}</code>
       </pre>
 
-      <h2 className="mt-12 text-2xl">5. Honour erasure requests (Article 17)</h2>
-      <p className="mt-3 text-muted-foreground">
-        After verifying the requester (e.g. via a signed email link), POST to the erase endpoint
-        from your server. We delete the person record and unlink any sessions.
-      </p>
+      <h2 className="mt-12 text-2xl">{t.install.h2_5}</h2>
+      <p className="mt-3 text-muted-foreground">{t.install.p5}</p>
       <pre className="mt-4 overflow-x-auto rounded-xl border border-border bg-primary text-primary-foreground p-5 text-sm leading-relaxed">
         <code>{`fetch('https://app.visitorid.eu/api/public/erase', {
   method: 'POST',
@@ -67,13 +57,11 @@ function InstallPage() {
 });`}</code>
       </pre>
 
-
-
       <div className="mt-14 rounded-xl border border-border bg-card p-6 md:p-8">
-        <h3 className="text-xl">Ready?</h3>
-        <p className="mt-2 text-sm text-muted-foreground">Create a workspace and grab your tracking ID.</p>
+        <h3 className="text-xl">{t.install.readyH3}</h3>
+        <p className="mt-2 text-sm text-muted-foreground">{t.install.readyP}</p>
         <Link to="/signup" className="mt-4 inline-flex items-center rounded-md bg-accent px-4 py-2.5 text-sm font-medium text-accent-foreground hover:opacity-90">
-          Create your workspace
+          {t.install.readyCta}
         </Link>
       </div>
     </div>

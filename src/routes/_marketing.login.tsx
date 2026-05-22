@@ -4,6 +4,7 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { toast } from "sonner";
+import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/_marketing/login")({
   head: () => ({
@@ -15,16 +16,17 @@ export const Route = createFileRoute("/_marketing/login")({
   component: LoginPage,
 });
 
-const schema = z.object({
-  email: z.string().trim().email("Enter a valid email").max(255),
-  password: z.string().min(8, "At least 8 characters").max(72),
-});
-
 function LoginPage() {
+  const t = useT();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const schema = z.object({
+    email: z.string().trim().email(t.auth.errEmail).max(255),
+    password: z.string().min(8, t.auth.errPw).max(72),
+  });
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -42,40 +44,33 @@ function LoginPage() {
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword(parsed.data);
     setLoading(false);
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
+    if (error) { toast.error(error.message); return; }
     navigate({ to: "/app" });
   };
 
   const google = async () => {
     setLoading(true);
     const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/app" });
-    if (result.error) {
-      setLoading(false);
-      toast.error("Google sign-in failed");
-      return;
-    }
+    if (result.error) { setLoading(false); toast.error(t.auth.googleFailed); return; }
     if (result.redirected) return;
     navigate({ to: "/app" });
   };
 
   return (
-    <AuthShell title="Welcome back" subtitle="Sign in to your workspace.">
+    <AuthShell title={t.auth.loginTitle} subtitle={t.auth.loginSub}>
       <button onClick={google} disabled={loading} className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2.5 text-sm font-medium hover:bg-surface disabled:opacity-50">
-        <GoogleIcon /> Continue with Google
+        <GoogleIcon /> {t.auth.continueGoogle}
       </button>
       <Divider />
       <form onSubmit={submit} className="space-y-3">
-        <Field label="Email" type="email" value={email} onChange={setEmail} placeholder="you@company.eu" />
-        <Field label="Password" type="password" value={password} onChange={setPassword} placeholder="••••••••" />
+        <Field label={t.auth.email} type="email" value={email} onChange={setEmail} placeholder="you@company.eu" />
+        <Field label={t.auth.password} type="password" value={password} onChange={setPassword} placeholder="••••••••" />
         <button type="submit" disabled={loading} className="w-full rounded-md bg-accent px-4 py-2.5 text-sm font-medium text-accent-foreground hover:opacity-90 disabled:opacity-50">
-          {loading ? "Signing in…" : "Sign in"}
+          {loading ? t.auth.signingIn : t.auth.signIn}
         </button>
       </form>
       <p className="mt-6 text-center text-sm text-muted-foreground">
-        Don't have an account? <Link to="/signup" className="text-accent hover:underline">Create one</Link>
+        {t.auth.noAccount} <Link to="/signup" className="text-accent hover:underline">{t.auth.createOne}</Link>
       </p>
     </AuthShell>
   );
@@ -110,10 +105,11 @@ export function Field({ label, type, value, onChange, placeholder }: { label: st
 }
 
 export function Divider() {
+  const t = useT();
   return (
     <div className="relative">
       <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
-      <div className="relative flex justify-center text-xs"><span className="bg-card px-2 text-muted-foreground">or</span></div>
+      <div className="relative flex justify-center text-xs"><span className="bg-card px-2 text-muted-foreground">{t.common.or}</span></div>
     </div>
   );
 }
