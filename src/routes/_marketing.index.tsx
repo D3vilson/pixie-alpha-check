@@ -7,7 +7,7 @@ export const Route = createFileRoute("/_marketing/")({
       { title: "VisitorID EU — GDPR-compliant website visitor identification" },
       { name: "description", content: "See which European companies visit your website. Reveal people only after consent. Built around GDPR, not around it." },
       { property: "og:title", content: "VisitorID EU — GDPR-compliant visitor identification" },
-      { property: "og:description", content: "Like RB2B, but for the EU. Company reveal by default, person reveal with consent." },
+      { property: "og:description", content: "Built for the EU. Company reveal by default, person reveal with consent." },
     ],
   }),
   component: HomePage,
