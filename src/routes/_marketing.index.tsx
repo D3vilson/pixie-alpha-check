@@ -7,7 +7,7 @@ export const Route = createFileRoute("/_marketing/")({
       { title: "VisitorID EU — GDPR-compliant website visitor identification" },
       { name: "description", content: "See which European companies visit your website. Reveal people only after consent. Built around GDPR, not around it." },
       { property: "og:title", content: "VisitorID EU — GDPR-compliant visitor identification" },
-      { property: "og:description", content: "Like RB2B, but for the EU. Company reveal by default, person reveal with consent." },
+      { property: "og:description", content: "Built for the EU. Company reveal by default, person reveal with consent." },
     ],
   }),
   component: HomePage,
@@ -39,7 +39,7 @@ function Hero() {
           See which <span className="italic text-accent">European</span> companies visit your website.
         </h1>
         <p className="mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">
-          RB2B-style reveal — but built for GDPR. Identify visiting companies by default with legitimate interest. Reveal people only when they consent. No grey area, no Schrems III risk.
+          Reveal — built for GDPR from day one. Identify visiting companies by default with legitimate interest. Reveal people only when they consent. No grey area, no Schrems III risk.
         </p>
         <div className="mt-10 flex flex-wrap items-center gap-3">
           <Link
@@ -140,7 +140,7 @@ function Differentiator() {
         <div className="grid gap-12 md:grid-cols-2 md:items-center">
           <div>
             <p className="text-xs uppercase tracking-wider text-accent">Why EU-first matters</p>
-            <h2 className="mt-3 text-3xl md:text-5xl">RB2B identifies people. Under GDPR, that's the wrong default.</h2>
+            <h2 className="mt-3 text-3xl md:text-5xl">US-style identity tools reveal people by default. Under GDPR, that's the wrong default.</h2>
             <p className="mt-5 text-primary-foreground/70 leading-relaxed">
               US-style identity graphs match anonymous IPs to named individuals without their consent. That model has no lawful basis in the EEA. We split the problem in two: <strong className="text-primary-foreground">companies by default, people only with consent.</strong> Your sales team still gets the signal; your DPO still sleeps at night.
             </p>
