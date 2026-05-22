@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useWorkspace } from "@/hooks/use-workspace";
 import { getCompanyDetail } from "@/lib/workspace.functions";
 import { formatDistanceToNow } from "@/lib/time";
+import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/app/companies/$companyId")({
   head: () => ({ meta: [{ title: "Company — VisitorID EU" }] }),
@@ -11,6 +12,7 @@ export const Route = createFileRoute("/app/companies/$companyId")({
 });
 
 function CompanyDetail() {
+  const t = useT();
   const { companyId } = Route.useParams();
   const { data: ws } = useWorkspace();
   const wid = ws?.workspace.id;
@@ -21,8 +23,8 @@ function CompanyDetail() {
     enabled: !!wid,
   });
 
-  if (q.isLoading) return <div className="px-8 py-8 text-sm text-muted-foreground">Loading…</div>;
-  if (!q.data) return <div className="px-8 py-8 text-sm text-muted-foreground">Company not found.</div>;
+  if (q.isLoading) return <div className="px-8 py-8 text-sm text-muted-foreground">{t.common.loading}</div>;
+  if (!q.data) return <div className="px-8 py-8 text-sm text-muted-foreground">{t.app.companies.notFound}</div>;
 
   const { company, sessions, pageviews } = q.data;
   const pvBySession = new Map<string, any[]>();
@@ -34,7 +36,7 @@ function CompanyDetail() {
 
   return (
     <div className="px-8 py-8 max-w-5xl">
-      <Link to="/app/companies" className="text-xs text-muted-foreground hover:text-foreground">← Companies</Link>
+      <Link to="/app/companies" className="text-xs text-muted-foreground hover:text-foreground">{t.app.companies.back}</Link>
       <header className="mt-3 flex items-center gap-3">
         <div className="h-12 w-12 rounded bg-surface flex items-center justify-center text-lg font-semibold">
           {company.name?.[0]}
@@ -45,19 +47,19 @@ function CompanyDetail() {
         </div>
       </header>
 
-      <h2 className="font-medium mt-8 mb-3">Visit timeline ({sessions.length})</h2>
+      <h2 className="font-medium mt-8 mb-3">{t.app.companies.timeline(sessions.length)}</h2>
       <div className="space-y-3">
         {sessions.map((s: any) => (
           <div key={s.id} className="rounded-lg border border-border/60 bg-card p-4">
             <div className="flex items-center justify-between text-sm">
               <div>
                 <span className="font-medium">
-                  {s.people ? `${s.people.name ?? s.people.email}` : "Anonymous visitor"}
+                  {s.people ? `${s.people.name ?? s.people.email}` : t.app.companies.anonymous}
                 </span>
                 <span className="text-muted-foreground"> · {s.country ?? "—"}</span>
               </div>
               <span className="text-xs text-muted-foreground">
-                last seen {formatDistanceToNow(s.last_seen_at)}
+                {t.app.companies.lastSeenPrefix} {formatDistanceToNow(s.last_seen_at)}
               </span>
             </div>
             <ul className="mt-3 space-y-1 text-xs text-muted-foreground">
@@ -69,13 +71,13 @@ function CompanyDetail() {
                 </li>
               ))}
               {(pvBySession.get(s.id) ?? []).length === 0 && (
-                <li className="italic">No pageviews recorded.</li>
+                <li className="italic">{t.app.companies.noPageviews}</li>
               )}
             </ul>
           </div>
         ))}
         {sessions.length === 0 && (
-          <p className="text-sm text-muted-foreground">No sessions recorded for this company yet.</p>
+          <p className="text-sm text-muted-foreground">{t.app.companies.noSessions}</p>
         )}
       </div>
     </div>

@@ -12,6 +12,7 @@ import {
 } from "@/lib/workspace.functions";
 import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "@/lib/time";
+import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/app/consent-audit")({
   head: () => ({ meta: [{ title: "Consent audit — VisitorID EU" }] }),
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/app/consent-audit")({
 type Filter = "all" | "identified" | "anonymous";
 
 function ConsentAudit() {
+  const t = useT();
   const { data: ws } = useWorkspace();
   const wid = ws?.workspace.id;
   const qc = useQueryClient();
@@ -53,13 +55,8 @@ function ConsentAudit() {
     <div className="px-8 py-8 max-w-7xl">
       <div className="flex items-start justify-between gap-6">
         <div>
-          <h1 className="font-display text-3xl">Consent audit</h1>
-          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-            Per-session record of consent state, identification source, and
-            stored proof. Use this as your GDPR Art. 7 (consent) and Art. 30
-            (records of processing) evidence — and execute Art. 17 erasure in
-            one click.
-          </p>
+          <h1 className="font-display text-3xl">{t.app.audit.h1}</h1>
+          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">{t.app.audit.sub}</p>
         </div>
         <a
           href={`/api/public/erase`}
@@ -67,14 +64,14 @@ function ConsentAudit() {
           rel="noreferrer"
           className="text-xs text-muted-foreground underline underline-offset-4"
         >
-          Public erasure endpoint
+          {t.app.audit.eraseEndpoint}
         </a>
       </div>
 
       <div className="mt-6 grid grid-cols-3 gap-3">
-        <Stat label="Sessions (last 200)" value={total} />
-        <Stat label="Identified" value={identified} />
-        <Stat label="Anonymous" value={total - identified} />
+        <Stat label={t.app.audit.sessions} value={total} />
+        <Stat label={t.app.audit.identified} value={identified} />
+        <Stat label={t.app.audit.anonymous} value={total - identified} />
       </div>
 
       <div className="mt-6 flex items-center gap-2">
@@ -82,13 +79,13 @@ function ConsentAudit() {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`rounded-md px-3 py-1.5 text-xs capitalize transition-colors ${
+            className={`rounded-md px-3 py-1.5 text-xs transition-colors ${
               filter === f
                 ? "bg-foreground text-background"
                 : "bg-surface text-muted-foreground hover:text-foreground"
             }`}
           >
-            {f}
+            {t.app.audit.filters[f]}
           </button>
         ))}
       </div>
@@ -97,13 +94,13 @@ function ConsentAudit() {
         <table className="w-full text-sm">
           <thead className="bg-surface text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
-              <th className="px-4 py-3 text-left">Session</th>
-              <th className="px-4 py-3 text-left">Consent</th>
-              <th className="px-4 py-3 text-left">Identified person</th>
-              <th className="px-4 py-3 text-left">Source</th>
-              <th className="px-4 py-3 text-left">Company</th>
-              <th className="px-4 py-3 text-left">Seen</th>
-              <th className="px-4 py-3 text-right">Actions</th>
+              <th className="px-4 py-3 text-left">{t.app.audit.colSession}</th>
+              <th className="px-4 py-3 text-left">{t.app.audit.colConsent}</th>
+              <th className="px-4 py-3 text-left">{t.app.audit.colPerson}</th>
+              <th className="px-4 py-3 text-left">{t.app.audit.colSource}</th>
+              <th className="px-4 py-3 text-left">{t.app.audit.colCompany}</th>
+              <th className="px-4 py-3 text-left">{t.app.audit.colSeen}</th>
+              <th className="px-4 py-3 text-right">{t.common.actions}</th>
             </tr>
           </thead>
           <tbody>
@@ -126,13 +123,9 @@ function ConsentAudit() {
                     </td>
                     <td className="px-4 py-3">
                       {r.consent_state === "identified" ? (
-                        <span className="text-xs rounded-full bg-accent/15 text-accent px-2 py-1">
-                          Consented
-                        </span>
+                        <span className="text-xs rounded-full bg-accent/15 text-accent px-2 py-1">{t.app.audit.consented}</span>
                       ) : (
-                        <span className="text-xs rounded-full bg-muted text-muted-foreground px-2 py-1">
-                          Anonymous
-                        </span>
+                        <span className="text-xs rounded-full bg-muted text-muted-foreground px-2 py-1">{t.app.audit.anonymousTag}</span>
                       )}
                     </td>
                     <td className="px-4 py-3">
@@ -140,9 +133,7 @@ function ConsentAudit() {
                         <div>
                           <div className="font-medium">{r.people.email}</div>
                           {r.people.name && (
-                            <div className="text-xs text-muted-foreground">
-                              {r.people.name}
-                            </div>
+                            <div className="text-xs text-muted-foreground">{r.people.name}</div>
                           )}
                         </div>
                       ) : (
@@ -174,20 +165,13 @@ function ConsentAudit() {
                           variant="ghost"
                           size="sm"
                           onClick={async () => {
-                            if (
-                              !confirm(
-                                `Anonymize this session? person_id link will be removed; aggregate analytics retained.`,
-                              )
-                            )
-                              return;
-                            await anonFn({
-                              data: { workspaceId: wid!, sessionId: r.id },
-                            });
+                            if (!confirm(t.app.audit.confirmAnon)) return;
+                            await anonFn({ data: { workspaceId: wid!, sessionId: r.id } });
                             invalidate();
-                            toast.success("Session anonymized");
+                            toast.success(t.app.audit.anonymized);
                           }}
                         >
-                          Anonymize
+                          {t.app.audit.anonymizeBtn}
                         </Button>
                       )}
                       {r.people && (
@@ -195,18 +179,13 @@ function ConsentAudit() {
                           variant="ghost"
                           size="sm"
                           onClick={async () => {
-                            if (
-                              !confirm(
-                                `Full erasure of ${r.people.email}? Deletes the person and unlinks all sessions.`,
-                              )
-                            )
-                              return;
+                            if (!confirm(t.app.audit.confirmErase(r.people.email))) return;
                             await erasePersonFn({ data: { id: r.people.id } });
                             invalidate();
-                            toast.success("Person erased");
+                            toast.success(t.app.audit.erased);
                           }}
                         >
-                          Erase person
+                          {t.app.audit.erasePersonBtn}
                         </Button>
                       )}
                     </td>
@@ -216,52 +195,31 @@ function ConsentAudit() {
                       <td colSpan={7} className="px-4 py-4">
                         <div className="grid grid-cols-2 gap-6 text-xs">
                           <div>
-                            <div className="uppercase tracking-wider text-muted-foreground mb-2">
-                              Session
-                            </div>
-                            <KV k="ID" v={r.id} mono />
-                            <KV k="Anon ID" v={r.anon_id} mono />
-                            <KV
-                              k="Started"
-                              v={new Date(r.started_at).toISOString()}
-                            />
-                            <KV
-                              k="Last seen"
-                              v={new Date(r.last_seen_at).toISOString()}
-                            />
-                            <KV k="Country" v={r.country ?? "—"} />
+                            <div className="uppercase tracking-wider text-muted-foreground mb-2">{t.app.audit.session}</div>
+                            <KV k={t.app.audit.sessionId} v={r.id} mono />
+                            <KV k={t.app.audit.anonId} v={r.anon_id} mono />
+                            <KV k={t.app.audit.started} v={new Date(r.started_at).toISOString()} />
+                            <KV k={t.app.audit.lastSeen} v={new Date(r.last_seen_at).toISOString()} />
+                            <KV k={t.app.audit.country} v={r.country ?? "—"} />
                           </div>
                           <div>
                             <div className="uppercase tracking-wider text-muted-foreground mb-2">
-                              Consent proof ({r.identify_events.length} event
-                              {r.identify_events.length === 1 ? "" : "s"})
+                              {t.app.audit.consentProof(r.identify_events.length)}
                             </div>
                             {r.identify_events.length === 0 ? (
-                              <p className="text-muted-foreground">
-                                No identification — visit treated as anonymous
-                                analytics under legitimate interest (Art. 6(1)(f)).
-                              </p>
+                              <p className="text-muted-foreground">{t.app.audit.noIdent}</p>
                             ) : (
                               r.identify_events.map((e: any) => (
                                 <div
                                   key={e.id}
                                   className="mb-3 rounded-md border border-border/60 bg-background p-3"
                                 >
-                                  <KV k="Source" v={e.source} />
-                                  <KV
-                                    k="Captured"
-                                    v={new Date(e.created_at).toISOString()}
-                                  />
+                                  <KV k={t.app.audit.source} v={e.source} />
+                                  <KV k={t.app.audit.captured} v={new Date(e.created_at).toISOString()} />
                                   <div className="mt-2">
-                                    <div className="text-muted-foreground mb-1">
-                                      Proof payload
-                                    </div>
+                                    <div className="text-muted-foreground mb-1">{t.app.audit.proofPayload}</div>
                                     <pre className="text-[10px] leading-relaxed bg-surface rounded p-2 overflow-auto max-h-40">
-                                      {JSON.stringify(
-                                        e.consent_proof ?? {},
-                                        null,
-                                        2,
-                                      )}
+                                      {JSON.stringify(e.consent_proof ?? {}, null, 2)}
                                     </pre>
                                   </div>
                                 </div>
@@ -277,24 +235,14 @@ function ConsentAudit() {
             })}
             {q.data && rows.length === 0 && (
               <tr>
-                <td
-                  colSpan={7}
-                  className="px-4 py-12 text-center text-muted-foreground"
-                >
-                  No sessions match this filter.
-                </td>
+                <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">{t.app.audit.emptyFilter}</td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
 
-      <p className="mt-6 text-xs text-muted-foreground">
-        Need to honor a data-subject request from your own backend? POST to{" "}
-        <code className="text-foreground">/api/public/erase</code> with{" "}
-        <code className="text-foreground">{`{ tracking_id, email }`}</code> after
-        verifying the requester's identity.
-      </p>
+      <p className="mt-6 text-xs text-muted-foreground">{t.app.audit.footer}</p>
     </div>
   );
 }
@@ -302,9 +250,7 @@ function ConsentAudit() {
 function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-lg border border-border/60 bg-card px-4 py-3">
-      <div className="text-xs uppercase tracking-wider text-muted-foreground">
-        {label}
-      </div>
+      <div className="text-xs uppercase tracking-wider text-muted-foreground">{label}</div>
       <div className="font-display text-2xl mt-1">{value}</div>
     </div>
   );
@@ -314,9 +260,7 @@ function KV({ k, v, mono }: { k: string; v: string; mono?: boolean }) {
   return (
     <div className="flex gap-3 py-0.5">
       <div className="w-20 shrink-0 text-muted-foreground">{k}</div>
-      <div className={mono ? "font-mono text-[11px] break-all" : "break-all"}>
-        {v}
-      </div>
+      <div className={mono ? "font-mono text-[11px] break-all" : "break-all"}>{v}</div>
     </div>
   );
 }

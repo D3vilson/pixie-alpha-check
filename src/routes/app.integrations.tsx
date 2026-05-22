@@ -11,6 +11,7 @@ import {
 } from "@/lib/workspace.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/app/integrations")({
   head: () => ({ meta: [{ title: "Integrations — VisitorID EU" }] }),
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/app/integrations")({
 });
 
 function Integrations() {
+  const t = useT();
   const { data: ws } = useWorkspace();
   const wid = ws?.workspace.id;
   const qc = useQueryClient();
@@ -33,21 +35,19 @@ function Integrations() {
 
   return (
     <div className="px-8 py-8 max-w-3xl">
-      <h1 className="font-display text-3xl">Integrations</h1>
-      <p className="text-sm text-muted-foreground mt-1">
-        Get notified when a target account visits your site. Paste your incoming webhook URL.
-      </p>
+      <h1 className="font-display text-3xl">{t.app.integrations.h1}</h1>
+      <p className="text-sm text-muted-foreground mt-1">{t.app.integrations.sub}</p>
 
       <div className="mt-6 space-y-4">
         <WebhookCard
           type="slack"
           title="Slack"
-          subtitle="Create an Incoming Webhook in your Slack workspace and paste the URL."
+          subtitle={t.app.integrations.slackSub}
           existing={(q.data ?? []).find((i: any) => i.type === "slack")}
           onSave={async (url) => {
             await upsertFn({ data: { workspaceId: wid!, type: "slack", webhookUrl: url } });
             qc.invalidateQueries({ queryKey: ["integrations", wid] });
-            toast.success("Slack connected");
+            toast.success(t.app.integrations.slackConnected);
           }}
           onDelete={async (id) => {
             await delFn({ data: { id } });
@@ -57,12 +57,12 @@ function Integrations() {
         <WebhookCard
           type="teams"
           title="Microsoft Teams"
-          subtitle="Create an Incoming Webhook on the target Teams channel."
+          subtitle={t.app.integrations.teamsSub}
           existing={(q.data ?? []).find((i: any) => i.type === "teams")}
           onSave={async (url) => {
             await upsertFn({ data: { workspaceId: wid!, type: "teams", webhookUrl: url } });
             qc.invalidateQueries({ queryKey: ["integrations", wid] });
-            toast.success("Teams connected");
+            toast.success(t.app.integrations.teamsConnected);
           }}
           onDelete={async (id) => {
             await delFn({ data: { id } });
@@ -82,6 +82,7 @@ function WebhookCard({
   onSave: (url: string) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 }) {
+  const t = useT();
   const [url, setUrl] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -93,7 +94,7 @@ function WebhookCard({
           <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
         </div>
         {existing && (
-          <span className="text-xs rounded-full bg-accent/15 text-accent px-2 py-1">Connected</span>
+          <span className="text-xs rounded-full bg-accent/15 text-accent px-2 py-1">{t.common.connected}</span>
         )}
       </div>
       {existing ? (
@@ -101,7 +102,7 @@ function WebhookCard({
           <code className="text-xs text-muted-foreground truncate flex-1">
             {existing.settings?.webhook_url}
           </code>
-          <Button variant="outline" size="sm" onClick={() => onDelete(existing.id)}>Disconnect</Button>
+          <Button variant="outline" size="sm" onClick={() => onDelete(existing.id)}>{t.common.disconnect}</Button>
         </div>
       ) : (
         <form
@@ -120,7 +121,7 @@ function WebhookCard({
             onChange={(e) => setUrl(e.target.value)}
             required
           />
-          <Button type="submit" disabled={busy}>Save</Button>
+          <Button type="submit" disabled={busy}>{t.common.save}</Button>
         </form>
       )}
     </div>
