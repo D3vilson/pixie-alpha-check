@@ -30,7 +30,7 @@ function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-surface to-background" aria-hidden />
-      <div className="relative mx-auto max-w-6xl px-6 pt-20 pb-24 md:pt-28 md:pb-32">
+      <div className="relative mx-auto max-w-6xl px-6 pt-8 pb-24 md:pt-12 md:pb-32">
         <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs text-muted-foreground">
           <Shield className="h-3.5 w-3.5 text-accent" />
           GDPR-native · EU-hosted · DPA in 2 clicks
