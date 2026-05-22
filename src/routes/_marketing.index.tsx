@@ -46,17 +46,18 @@ function Hero() {
             to="/signup"
             className="inline-flex items-center gap-2 rounded-md bg-accent px-5 py-3 text-sm font-medium text-accent-foreground hover:opacity-90 transition-opacity"
           >
-            Start identifying — free 14 days
+            Start free trial
             <ArrowRight className="h-4 w-4" />
           </Link>
-          <Link
-            to="/gdpr"
-            className="inline-flex items-center gap-2 rounded-md border border-border bg-card/50 px-5 py-3 text-sm font-medium text-foreground hover:bg-card transition-colors"
-          >
-            Read the lawful-basis brief
-          </Link>
         </div>
-        <p className="mt-4 text-xs text-muted-foreground">No card. No cookies dropped on your visitors. EU-only data residency.</p>
+        <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
+          {["No credit card required", "No cookies dropped on your visitors", "EU-only data residency"].map((item) => (
+            <li key={item} className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-accent" />
+              {item}
+            </li>
+          ))}
+        </ul>
 
         <div className="mt-16 rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
           <div className="border-b border-border bg-surface/60 px-4 py-2 flex items-center gap-1.5">
