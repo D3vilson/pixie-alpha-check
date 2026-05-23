@@ -633,7 +633,7 @@ export const pl: typeof en = {
     platforms: [
       {
         name: "WordPress",
-        body: "Zainstaluj darmową wtyczkę „Insert Headers and Footers”. Wklej snippet w sekcji Header. Zapisz. Gotowe — bez edycji motywu.",
+        body: 'Zainstaluj darmową wtyczkę „Insert Headers and Footers". Wklej snippet w sekcji Header. Zapisz. Gotowe — bez edycji motywu.',
       },
       {
         name: "Wix",
