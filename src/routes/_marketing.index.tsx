@@ -91,10 +91,10 @@ function Hero() {
 }
 
 const SAMPLE_VISITS = [
-  { company: "Klarna", country: "SE", pages: 7, last: "just now", industry: "Fintech", target: true },
-  { company: "Mistral AI", country: "FR", pages: 3, last: "2 min ago", industry: "AI", target: false },
-  { company: "Personio", country: "DE", pages: 12, last: "5 min ago", industry: "HR Tech", target: true },
-  { company: "Bolt", country: "EE", pages: 2, last: "8 min ago", industry: "Mobility", target: false },
+  { company: "Brand24", country: "PL", pages: 7, last: "just now", industry: "PKD 62.01", target: true },
+  { company: "DocPlanner", country: "PL", pages: 3, last: "2 min ago", industry: "PKD 62.02", target: false },
+  { company: "Booksy", country: "PL", pages: 12, last: "5 min ago", industry: "PKD 63.12", target: true },
+  { company: "IFIRMA", country: "PL", pages: 2, last: "8 min ago", industry: "PKD 69.20", target: false },
 ];
 
 function LogoStrip() {
