@@ -91,10 +91,10 @@ function Hero() {
 }
 
 const SAMPLE_VISITS = [
-  { company: "Klarna", country: "SE", pages: 7, last: "just now", industry: "Fintech", target: true },
-  { company: "Mistral AI", country: "FR", pages: 3, last: "2 min ago", industry: "AI", target: false },
-  { company: "Personio", country: "DE", pages: 12, last: "5 min ago", industry: "HR Tech", target: true },
-  { company: "Bolt", country: "EE", pages: 2, last: "8 min ago", industry: "Mobility", target: false },
+  { company: "Brand24", country: "PL", pages: 7, last: "just now", industry: "PKD 62.01", target: true },
+  { company: "DocPlanner", country: "PL", pages: 3, last: "2 min ago", industry: "PKD 62.02", target: false },
+  { company: "Booksy", country: "PL", pages: 12, last: "5 min ago", industry: "PKD 63.12", target: true },
+  { company: "IFIRMA", country: "PL", pages: 2, last: "8 min ago", industry: "PKD 69.20", target: false },
 ];
 
 function LogoStrip() {
@@ -104,7 +104,7 @@ function LogoStrip() {
       <div className="mx-auto max-w-6xl px-6">
         <p className="text-center text-xs uppercase tracking-wider text-muted-foreground">{t.home.logoStrip}</p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-foreground/40 font-display text-2xl">
-          <span>Berlin</span><span>Paris</span><span>Amsterdam</span><span>Stockholm</span><span>Madrid</span><span>Dublin</span>
+          <span>Warszawa</span><span>Kraków</span><span>Wrocław</span><span>Poznań</span><span>Gdańsk</span><span>Katowice</span>
         </div>
       </div>
     </section>
@@ -145,6 +145,19 @@ function Differentiator() {
           <div className="grid gap-3 text-sm">
             {t.home.diffRows.map((l) => <Row key={l} good label={l} />)}
             <Row bad label={t.home.diffBad} />
+          </div>
+        </div>
+
+        {/* Coverage growth table */}
+        <div className="mt-16 rounded-xl border border-primary-foreground/15 bg-primary-foreground/5 p-6 md:p-8">
+          <h3 className="text-lg md:text-xl">{t.home.coverageH3}</h3>
+          <div className="mt-5 divide-y divide-primary-foreground/10">
+            {t.home.coverageRows.map((r) => (
+              <div key={r.label} className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:justify-between">
+                <span className="text-sm font-medium">{r.label}</span>
+                <span className="text-sm text-primary-foreground/70">{r.value}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

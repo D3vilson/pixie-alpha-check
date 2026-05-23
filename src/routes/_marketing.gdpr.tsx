@@ -1,12 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Shield, FileText, Database, Trash2 } from "lucide-react";
+import { Shield, FileText, Database, Trash2, Scale, Github, Copy } from "lucide-react";
 import { useT } from "@/i18n";
+import { useState } from "react";
 
 export const Route = createFileRoute("/_marketing/gdpr")({
   head: () => ({
     meta: [
-      { title: "GDPR, DPA & sub-processors — VisitorID EU" },
-      { name: "description", content: "Lawful basis, sub-processor list, DPA, and data-deletion process for VisitorID EU." },
+      { title: "Prywatność — Bez cookies, bez danych osobowych, kod na GitHubie" },
+      { name: "description", content: "Identyfikacja na poziomie organizacji. Zgodnie z wyrokiem NSA z 16.10.2025. Gotowy paragraf do polityki prywatności." },
     ],
   }),
   component: GdprPage,
@@ -14,6 +15,13 @@ export const Route = createFileRoute("/_marketing/gdpr")({
 
 function GdprPage() {
   const t = useT();
+  const [copied, setCopied] = useState(false);
+  const onCopy = async () => {
+    await navigator.clipboard.writeText(t.gdpr.policyBody);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
   return (
     <div className="mx-auto max-w-3xl px-6 py-16 md:py-24">
       <p className="text-xs uppercase tracking-wider text-accent">{t.gdpr.pill}</p>
@@ -28,10 +36,43 @@ function GdprPage() {
         </ul>
       </Section>
 
+      <Section icon={Scale} title={t.gdpr.nsaTitle}>
+        <p>{t.gdpr.nsaBody}</p>
+        <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs text-muted-foreground">
+          {t.gdpr.nsaTag}
+        </p>
+      </Section>
+
       <Section icon={Database} title={t.gdpr.collect.title}>
         <p>{t.gdpr.collect.p1}</p>
         <p className="mt-3">{t.gdpr.collect.p2}</p>
         <p className="mt-3">{t.gdpr.collect.p3}</p>
+      </Section>
+
+      <Section icon={FileText} title={t.gdpr.policyTitle}>
+        <div className="relative rounded-lg border border-border bg-surface/50 p-4 text-sm leading-relaxed">
+          <p>{t.gdpr.policyBody}</p>
+          <button
+            onClick={onCopy}
+            className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-xs hover:bg-surface"
+          >
+            <Copy className="h-3 w-3" />
+            {copied ? t.common.copied : t.common.copy}
+          </button>
+        </div>
+      </Section>
+
+      <Section icon={Github} title={t.gdpr.githubTitle}>
+        <p>{t.gdpr.githubBody}</p>
+        <a
+          href={`https://${t.gdpr.githubLink}`}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-3 inline-flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm hover:bg-surface"
+        >
+          <Github className="h-4 w-4" />
+          {t.gdpr.githubLink}
+        </a>
       </Section>
 
       <Section icon={FileText} title={t.gdpr.dpa.title}>

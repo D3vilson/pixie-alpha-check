@@ -37,6 +37,16 @@ function InstallPage() {
         {t.install.runs.map((r) => <li key={r}>{r}</li>)}
       </ul>
 
+      <h2 className="mt-12 text-2xl">{t.install.platformsH2}</h2>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        {t.install.platforms.map((p) => (
+          <div key={p.name} className="rounded-xl border border-border bg-card p-5">
+            <h3 className="text-base font-medium">{p.name}</h3>
+            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{p.body}</p>
+          </div>
+        ))}
+      </div>
+
       <h2 className="mt-12 text-2xl">{t.install.h2_4}</h2>
       <p className="mt-3 text-muted-foreground">{t.install.p4}</p>
       <pre className="mt-4 overflow-x-auto rounded-xl border border-border bg-primary text-primary-foreground p-5 text-sm leading-relaxed">
