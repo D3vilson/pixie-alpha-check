@@ -4,6 +4,7 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { resolveCompanyByIp } from "@/lib/ipinfo.server";
 import { resolveCompanyByHint } from "@/lib/ip-hints.server";
+import { enrichCompany } from "@/lib/enrich.server";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
