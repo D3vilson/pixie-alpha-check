@@ -3,6 +3,7 @@ import { createHash } from "crypto";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { resolveCompanyByIp } from "@/lib/ipinfo.server";
+import { resolveCompanyByHint } from "@/lib/ip-hints.server";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
