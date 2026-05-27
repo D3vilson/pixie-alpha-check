@@ -63,7 +63,9 @@ export type Database = {
         Row: {
           country: string | null
           created_at: string
+          description: string | null
           domain: string
+          enriched_at: string | null
           id: string
           industry: string | null
           logo_url: string | null
@@ -73,7 +75,9 @@ export type Database = {
         Insert: {
           country?: string | null
           created_at?: string
+          description?: string | null
           domain: string
+          enriched_at?: string | null
           id?: string
           industry?: string | null
           logo_url?: string | null
@@ -83,7 +87,9 @@ export type Database = {
         Update: {
           country?: string | null
           created_at?: string
+          description?: string | null
           domain?: string
+          enriched_at?: string | null
           id?: string
           industry?: string | null
           logo_url?: string | null
