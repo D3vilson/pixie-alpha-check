@@ -115,6 +115,11 @@ export const Route = createFileRoute("/api/public/collect")({
         const company =
           (await resolveCompanyByIp(ip)) ?? (await resolveCompanyByHint(ip));
 
+        // Wzbogać firmę w tle (logo + nazwa + opis). Idempotentne, TTL 30 dni.
+        if (company) enrichCompany(company.id).catch((e) => console.error(e));
+
+
+
         // Find or create session keyed by (site_id, anon_id)
         const { data: existing } = await supabaseAdmin
           .from("sessions")
