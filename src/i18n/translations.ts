@@ -320,6 +320,10 @@ export const en = {
       lastSeenPrefix: "last seen",
       noSessions: "No sessions recorded for this company yet.",
       notFound: "Company not found.",
+      sessions: "Sessions",
+      pageviews: "Pageviews",
+      identified: "Identified",
+      visitWebsite: "Visit website →",
     },
     people: {
       h1: "People",
