@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { recordIdentifyHint } from "@/lib/ip-hints.server";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
