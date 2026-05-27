@@ -320,6 +320,10 @@ export const en = {
       lastSeenPrefix: "last seen",
       noSessions: "No sessions recorded for this company yet.",
       notFound: "Company not found.",
+      sessions: "Sessions",
+      pageviews: "Pageviews",
+      identified: "Identified",
+      visitWebsite: "Visit website →",
     },
     people: {
       h1: "People",
@@ -727,6 +731,10 @@ export const pl: typeof en = {
       lastSeenPrefix: "ostatnio",
       noSessions: "Brak sesji dla tej firmy.",
       notFound: "Nie znaleziono firmy.",
+      sessions: "Sesje",
+      pageviews: "Odsłony",
+      identified: "Zidentyfikowani",
+      visitWebsite: "Otwórz stronę →",
     },
     people: {
       h1: "Osoby",
