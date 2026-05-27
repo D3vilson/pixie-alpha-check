@@ -731,6 +731,10 @@ export const pl: typeof en = {
       lastSeenPrefix: "ostatnio",
       noSessions: "Brak sesji dla tej firmy.",
       notFound: "Nie znaleziono firmy.",
+      sessions: "Sesje",
+      pageviews: "Odsłony",
+      identified: "Zidentyfikowani",
+      visitWebsite: "Otwórz stronę →",
     },
     people: {
       h1: "Osoby",
