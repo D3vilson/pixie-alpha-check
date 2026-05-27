@@ -125,7 +125,12 @@ export async function enrichCompany(companyId: string): Promise<void> {
   ]);
 
   // Tylko wpisujemy jeśli mamy coś nowego / nazwa wygląda na placeholder (==domain)
-  const updates: Record<string, unknown> = { enriched_at: new Date().toISOString() };
+  const updates: {
+    enriched_at: string;
+    name?: string;
+    description?: string;
+    logo_url?: string;
+  } = { enriched_at: new Date().toISOString() };
   if (meta.name && (company.name === domain || !company.name)) updates.name = meta.name;
   if (meta.description && !company.description) updates.description = meta.description;
   if (logo && !company.logo_url) updates.logo_url = logo;
