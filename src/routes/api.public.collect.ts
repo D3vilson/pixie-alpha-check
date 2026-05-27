@@ -3,6 +3,7 @@ import { createHash } from "crypto";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { resolveCompanyByIp } from "@/lib/ipinfo.server";
+import { resolveCompanyByHint } from "@/lib/ip-hints.server";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -109,7 +110,9 @@ export const Route = createFileRoute("/api/public/collect")({
           null;
         const ua = request.headers.get("user-agent") ?? null;
 
-        const company = await resolveCompanyByIp(ip);
+        // Warstwa 2: reverse-IP (ipinfo). Warstwa 3: crowdsourced hint (PL ISP).
+        const company =
+          (await resolveCompanyByIp(ip)) ?? (await resolveCompanyByHint(ip));
 
         // Find or create session keyed by (site_id, anon_id)
         const { data: existing } = await supabaseAdmin

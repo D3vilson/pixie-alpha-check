@@ -169,6 +169,44 @@ export type Database = {
           },
         ]
       }
+      ip_company_hints: {
+        Row: {
+          asn: string
+          company_id: string
+          confidence: number
+          first_seen_at: string
+          id: string
+          ip_prefix: string
+          last_seen_at: string
+        }
+        Insert: {
+          asn: string
+          company_id: string
+          confidence?: number
+          first_seen_at?: string
+          id?: string
+          ip_prefix: string
+          last_seen_at?: string
+        }
+        Update: {
+          asn?: string
+          company_id?: string
+          confidence?: number
+          first_seen_at?: string
+          id?: string
+          ip_prefix?: string
+          last_seen_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ip_company_hints_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pageviews: {
         Row: {
           id: string
@@ -452,6 +490,10 @@ export type Database = {
           _workspace_id: string
         }
         Returns: boolean
+      }
+      increment_ip_hint: {
+        Args: { _asn: string; _company_id: string; _prefix: string }
+        Returns: undefined
       }
       is_workspace_member: {
         Args: { _user_id: string; _workspace_id: string }

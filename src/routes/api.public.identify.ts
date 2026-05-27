@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { recordIdentifyHint } from "@/lib/ip-hints.server";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -96,6 +97,16 @@ export const Route = createFileRoute("/api/public/identify")({
             })),
           );
         }
+
+        // Warstwa 3: crowdsourced hint (ASN + /24) → company(domain z maila).
+        // Fire-and-forget, nie blokuje response.
+        const ip =
+          request.headers.get("cf-connecting-ip") ||
+          request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+          null;
+        recordIdentifyHint(ip, data.email).catch((e) =>
+          console.error("[identify] hint record failed", e),
+        );
 
         return new Response(JSON.stringify({ ok: true }), {
           status: 200,
