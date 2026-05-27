@@ -12,10 +12,15 @@ const CORS = {
 const Schema = z.object({
   tracking_id: z.string().min(8).max(64),
   anon_id: z.string().min(8).max(128),
+  event: z.enum(["pageview", "unload"]).optional(),
   url: z.string().url().max(2000),
   referrer: z.string().max(2000).nullable().optional(),
   title: z.string().max(500).nullable().optional(),
   tz: z.string().max(100).nullable().optional(),
+  lang: z.string().max(20).nullable().optional(),
+  screen: z.string().max(20).nullable().optional(),
+  duration_ms: z.number().int().min(0).max(86_400_000).optional(),
+  scroll_pct: z.number().int().min(0).max(100).optional(),
 });
 
 function hashIp(ip: string | null): string | null {
