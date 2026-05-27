@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createHash } from "crypto";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { resolveCompanyByIp } from "@/lib/ipinfo.server";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -29,19 +30,7 @@ function hashIp(ip: string | null): string | null {
   return createHash("sha256").update(salt + ":" + ip).digest("hex").slice(0, 32);
 }
 
-async function resolveCompany(anonId: string): Promise<{ id: string; domain: string; name: string; country: string | null } | null> {
-  // Deterministic mock: hash the anon id and pick a company from the seeded list.
-  // 30% of visitors are intentionally unresolved.
-  const h = createHash("md5").update(anonId).digest();
-  if (h[0] < 76) return null; // ~30% unresolved
-  const { data: companies } = await supabaseAdmin
-    .from("companies")
-    .select("id, domain, name, country")
-    .order("domain", { ascending: true });
-  if (!companies || companies.length === 0) return null;
-  const idx = h.readUInt32BE(1) % companies.length;
-  return companies[idx];
-}
+// resolveCompany() przeniesione do src/lib/ipinfo.server.ts — używamy reverse-IP (ipinfo.io)
 
 async function maybeFireAlerts(workspaceId: string, company: { id: string; domain: string; name: string }) {
   // Check if company matches any target_account by company_id or domain pattern.
@@ -120,7 +109,7 @@ export const Route = createFileRoute("/api/public/collect")({
           null;
         const ua = request.headers.get("user-agent") ?? null;
 
-        const company = await resolveCompany(data.anon_id);
+        const company = await resolveCompanyByIp(ip);
 
         // Find or create session keyed by (site_id, anon_id)
         const { data: existing } = await supabaseAdmin
