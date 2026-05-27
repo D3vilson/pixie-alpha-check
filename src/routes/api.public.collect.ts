@@ -4,6 +4,7 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { resolveCompanyByIp } from "@/lib/ipinfo.server";
 import { resolveCompanyByHint } from "@/lib/ip-hints.server";
+import { enrichCompany } from "@/lib/enrich.server";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -113,6 +114,11 @@ export const Route = createFileRoute("/api/public/collect")({
         // Warstwa 2: reverse-IP (ipinfo). Warstwa 3: crowdsourced hint (PL ISP).
         const company =
           (await resolveCompanyByIp(ip)) ?? (await resolveCompanyByHint(ip));
+
+        // Wzbogać firmę w tle (logo + nazwa + opis). Idempotentne, TTL 30 dni.
+        if (company) enrichCompany(company.id).catch((e) => console.error(e));
+
+
 
         // Find or create session keyed by (site_id, anon_id)
         const { data: existing } = await supabaseAdmin
