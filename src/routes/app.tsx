@@ -55,6 +55,7 @@ function AppLayout() {
           </div>
           <nav className="flex flex-col gap-0.5 text-sm">
             <NavItem to="/app" label={t.app.nav.liveVisits} exact />
+            <NavItem to="/app/hot-leads" label="🔥 Hot Leads" />
             <NavItem to="/app/companies" label={t.app.nav.companies} />
             <NavItem to="/app/people" label={t.app.nav.people} />
             <NavItem to="/app/target-accounts" label={t.app.nav.targetAccounts} />
