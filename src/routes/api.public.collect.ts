@@ -5,6 +5,8 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { resolveCompanyByIp } from "@/lib/ipinfo.server";
 import { resolveCompanyByHint } from "@/lib/ip-hints.server";
 import { enrichCompany } from "@/lib/enrich.server";
+import { computeIntentScore, matchesHighIntent } from "@/lib/scoring.server";
+import { maybeFireHotLeadAlert } from "@/lib/alerts.server";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -32,10 +34,11 @@ function hashIp(ip: string | null): string | null {
   return createHash("sha256").update(salt + ":" + ip).digest("hex").slice(0, 32);
 }
 
-// resolveCompany() przeniesione do src/lib/ipinfo.server.ts — używamy reverse-IP (ipinfo.io)
-
-async function maybeFireAlerts(workspaceId: string, company: { id: string; domain: string; name: string }) {
-  // Check if company matches any target_account by company_id or domain pattern.
+// Tło — nie blokuje response do pixela
+async function maybeFireTargetAccountAlert(
+  workspaceId: string,
+  company: { id: string; domain: string; name: string },
+) {
   const { data: targets } = await supabaseAdmin
     .from("target_accounts")
     .select("id, domain_pattern, company_id")
@@ -55,20 +58,19 @@ async function maybeFireAlerts(workspaceId: string, company: { id: string; domai
   const { data: integrations } = await supabaseAdmin
     .from("integrations")
     .select("type, settings, enabled")
-    .eq("workspace_id", workspaceId);
+    .eq("workspace_id", workspaceId)
+    .eq("enabled", true);
   if (!integrations) return;
 
   for (const integ of integrations) {
-    if (!integ.enabled) continue;
-    const url = (integ.settings as any)?.webhook_url as string | undefined;
+    const url = (integ.settings as { webhook_url?: string } | null)?.webhook_url;
     if (!url) continue;
-    const text = `🎯 Target account visit: *${company.name}* (${company.domain})`;
-    const body =
-      integ.type === "teams"
-        ? JSON.stringify({ text })
-        : JSON.stringify({ text });
     try {
-      await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body });
+      await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: `🎯 Target account visit: *${company.name}* (${company.domain})` }),
+      });
     } catch (e) {
       console.error("alert webhook failed", e);
     }
@@ -95,10 +97,10 @@ export const Route = createFileRoute("/api/public/collect")({
         }
         const data = parsed.data;
 
-        // Resolve site by tracking_id
+        // Site lookup + scoring config
         const { data: site } = await supabaseAdmin
           .from("sites")
-          .select("id, workspace_id, domain")
+          .select("id, workspace_id, domain, alert_threshold, high_intent_paths")
           .eq("tracking_id", data.tracking_id)
           .maybeSingle();
         if (!site) {
@@ -111,22 +113,56 @@ export const Route = createFileRoute("/api/public/collect")({
           null;
         const ua = request.headers.get("user-agent") ?? null;
 
-        // Warstwa 2: reverse-IP (ipinfo). Warstwa 3: crowdsourced hint (PL ISP).
+        // Company resolution — 2 warstwy
         const company =
           (await resolveCompanyByIp(ip)) ?? (await resolveCompanyByHint(ip));
 
-        // Wzbogać firmę w tle (logo + nazwa + opis). Idempotentne, TTL 30 dni.
+        // Background: enrichment
         if (company) enrichCompany(company.id).catch((e) => console.error(e));
 
+        const isHighIntent = matchesHighIntent(data.url, site.high_intent_paths ?? []);
+        const now = new Date().toISOString();
 
-
-        // Find or create session keyed by (site_id, anon_id)
+        // Upsert sesji — agregaty inkrementalne
         const { data: existing } = await supabaseAdmin
           .from("sessions")
-          .select("id")
+          .select(
+            "id, pageview_count, max_scroll_pct, total_duration_ms, high_intent_hit, intent_score, last_alert_at",
+          )
           .eq("site_id", site.id)
           .eq("anon_id", data.anon_id)
           .maybeSingle();
+
+        // Czy ten anon_id był widziany wcześniej w innej sesji?
+        let isReturning = false;
+        if (!existing) {
+          const { count } = await supabaseAdmin
+            .from("sessions")
+            .select("id", { count: "exact", head: true })
+            .eq("anon_id", data.anon_id)
+            .neq("site_id", "00000000-0000-0000-0000-000000000000");
+          isReturning = (count ?? 0) > 0;
+        }
+
+        const newPageviewCount = (existing?.pageview_count ?? 0) + 1;
+        const newMaxScroll = Math.max(
+          existing?.max_scroll_pct ?? 0,
+          data.scroll_pct ?? 0,
+        );
+        const newDuration = Math.max(
+          existing?.total_duration_ms ?? 0,
+          data.duration_ms ?? 0,
+        );
+        const newHighIntent = (existing?.high_intent_hit ?? false) || isHighIntent;
+
+        const newScore = computeIntentScore({
+          pageviewCount: newPageviewCount,
+          totalDurationMs: newDuration,
+          maxScrollPct: newMaxScroll,
+          highIntentHit: newHighIntent,
+          hasCompany: !!company,
+          isReturnVisitor: isReturning,
+        });
 
         let sessionId: string;
         if (existing) {
@@ -134,9 +170,14 @@ export const Route = createFileRoute("/api/public/collect")({
           await supabaseAdmin
             .from("sessions")
             .update({
-              last_seen_at: new Date().toISOString(),
+              last_seen_at: now,
               company_id: company?.id ?? null,
               country: company?.country ?? null,
+              pageview_count: newPageviewCount,
+              max_scroll_pct: newMaxScroll,
+              total_duration_ms: newDuration,
+              high_intent_hit: newHighIntent,
+              intent_score: newScore,
             })
             .eq("id", sessionId);
         } else {
@@ -149,6 +190,11 @@ export const Route = createFileRoute("/api/public/collect")({
               user_agent: ua,
               country: company?.country ?? null,
               company_id: company?.id ?? null,
+              pageview_count: newPageviewCount,
+              max_scroll_pct: newMaxScroll,
+              total_duration_ms: newDuration,
+              high_intent_hit: newHighIntent,
+              intent_score: newScore,
             })
             .select("id")
             .single();
@@ -166,12 +212,32 @@ export const Route = createFileRoute("/api/public/collect")({
           title: data.title ?? null,
         });
 
-        if (company) {
-          // Fire and forget — don't await network to keep the beacon snappy.
-          maybeFireAlerts(site.workspace_id, company).catch((e) => console.error(e));
+        // KILLER FEATURE: real-time hot lead alert
+        // Debounce 1h per session, próg konfigurowany per site.
+        const threshold = site.alert_threshold ?? 70;
+        const lastAlert = existing?.last_alert_at ? new Date(existing.last_alert_at).getTime() : 0;
+        const debounceOk = Date.now() - lastAlert > 3_600_000;
+        if (newScore >= threshold && debounceOk) {
+          maybeFireHotLeadAlert({
+            workspaceId: site.workspace_id,
+            sessionId,
+            score: newScore,
+            company,
+            pageviewCount: newPageviewCount,
+            totalDurationMs: newDuration,
+            maxScrollPct: newMaxScroll,
+            lastUrl: data.url,
+            siteDomain: site.domain,
+          }).catch((e) => console.error("hot lead alert failed", e));
         }
 
-        return new Response(JSON.stringify({ ok: true }), {
+        if (company) {
+          maybeFireTargetAccountAlert(site.workspace_id, company).catch((e) =>
+            console.error(e),
+          );
+        }
+
+        return new Response(JSON.stringify({ ok: true, score: newScore }), {
           status: 200,
           headers: { "Content-Type": "application/json", ...CORS },
         });
