@@ -6,7 +6,7 @@ import { useWorkspace } from "@/hooks/use-workspace";
 import { getHotLeads } from "@/lib/workspace.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "@/lib/time";
-import { useT } from "@/i18n";
+// i18n niepotrzebne na tej stronie (MVP).
 
 export const Route = createFileRoute("/app/hot-leads")({
   head: () => ({ meta: [{ title: "Hot Leads — VisitorID EU" }] }),
@@ -20,7 +20,7 @@ function scoreColor(score: number): string {
 }
 
 function HotLeadsPage() {
-  const t = useT();
+  // const t = useT(); // intentionally unused
   const { data: ws } = useWorkspace();
   const wid = ws?.workspace.id;
   const fn = useServerFn(getHotLeads);
