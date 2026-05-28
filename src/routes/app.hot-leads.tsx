@@ -57,8 +57,7 @@ function HotLeadsPage() {
         <div>
           <h1 className="font-display text-3xl">🔥 Hot Leads</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {t.app.hotLeads?.sub ??
-              "Sesje z wysokim intent score — gotowe do kontaktu sprzedażowego. Lista odświeża się w czasie rzeczywistym."}
+            Sesje z wysokim intent score — gotowe do kontaktu sprzedażowego. Lista odświeża się w czasie rzeczywistym.
           </p>
         </div>
         <div className="flex items-center gap-2">
