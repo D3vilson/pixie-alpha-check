@@ -301,36 +301,54 @@ export type Database = {
           anon_id: string
           company_id: string | null
           country: string | null
+          high_intent_hit: boolean
           id: string
+          intent_score: number
           ip_hash: string | null
+          last_alert_at: string | null
           last_seen_at: string
+          max_scroll_pct: number
+          pageview_count: number
           person_id: string | null
           site_id: string
           started_at: string
+          total_duration_ms: number
           user_agent: string | null
         }
         Insert: {
           anon_id: string
           company_id?: string | null
           country?: string | null
+          high_intent_hit?: boolean
           id?: string
+          intent_score?: number
           ip_hash?: string | null
+          last_alert_at?: string | null
           last_seen_at?: string
+          max_scroll_pct?: number
+          pageview_count?: number
           person_id?: string | null
           site_id: string
           started_at?: string
+          total_duration_ms?: number
           user_agent?: string | null
         }
         Update: {
           anon_id?: string
           company_id?: string | null
           country?: string | null
+          high_intent_hit?: boolean
           id?: string
+          intent_score?: number
           ip_hash?: string | null
+          last_alert_at?: string | null
           last_seen_at?: string
+          max_scroll_pct?: number
+          pageview_count?: number
           person_id?: string | null
           site_id?: string
           started_at?: string
+          total_duration_ms?: number
           user_agent?: string | null
         }
         Relationships: [
@@ -359,22 +377,28 @@ export type Database = {
       }
       sites: {
         Row: {
+          alert_threshold: number
           created_at: string
           domain: string
+          high_intent_paths: string[]
           id: string
           tracking_id: string
           workspace_id: string
         }
         Insert: {
+          alert_threshold?: number
           created_at?: string
           domain: string
+          high_intent_paths?: string[]
           id?: string
           tracking_id?: string
           workspace_id: string
         }
         Update: {
+          alert_threshold?: number
           created_at?: string
           domain?: string
+          high_intent_paths?: string[]
           id?: string
           tracking_id?: string
           workspace_id?: string
