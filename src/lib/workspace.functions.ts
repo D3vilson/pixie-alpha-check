@@ -260,6 +260,71 @@ export const deleteIntegration = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const setIntegrationEnabled = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { id: string; enabled: boolean }) =>
+    z.object({ id: z.string().uuid(), enabled: z.boolean() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("integrations")
+      .update({ enabled: data.enabled })
+      .eq("id", data.id);
+    if (error) throw error;
+    return { ok: true };
+  });
+
+/**
+ * Wysyła testową wiadomość "hot lead" do webhooka aby zweryfikować integrację.
+ * RLS: members read integrations — odczyt URL przez authenticated client zapewnia
+ * że tylko członek workspace może wywołać test dla swojego webhooka.
+ */
+export const testIntegration = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { id: string }) =>
+    z.object({ id: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: integ, error } = await context.supabase
+      .from("integrations")
+      .select("id, type, settings, enabled")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (error) throw error;
+    if (!integ) throw new Error("Integration not found");
+    const url = (integ.settings as { webhook_url?: string } | null)?.webhook_url;
+    if (!url) throw new Error("Missing webhook URL");
+
+    const payload = {
+      text: "🔥 Hot Lead (TEST) — score 87/100 na example.com",
+      blocks: [
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text:
+              "🔥 *Hot Lead (TEST)* — score *87/100*\n" +
+              "*Acme Sp. z o.o.* (acme.pl, PL)\n" +
+              "📄 6 stron · ⏱ 4.2 min · 📜 92% scroll\n" +
+              "🔗 Ostatnio: https://example.com/pricing\n" +
+              "_To jest wiadomość testowa z VisitorID EU._",
+          },
+        },
+      ],
+    };
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      throw new Error(`Webhook ${res.status}: ${body.slice(0, 200)}`);
+    }
+    return { ok: true };
+  });
+
 export const getStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: { workspaceId: string }) =>
