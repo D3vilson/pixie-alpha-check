@@ -17,6 +17,7 @@ import { Route as AppTargetAccountsRouteImport } from './routes/app.target-accou
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppPeopleRouteImport } from './routes/app.people'
 import { Route as AppIntegrationsRouteImport } from './routes/app.integrations'
+import { Route as AppHotLeadsRouteImport } from './routes/app.hot-leads'
 import { Route as AppConsentAuditRouteImport } from './routes/app.consent-audit'
 import { Route as AppCompaniesRouteImport } from './routes/app.companies'
 import { Route as MarketingSignupRouteImport } from './routes/_marketing.signup'
@@ -68,6 +69,11 @@ const AppPeopleRoute = AppPeopleRouteImport.update({
 const AppIntegrationsRoute = AppIntegrationsRouteImport.update({
   id: '/integrations',
   path: '/integrations',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppHotLeadsRoute = AppHotLeadsRouteImport.update({
+  id: '/hot-leads',
+  path: '/hot-leads',
   getParentRoute: () => AppRoute,
 } as any)
 const AppConsentAuditRoute = AppConsentAuditRouteImport.update({
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof MarketingSignupRoute
   '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/consent-audit': typeof AppConsentAuditRoute
+  '/app/hot-leads': typeof AppHotLeadsRoute
   '/app/integrations': typeof AppIntegrationsRoute
   '/app/people': typeof AppPeopleRoute
   '/app/settings': typeof AppSettingsRoute
@@ -166,6 +173,7 @@ export interface FileRoutesByTo {
   '/signup': typeof MarketingSignupRoute
   '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/consent-audit': typeof AppConsentAuditRoute
+  '/app/hot-leads': typeof AppHotLeadsRoute
   '/app/integrations': typeof AppIntegrationsRoute
   '/app/people': typeof AppPeopleRoute
   '/app/settings': typeof AppSettingsRoute
@@ -190,6 +198,7 @@ export interface FileRoutesById {
   '/_marketing/signup': typeof MarketingSignupRoute
   '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/consent-audit': typeof AppConsentAuditRoute
+  '/app/hot-leads': typeof AppHotLeadsRoute
   '/app/integrations': typeof AppIntegrationsRoute
   '/app/people': typeof AppPeopleRoute
   '/app/settings': typeof AppSettingsRoute
@@ -215,6 +224,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/app/companies'
     | '/app/consent-audit'
+    | '/app/hot-leads'
     | '/app/integrations'
     | '/app/people'
     | '/app/settings'
@@ -235,6 +245,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/app/companies'
     | '/app/consent-audit'
+    | '/app/hot-leads'
     | '/app/integrations'
     | '/app/people'
     | '/app/settings'
@@ -258,6 +269,7 @@ export interface FileRouteTypes {
     | '/_marketing/signup'
     | '/app/companies'
     | '/app/consent-audit'
+    | '/app/hot-leads'
     | '/app/integrations'
     | '/app/people'
     | '/app/settings'
@@ -337,6 +349,13 @@ declare module '@tanstack/react-router' {
       path: '/integrations'
       fullPath: '/app/integrations'
       preLoaderRoute: typeof AppIntegrationsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/hot-leads': {
+      id: '/app/hot-leads'
+      path: '/hot-leads'
+      fullPath: '/app/hot-leads'
+      preLoaderRoute: typeof AppHotLeadsRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/consent-audit': {
@@ -472,6 +491,7 @@ const AppCompaniesRouteWithChildren = AppCompaniesRoute._addFileChildren(
 interface AppRouteChildren {
   AppCompaniesRoute: typeof AppCompaniesRouteWithChildren
   AppConsentAuditRoute: typeof AppConsentAuditRoute
+  AppHotLeadsRoute: typeof AppHotLeadsRoute
   AppIntegrationsRoute: typeof AppIntegrationsRoute
   AppPeopleRoute: typeof AppPeopleRoute
   AppSettingsRoute: typeof AppSettingsRoute
@@ -482,6 +502,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppCompaniesRoute: AppCompaniesRouteWithChildren,
   AppConsentAuditRoute: AppConsentAuditRoute,
+  AppHotLeadsRoute: AppHotLeadsRoute,
   AppIntegrationsRoute: AppIntegrationsRoute,
   AppPeopleRoute: AppPeopleRoute,
   AppSettingsRoute: AppSettingsRoute,
@@ -502,3 +523,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
