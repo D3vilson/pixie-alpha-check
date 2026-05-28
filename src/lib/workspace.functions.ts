@@ -461,3 +461,45 @@ export const anonymizeSession = createServerFn({ method: "POST" })
     if (error) throw error;
     return { ok: true };
   });
+
+/**
+ * Hot Leads — sesje z intent_score >= próg dla danego site'u (lub 50 jako fallback),
+ * posortowane po score DESC. Dla realtime na frontendzie.
+ */
+export const getHotLeads = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { workspaceId: string; minScore?: number }) =>
+    z
+      .object({
+        workspaceId: z.string().uuid(),
+        minScore: z.number().int().min(0).max(100).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: sites } = await context.supabase
+      .from("sites")
+      .select("id, domain, alert_threshold")
+      .eq("workspace_id", data.workspaceId);
+    const siteIds = (sites ?? []).map((s) => s.id);
+    if (siteIds.length === 0) return [];
+
+    const minScore = data.minScore ?? 50;
+    const { data: rows, error } = await context.supabase
+      .from("sessions")
+      .select(
+        "id, site_id, started_at, last_seen_at, country, intent_score, pageview_count, max_scroll_pct, total_duration_ms, high_intent_hit, last_alert_at, company_id, companies(id, name, domain, logo_url, industry, country)",
+      )
+      .in("site_id", siteIds)
+      .gte("intent_score", minScore)
+      .order("intent_score", { ascending: false })
+      .order("last_seen_at", { ascending: false })
+      .limit(100);
+    if (error) throw error;
+
+    const domainBySite = new Map((sites ?? []).map((s) => [s.id, s.domain]));
+    return (rows ?? []).map((r: any) => ({
+      ...r,
+      site_domain: domainBySite.get(r.site_id) ?? null,
+    }));
+  });
