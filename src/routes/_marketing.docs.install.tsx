@@ -13,7 +13,7 @@ export const Route = createFileRoute("/_marketing/docs/install")({
 
 const SNIPPET = `<script async
   src="https://app.visitorid.eu/api/public/t.js"
-  data-site="YOUR_TRACKING_ID"></script>`;
+  data-vid="YOUR_TRACKING_ID"></script>`;
 
 function InstallPage() {
   const t = useT();

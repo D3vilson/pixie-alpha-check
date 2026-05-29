@@ -17,6 +17,7 @@ import { Route as AppTargetAccountsRouteImport } from './routes/app.target-accou
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppPeopleRouteImport } from './routes/app.people'
 import { Route as AppIntegrationsRouteImport } from './routes/app.integrations'
+import { Route as AppInstallRouteImport } from './routes/app.install'
 import { Route as AppHotLeadsRouteImport } from './routes/app.hot-leads'
 import { Route as AppConsentAuditRouteImport } from './routes/app.consent-audit'
 import { Route as AppCompaniesRouteImport } from './routes/app.companies'
@@ -69,6 +70,11 @@ const AppPeopleRoute = AppPeopleRouteImport.update({
 const AppIntegrationsRoute = AppIntegrationsRouteImport.update({
   id: '/integrations',
   path: '/integrations',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInstallRoute = AppInstallRouteImport.update({
+  id: '/install',
+  path: '/install',
   getParentRoute: () => AppRoute,
 } as any)
 const AppHotLeadsRoute = AppHotLeadsRouteImport.update({
@@ -153,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/consent-audit': typeof AppConsentAuditRoute
   '/app/hot-leads': typeof AppHotLeadsRoute
+  '/app/install': typeof AppInstallRoute
   '/app/integrations': typeof AppIntegrationsRoute
   '/app/people': typeof AppPeopleRoute
   '/app/settings': typeof AppSettingsRoute
@@ -174,6 +181,7 @@ export interface FileRoutesByTo {
   '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/consent-audit': typeof AppConsentAuditRoute
   '/app/hot-leads': typeof AppHotLeadsRoute
+  '/app/install': typeof AppInstallRoute
   '/app/integrations': typeof AppIntegrationsRoute
   '/app/people': typeof AppPeopleRoute
   '/app/settings': typeof AppSettingsRoute
@@ -199,6 +207,7 @@ export interface FileRoutesById {
   '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/consent-audit': typeof AppConsentAuditRoute
   '/app/hot-leads': typeof AppHotLeadsRoute
+  '/app/install': typeof AppInstallRoute
   '/app/integrations': typeof AppIntegrationsRoute
   '/app/people': typeof AppPeopleRoute
   '/app/settings': typeof AppSettingsRoute
@@ -225,6 +234,7 @@ export interface FileRouteTypes {
     | '/app/companies'
     | '/app/consent-audit'
     | '/app/hot-leads'
+    | '/app/install'
     | '/app/integrations'
     | '/app/people'
     | '/app/settings'
@@ -246,6 +256,7 @@ export interface FileRouteTypes {
     | '/app/companies'
     | '/app/consent-audit'
     | '/app/hot-leads'
+    | '/app/install'
     | '/app/integrations'
     | '/app/people'
     | '/app/settings'
@@ -270,6 +281,7 @@ export interface FileRouteTypes {
     | '/app/companies'
     | '/app/consent-audit'
     | '/app/hot-leads'
+    | '/app/install'
     | '/app/integrations'
     | '/app/people'
     | '/app/settings'
@@ -349,6 +361,13 @@ declare module '@tanstack/react-router' {
       path: '/integrations'
       fullPath: '/app/integrations'
       preLoaderRoute: typeof AppIntegrationsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/install': {
+      id: '/app/install'
+      path: '/install'
+      fullPath: '/app/install'
+      preLoaderRoute: typeof AppInstallRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/hot-leads': {
@@ -492,6 +511,7 @@ interface AppRouteChildren {
   AppCompaniesRoute: typeof AppCompaniesRouteWithChildren
   AppConsentAuditRoute: typeof AppConsentAuditRoute
   AppHotLeadsRoute: typeof AppHotLeadsRoute
+  AppInstallRoute: typeof AppInstallRoute
   AppIntegrationsRoute: typeof AppIntegrationsRoute
   AppPeopleRoute: typeof AppPeopleRoute
   AppSettingsRoute: typeof AppSettingsRoute
@@ -503,6 +523,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCompaniesRoute: AppCompaniesRouteWithChildren,
   AppConsentAuditRoute: AppConsentAuditRoute,
   AppHotLeadsRoute: AppHotLeadsRoute,
+  AppInstallRoute: AppInstallRoute,
   AppIntegrationsRoute: AppIntegrationsRoute,
   AppPeopleRoute: AppPeopleRoute,
   AppSettingsRoute: AppSettingsRoute,
