@@ -1,14 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Check, Shield, Building2, BellRing, ScrollText } from "lucide-react";
+import { ArrowRight, Check, Shield } from "lucide-react";
 import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/_marketing/")({
   head: () => ({
     meta: [
       { title: "VisitorID EU — GDPR-compliant website visitor identification" },
-      { name: "description", content: "See which European companies visit your website. Reveal people only after consent. Built around GDPR, not around it." },
+      { name: "description", content: "See which Polish companies visit your website. Organization-level identification, no cookies, no personal data." },
       { property: "og:title", content: "VisitorID EU — GDPR-compliant visitor identification" },
-      { property: "og:description", content: "Built for the EU. Company reveal by default, person reveal with consent." },
+      { property: "og:description", content: "One line of JavaScript. Company-level reveal, hot lead alerts, no cookies." },
     ],
   }),
   component: HomePage,
@@ -18,10 +18,9 @@ function HomePage() {
   return (
     <>
       <Hero />
-      <LogoStrip />
+      <ForWhom />
       <HowItWorks />
-      <Differentiator />
-      <FeatureGrid />
+      <Compliance />
       <CTA />
     </>
   );
@@ -49,6 +48,12 @@ function Hero() {
             {t.common.startFreeTrial}
             <ArrowRight className="h-4 w-4" />
           </Link>
+          <Link
+            to="/docs/install"
+            className="inline-flex items-center rounded-md border border-border bg-card px-5 py-3 text-sm font-medium hover:bg-surface"
+          >
+            {t.home.seeSnippet}
+          </Link>
         </div>
         <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
           {t.home.bullets.map((item) => (
@@ -58,54 +63,23 @@ function Hero() {
             </li>
           ))}
         </ul>
-
-        <div className="mt-16 rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
-          <div className="border-b border-border bg-surface/60 px-4 py-2 flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-destructive/40" />
-            <span className="h-2.5 w-2.5 rounded-full bg-chart-4/40" />
-            <span className="h-2.5 w-2.5 rounded-full bg-accent/50" />
-            <span className="ml-3 text-xs text-muted-foreground">{t.home.sampleHeader}</span>
-          </div>
-          <div className="divide-y divide-border">
-            {SAMPLE_VISITS.map((v) => (
-              <div key={v.company} className="flex items-center gap-4 px-5 py-4">
-                <div className="h-9 w-9 shrink-0 rounded-md bg-surface flex items-center justify-center text-xs font-semibold text-foreground/70">
-                  {v.company.slice(0, 2)}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium truncate">{v.company}</span>
-                    <span className="text-xs text-muted-foreground">· {v.country}</span>
-                    {v.target && <span className="rounded-full bg-accent/10 text-accent text-[10px] font-medium px-2 py-0.5">{t.home.targetAccount}</span>}
-                  </div>
-                  <div className="text-sm text-muted-foreground truncate">{t.home.pagesAgo(v.pages, v.last)}</div>
-                </div>
-                <span className="hidden sm:inline text-xs text-muted-foreground">{v.industry}</span>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );
 }
 
-const SAMPLE_VISITS = [
-  { company: "Brand24", country: "PL", pages: 7, last: "just now", industry: "PKD 62.01", target: true },
-  { company: "DocPlanner", country: "PL", pages: 3, last: "2 min ago", industry: "PKD 62.02", target: false },
-  { company: "Booksy", country: "PL", pages: 12, last: "5 min ago", industry: "PKD 63.12", target: true },
-  { company: "IFIRMA", country: "PL", pages: 2, last: "8 min ago", industry: "PKD 69.20", target: false },
-];
-
-function LogoStrip() {
+function ForWhom() {
   const t = useT();
   return (
-    <section className="border-y border-border/60 bg-surface/40 py-10">
-      <div className="mx-auto max-w-6xl px-6">
-        <p className="text-center text-xs uppercase tracking-wider text-muted-foreground">{t.home.logoStrip}</p>
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-foreground/40 font-display text-2xl">
-          <span>Warszawa</span><span>Kraków</span><span>Wrocław</span><span>Poznań</span><span>Gdańsk</span><span>Katowice</span>
-        </div>
+    <section className="mx-auto max-w-6xl px-6 py-20 md:py-24">
+      <h2 className="text-3xl md:text-5xl max-w-2xl">{t.home.forWhomH2}</h2>
+      <div className="mt-12 grid gap-6 md:grid-cols-3">
+        {t.home.forWhom.map((w) => (
+          <div key={w.title} className="rounded-xl border border-border bg-card p-6">
+            <h3 className="text-xl">{w.title}</h3>
+            <p className="mt-2 text-sm text-muted-foreground">{w.body}</p>
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -114,85 +88,46 @@ function LogoStrip() {
 function HowItWorks() {
   const t = useT();
   return (
-    <section className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-      <h2 className="text-3xl md:text-5xl max-w-2xl">{t.home.howH2}</h2>
-      <div className="mt-12 grid gap-6 md:grid-cols-3">
-        {t.home.steps.map((s) => (
-          <div key={s.n} className="rounded-xl border border-border bg-card p-6">
-            <div className="font-display text-3xl text-accent">{s.n}</div>
-            <h3 className="mt-3 text-xl">{s.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{s.body}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function Differentiator() {
-  const t = useT();
-  return (
-    <section className="bg-primary text-primary-foreground">
+    <section className="bg-surface/40 border-y border-border/60">
       <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-        <div className="grid gap-12 md:grid-cols-2 md:items-center">
-          <div>
-            <p className="text-xs uppercase tracking-wider text-accent">{t.home.diffPill}</p>
-            <h2 className="mt-3 text-3xl md:text-5xl">{t.home.diffH2}</h2>
-            <p className="mt-5 text-primary-foreground/70 leading-relaxed">
-              {t.home.diffBody} <strong className="text-primary-foreground">{t.home.diffEm}</strong> {t.home.diffOutro}
-            </p>
-          </div>
-          <div className="grid gap-3 text-sm">
-            {t.home.diffRows.map((l) => <Row key={l} good label={l} />)}
-            <Row bad label={t.home.diffBad} />
-          </div>
-        </div>
-
-        {/* Coverage growth table */}
-        <div className="mt-16 rounded-xl border border-primary-foreground/15 bg-primary-foreground/5 p-6 md:p-8">
-          <h3 className="text-lg md:text-xl">{t.home.coverageH3}</h3>
-          <div className="mt-5 divide-y divide-primary-foreground/10">
-            {t.home.coverageRows.map((r) => (
-              <div key={r.label} className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:justify-between">
-                <span className="text-sm font-medium">{r.label}</span>
-                <span className="text-sm text-primary-foreground/70">{r.value}</span>
-              </div>
-            ))}
-          </div>
+        <h2 className="text-3xl md:text-5xl max-w-2xl">{t.home.howH2}</h2>
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {t.home.steps.map((s) => (
+            <div key={s.n} className="rounded-xl border border-border bg-card p-6">
+              <div className="font-display text-3xl text-accent">{s.n}</div>
+              <h3 className="mt-3 text-lg">{s.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{s.body}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-function Row({ good, bad, label }: { good?: boolean; bad?: boolean; label: string }) {
-  return (
-    <div className="flex items-start gap-3 rounded-lg border border-primary-foreground/10 bg-primary-foreground/5 px-4 py-3">
-      <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${good ? "bg-accent text-accent-foreground" : "bg-primary-foreground/15 text-primary-foreground"}`}>
-        {good ? <Check className="h-3 w-3" /> : <span className="text-xs">×</span>}
-      </span>
-      <span className={bad ? "text-primary-foreground/70" : ""}>{label}</span>
-    </div>
-  );
-}
-
-function FeatureGrid() {
+function Compliance() {
   const t = useT();
-  const icons = [Building2, ScrollText, BellRing, Shield];
   return (
     <section className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-      <h2 className="text-3xl md:text-5xl max-w-2xl">{t.home.featH2}</h2>
-      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {t.home.features.map((f, i) => {
-          const Icon = icons[i];
-          return (
-            <div key={f.title} className="rounded-xl border border-border bg-card p-6">
-              <Icon className="h-6 w-6 text-accent" />
-              <h3 className="mt-4 text-lg">{f.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{f.body}</p>
-            </div>
-          );
-        })}
+      <div className="grid gap-10 md:grid-cols-2 md:items-start">
+        <div>
+          <p className="text-xs uppercase tracking-wider text-accent">Privacy</p>
+          <h2 className="mt-3 text-3xl md:text-5xl">{t.home.complianceH2}</h2>
+          <p className="mt-5 text-muted-foreground leading-relaxed">{t.home.complianceLead}</p>
+          <Link to="/gdpr" className="mt-6 inline-flex items-center gap-2 text-sm text-accent hover:underline">
+            {t.nav.gdpr} <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+        <ul className="space-y-3">
+          {t.home.compliancePoints.map((p) => (
+            <li key={p} className="flex items-start gap-3 rounded-lg border border-border bg-card px-4 py-3 text-sm">
+              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
+                <Check className="h-3 w-3" />
+              </span>
+              <span>{p}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
