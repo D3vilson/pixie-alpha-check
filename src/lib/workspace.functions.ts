@@ -613,3 +613,48 @@ export const enrichCompanyFromKrs = createServerFn({ method: "POST" })
     if (error) throw error;
     return { ok: true, data: result };
   });
+
+/**
+ * Status pixela na sajcie — czy w ogóle są dane.
+ * Zwraca last_seen_at + count sesji z ostatnich 24h.
+ */
+export const getSitePixelStatus = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { workspaceId: string; siteId: string }) =>
+    z.object({
+      workspaceId: z.string().uuid(),
+      siteId: z.string().uuid(),
+    }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    // RLS via workspace check
+    const { data: site } = await context.supabase
+      .from("sites")
+      .select("id, domain, tracking_id, created_at")
+      .eq("id", data.siteId)
+      .eq("workspace_id", data.workspaceId)
+      .maybeSingle();
+    if (!site) throw new Error("Site not found");
+
+    const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+    const { data: latest } = await context.supabase
+      .from("sessions")
+      .select("last_seen_at")
+      .eq("site_id", data.siteId)
+      .order("last_seen_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    const { count } = await context.supabase
+      .from("sessions")
+      .select("id", { count: "exact", head: true })
+      .eq("site_id", data.siteId)
+      .gte("last_seen_at", since);
+
+    return {
+      site,
+      lastSeenAt: latest?.last_seen_at ?? null,
+      sessions24h: count ?? 0,
+      detected: !!latest,
+    };
+  });
