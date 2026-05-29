@@ -61,6 +61,7 @@ export type Database = {
       }
       companies: {
         Row: {
+          address: string | null
           country: string | null
           created_at: string
           description: string | null
@@ -68,11 +69,19 @@ export type Database = {
           enriched_at: string | null
           id: string
           industry: string | null
+          krs: string | null
           logo_url: string | null
           name: string
+          nip: string | null
+          pkd: string | null
+          registry_checked_at: string | null
+          registry_source: string | null
+          regon: string | null
           size: string | null
+          website: string | null
         }
         Insert: {
+          address?: string | null
           country?: string | null
           created_at?: string
           description?: string | null
@@ -80,11 +89,19 @@ export type Database = {
           enriched_at?: string | null
           id?: string
           industry?: string | null
+          krs?: string | null
           logo_url?: string | null
           name: string
+          nip?: string | null
+          pkd?: string | null
+          registry_checked_at?: string | null
+          registry_source?: string | null
+          regon?: string | null
           size?: string | null
+          website?: string | null
         }
         Update: {
+          address?: string | null
           country?: string | null
           created_at?: string
           description?: string | null
@@ -92,9 +109,16 @@ export type Database = {
           enriched_at?: string | null
           id?: string
           industry?: string | null
+          krs?: string | null
           logo_url?: string | null
           name?: string
+          nip?: string | null
+          pkd?: string | null
+          registry_checked_at?: string | null
+          registry_source?: string | null
+          regon?: string | null
           size?: string | null
+          website?: string | null
         }
         Relationships: []
       }
