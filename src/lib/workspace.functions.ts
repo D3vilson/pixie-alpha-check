@@ -406,7 +406,7 @@ export const getCompanyDetail = createServerFn({ method: "GET" })
   .handler(async ({ data, context }) => {
     const { data: company, error: cErr } = await context.supabase
       .from("companies")
-      .select("id, name, domain, logo_url, industry, size, country, description")
+      .select("id, name, domain, logo_url, industry, size, country, description, nip, krs, regon, pkd, address, website, registry_source, registry_checked_at")
       .eq("id", data.companyId)
       .maybeSingle();
     if (cErr) throw cErr;
