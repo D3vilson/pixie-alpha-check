@@ -568,3 +568,48 @@ export const getHotLeads = createServerFn({ method: "GET" })
       site_domain: domainBySite.get(r.site_id) ?? null,
     }));
   });
+
+/**
+ * Manualne wzbogacenie firmy danymi z KRS (publiczne API MS).
+ * User wkleja numer KRS, my pobieramy nazwę, NIP, REGON, PKD, adres.
+ * Zapisuje też registry_source='krs' i registry_checked_at.
+ */
+export const enrichCompanyFromKrs = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { workspaceId: string; companyId: string; krs: string }) =>
+    z.object({
+      workspaceId: z.string().uuid(),
+      companyId: z.string().uuid(),
+      krs: z.string().min(1).max(20).regex(/^[0-9]+$/, "KRS to same cyfry"),
+    }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    // Auth: user musi być adminem/ownerem workspace'u
+    const { data: isAdmin } = await context.supabase.rpc("has_workspace_role", {
+      _workspace_id: data.workspaceId,
+      _user_id: context.userId,
+      _roles: ["owner", "admin"],
+    });
+    if (!isAdmin) throw new Error("Forbidden");
+
+    const { lookupKrs } = await import("./pl-registry.server");
+    const result = await lookupKrs(data.krs);
+    if (!result) throw new Error("Nie znaleziono firmy w KRS");
+
+    const { error } = await supabaseAdmin
+      .from("companies")
+      .update({
+        name: result.name,
+        krs: result.krs,
+        nip: result.nip ?? null,
+        regon: result.regon ?? null,
+        pkd: result.pkd ?? null,
+        address: result.address ?? null,
+        country: "PL",
+        registry_source: "krs",
+        registry_checked_at: new Date().toISOString(),
+      })
+      .eq("id", data.companyId);
+    if (error) throw error;
+    return { ok: true, data: result };
+  });
