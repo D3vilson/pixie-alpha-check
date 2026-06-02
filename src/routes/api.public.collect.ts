@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createHash } from "crypto";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { resolveCompanyByIp } from "@/lib/ipinfo.server";
+import { resolveCompanyByIp, lookupIp } from "@/lib/ipinfo.server";
 import { resolveCompanyByHint } from "@/lib/ip-hints.server";
 import { enrichCompany } from "@/lib/enrich.server";
 import { computeIntentScore, matchesHighIntent } from "@/lib/scoring.server";
