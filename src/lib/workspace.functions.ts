@@ -700,7 +700,7 @@ export const getIpDebugLog = createServerFn({ method: "GET" })
 
     const { data: rows, error } = await context.supabase
       .from("ip_lookups")
-      .select("id, created_at, ip_prefix, country, org, asn_name, asn_domain, company_name, company_domain, company_type, layer, resolved_company_id, companies:resolved_company_id(name, domain)")
+      .select("id, created_at, ip_prefix, country, org, asn_name, asn_domain, company_name, company_domain, company_type, layer, resolved_company_id")
       .eq("site_id", data.siteId)
       .order("created_at", { ascending: false })
       .limit(20);
