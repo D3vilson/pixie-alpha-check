@@ -337,12 +337,6 @@ function IpDebugPanel({ workspaceId, siteId }: { workspaceId: string; siteId: st
   );
 }
 
-// Stub kept for diff readability — original component end below
-function _unused_keep_compat_install() {
-  return null as unknown as React.ReactElement;
-    </>
-  );
-}
 
 function DetectionStatus({
   loading, detected, lastSeenAt, sessions24h, domain,
