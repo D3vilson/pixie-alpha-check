@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { CheckCircle2, Loader2, Copy, AlertCircle } from "lucide-react";
 import { useWorkspace } from "@/hooks/use-workspace";
-import { getSites, createSite, getSitePixelStatus } from "@/lib/workspace.functions";
+import { getSites, createSite, getSitePixelStatus, getIpDebugLog } from "@/lib/workspace.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
