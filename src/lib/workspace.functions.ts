@@ -679,3 +679,31 @@ export const getSitePixelStatus = createServerFn({ method: "GET" })
       detected: !!latest,
     };
   });
+
+export const getIpDebugLog = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { workspaceId: string; siteId: string }) =>
+    z.object({
+      workspaceId: z.string().uuid(),
+      siteId: z.string().uuid(),
+    }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    // Sprawdź członkostwo przez sites (RLS na ip_lookups robi to samo, ale tak też walidujemy siteId)
+    const { data: site } = await context.supabase
+      .from("sites")
+      .select("id")
+      .eq("id", data.siteId)
+      .eq("workspace_id", data.workspaceId)
+      .maybeSingle();
+    if (!site) throw new Error("Site not found");
+
+    const { data: rows, error } = await context.supabase
+      .from("ip_lookups")
+      .select("id, created_at, ip_prefix, country, org, asn_name, asn_domain, company_name, company_domain, company_type, layer, resolved_company_id, companies:resolved_company_id(name, domain)")
+      .eq("site_id", data.siteId)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    if (error) throw error;
+    return rows ?? [];
+  });
