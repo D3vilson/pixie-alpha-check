@@ -146,8 +146,14 @@ export const Route = createFileRoute("/api/public/collect")({
         const ua = request.headers.get("user-agent") ?? null;
 
         // Company resolution — 2 warstwy
-        const company =
-          (await resolveCompanyByIp(ip)) ?? (await resolveCompanyByHint(ip));
+        const ipinfoCompany = await resolveCompanyByIp(ip);
+        const hintCompany = ipinfoCompany ? null : await resolveCompanyByHint(ip);
+        const company = ipinfoCompany ?? hintCompany;
+        const resolutionLayer: "ipinfo" | "hint" | "none" = ipinfoCompany
+          ? "ipinfo"
+          : hintCompany
+            ? "hint"
+            : "none";
 
         // Background: enrichment
         if (company) enrichCompany(company.id).catch((e) => console.error(e));
