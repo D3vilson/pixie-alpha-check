@@ -237,6 +237,54 @@ export type Database = {
           },
         ]
       }
+      ip_lookups: {
+        Row: {
+          asn_domain: string | null
+          asn_name: string | null
+          company_domain: string | null
+          company_name: string | null
+          company_type: string | null
+          country: string | null
+          created_at: string
+          id: string
+          ip_prefix: string
+          layer: string
+          org: string | null
+          resolved_company_id: string | null
+          site_id: string
+        }
+        Insert: {
+          asn_domain?: string | null
+          asn_name?: string | null
+          company_domain?: string | null
+          company_name?: string | null
+          company_type?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          ip_prefix: string
+          layer: string
+          org?: string | null
+          resolved_company_id?: string | null
+          site_id: string
+        }
+        Update: {
+          asn_domain?: string | null
+          asn_name?: string | null
+          company_domain?: string | null
+          company_name?: string | null
+          company_type?: string | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          ip_prefix?: string
+          layer?: string
+          org?: string | null
+          resolved_company_id?: string | null
+          site_id?: string
+        }
+        Relationships: []
+      }
       pageviews: {
         Row: {
           id: string

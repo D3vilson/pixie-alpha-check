@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { CheckCircle2, Loader2, Copy, AlertCircle } from "lucide-react";
 import { useWorkspace } from "@/hooks/use-workspace";
-import { getSites, createSite, getSitePixelStatus } from "@/lib/workspace.functions";
+import { getSites, createSite, getSitePixelStatus, getIpDebugLog } from "@/lib/workspace.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -234,9 +234,109 @@ function SiteInstall({
           <li>Sprawdź konsolę: <code className="font-mono text-xs">window.VisitorID</code> powinien istnieć.</li>
         </ol>
       </section>
+
+      <IpDebugPanel workspaceId={workspaceId} siteId={site.id} />
     </>
   );
 }
+
+function IpDebugPanel({ workspaceId, siteId }: { workspaceId: string; siteId: string }) {
+  const fn = useServerFn(getIpDebugLog);
+  const q = useQuery({
+    queryKey: ["ip-debug-log", siteId],
+    queryFn: () => fn({ data: { workspaceId, siteId } }),
+    refetchInterval: 5000,
+  });
+  const rows = q.data ?? [];
+
+  return (
+    <section className="mt-10">
+      <h2 className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
+        Debug: ostatnie 20 IP (co zwrócił ipinfo)
+      </h2>
+      <div className="rounded-lg border border-border bg-card overflow-hidden">
+        {q.isLoading ? (
+          <div className="p-6 text-sm text-muted-foreground">Ładuję…</div>
+        ) : rows.length === 0 ? (
+          <div className="p-6 text-sm text-muted-foreground">
+            Brak wpisów. Pojawią się tu po pierwszej nowej sesji (nie liczy się każdy pageview).
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead className="bg-surface text-muted-foreground">
+                <tr className="border-b border-border">
+                  <th className="text-left px-3 py-2 font-medium">Kiedy</th>
+                  <th className="text-left px-3 py-2 font-medium">/24</th>
+                  <th className="text-left px-3 py-2 font-medium">Kraj</th>
+                  <th className="text-left px-3 py-2 font-medium">ipinfo: org / ASN</th>
+                  <th className="text-left px-3 py-2 font-medium">ipinfo: company</th>
+                  <th className="text-left px-3 py-2 font-medium">Warstwa</th>
+                  <th className="text-left px-3 py-2 font-medium">Rozpoznano</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r) => (
+                  <tr key={r.id} className="border-b border-border/50 last:border-0">
+                    <td className="px-3 py-2 whitespace-nowrap text-muted-foreground">
+                      {formatDistanceToNow(r.created_at)}
+                    </td>
+                    <td className="px-3 py-2 font-mono">{r.ip_prefix}</td>
+                    <td className="px-3 py-2">{r.country ?? "—"}</td>
+                    <td className="px-3 py-2">
+                      <div>{r.org ?? "—"}</div>
+                      {r.asn_name && (
+                        <div className="text-muted-foreground text-[10px]">
+                          {r.asn_name} {r.asn_domain ? `· ${r.asn_domain}` : ""}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-3 py-2">
+                      {r.company_name ? (
+                        <div>
+                          <div>{r.company_name}</div>
+                          <div className="text-muted-foreground text-[10px]">
+                            {r.company_domain} {r.company_type ? `· ${r.company_type}` : ""}
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </td>
+                    <td className="px-3 py-2">
+                      <span
+                        className={`inline-flex rounded px-1.5 py-0.5 text-[10px] font-medium ${
+                          r.layer === "ipinfo"
+                            ? "bg-primary/10 text-primary"
+                            : r.layer === "hint"
+                              ? "bg-blue-500/10 text-blue-600"
+                              : "bg-amber-500/10 text-amber-700"
+                        }`}
+                      >
+                        {r.layer}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2">
+                      {r.resolved_company_id ? (
+                        <span className="text-primary">✓ firma</span>
+                      ) : (
+                        <span className="text-muted-foreground">nierozpoznana</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+      <p className="mt-2 text-xs text-muted-foreground">
+        Log per nowa sesja (nie per pageview). Pokazuje co dokładnie ipinfo zwróciło dla danego /24 — łatwo zobaczyć czemu coś nie zostało rozpoznane (residential ISP, hosting, brak company).
+      </p>
+    </section>
+  );
+}
+
 
 function DetectionStatus({
   loading, detected, lastSeenAt, sessions24h, domain,

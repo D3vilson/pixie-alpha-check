@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createHash } from "crypto";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { resolveCompanyByIp } from "@/lib/ipinfo.server";
+import { resolveCompanyByIp, lookupIp } from "@/lib/ipinfo.server";
 import { resolveCompanyByHint } from "@/lib/ip-hints.server";
 import { enrichCompany } from "@/lib/enrich.server";
 import { computeIntentScore, matchesHighIntent } from "@/lib/scoring.server";
@@ -32,6 +32,38 @@ function hashIp(ip: string | null): string | null {
   if (!ip) return null;
   const salt = process.env.IP_HASH_SALT ?? "visitorid-eu-default-salt";
   return createHash("sha256").update(salt + ":" + ip).digest("hex").slice(0, 32);
+}
+
+function ipv4Prefix24(ip: string | null): string | null {
+  if (!ip) return null;
+  const m = ip.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.\d{1,3}$/);
+  return m ? `${m[1]}.${m[2]}.${m[3]}.0/24` : null;
+}
+
+async function logIpLookup(
+  siteId: string,
+  ip: string | null,
+  resolvedCompanyId: string | null,
+  layer: "ipinfo" | "hint" | "none",
+) {
+  try {
+    const info = ip ? await lookupIp(ip) : null;
+    await supabaseAdmin.from("ip_lookups").insert({
+      site_id: siteId,
+      ip_prefix: ipv4Prefix24(ip) ?? (ip ? "ipv6" : "unknown"),
+      country: info?.country ?? null,
+      org: info?.org ?? null,
+      asn_name: info?.asn?.name ?? null,
+      asn_domain: info?.asn?.domain ?? null,
+      company_name: info?.company?.name ?? null,
+      company_domain: info?.company?.domain ?? null,
+      company_type: info?.company?.type ?? info?.asn?.type ?? null,
+      layer,
+      resolved_company_id: resolvedCompanyId,
+    });
+  } catch (e) {
+    console.error("[ip_lookups] log failed", e);
+  }
 }
 
 // Tło — nie blokuje response do pixela
@@ -114,8 +146,14 @@ export const Route = createFileRoute("/api/public/collect")({
         const ua = request.headers.get("user-agent") ?? null;
 
         // Company resolution — 2 warstwy
-        const company =
-          (await resolveCompanyByIp(ip)) ?? (await resolveCompanyByHint(ip));
+        const ipinfoCompany = await resolveCompanyByIp(ip);
+        const hintCompany = ipinfoCompany ? null : await resolveCompanyByHint(ip);
+        const company = ipinfoCompany ?? hintCompany;
+        const resolutionLayer: "ipinfo" | "hint" | "none" = ipinfoCompany
+          ? "ipinfo"
+          : hintCompany
+            ? "hint"
+            : "none";
 
         // Background: enrichment
         if (company) enrichCompany(company.id).catch((e) => console.error(e));
@@ -203,6 +241,8 @@ export const Route = createFileRoute("/api/public/collect")({
             return new Response("Insert failed", { status: 500, headers: CORS });
           }
           sessionId = created.id;
+          // Background: log IP resolution for debug panel (new sessions only)
+          logIpLookup(site.id, ip, company?.id ?? null, resolutionLayer).catch(() => {});
         }
 
         await supabaseAdmin.from("pageviews").insert({
