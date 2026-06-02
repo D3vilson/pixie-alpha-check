@@ -241,6 +241,8 @@ export const Route = createFileRoute("/api/public/collect")({
             return new Response("Insert failed", { status: 500, headers: CORS });
           }
           sessionId = created.id;
+          // Background: log IP resolution for debug panel (new sessions only)
+          logIpLookup(site.id, ip, company?.id ?? null, resolutionLayer).catch(() => {});
         }
 
         await supabaseAdmin.from("pageviews").insert({
