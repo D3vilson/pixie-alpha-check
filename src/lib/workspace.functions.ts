@@ -533,11 +533,18 @@ export const anonymizeSession = createServerFn({ method: "POST" })
  */
 export const getHotLeads = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { workspaceId: string; minScore?: number }) =>
+  .inputValidator((input: {
+    workspaceId: string;
+    minScore?: number;
+    country?: string;
+    search?: string;
+  }) =>
     z
       .object({
         workspaceId: z.string().uuid(),
         minScore: z.number().int().min(0).max(100).optional(),
+        country: z.string().min(2).max(2).regex(/^[A-Z]{2}$/).optional(),
+        search: z.string().max(100).optional(),
       })
       .parse(input),
   )
@@ -550,23 +557,37 @@ export const getHotLeads = createServerFn({ method: "GET" })
     if (siteIds.length === 0) return [];
 
     const minScore = data.minScore ?? 50;
-    const { data: rows, error } = await context.supabase
+    let q = context.supabase
       .from("sessions")
       .select(
-        "id, site_id, started_at, last_seen_at, country, intent_score, pageview_count, max_scroll_pct, total_duration_ms, high_intent_hit, last_alert_at, company_id, companies(id, name, domain, logo_url, industry, country)",
+        "id, site_id, started_at, last_seen_at, country, intent_score, pageview_count, max_scroll_pct, total_duration_ms, high_intent_hit, last_alert_at, company_id, companies(id, name, domain, logo_url, industry, country, pkd)",
       )
       .in("site_id", siteIds)
       .gte("intent_score", minScore)
       .order("intent_score", { ascending: false })
       .order("last_seen_at", { ascending: false })
-      .limit(100);
+      .limit(500);
+
+    if (data.country) q = q.eq("country", data.country);
+
+    const { data: rows, error } = await q;
     if (error) throw error;
 
     const domainBySite = new Map((sites ?? []).map((s) => [s.id, s.domain]));
-    return (rows ?? []).map((r: any) => ({
+    const search = data.search?.trim().toLowerCase();
+    const mapped = (rows ?? []).map((r: any) => ({
       ...r,
       site_domain: domainBySite.get(r.site_id) ?? null,
     }));
+    if (!search) return mapped;
+    return mapped.filter((r: any) => {
+      const c = r.companies;
+      if (!c) return false;
+      return (
+        (c.name ?? "").toLowerCase().includes(search) ||
+        (c.domain ?? "").toLowerCase().includes(search)
+      );
+    });
   });
 
 /**

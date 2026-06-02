@@ -1,12 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useWorkspace } from "@/hooks/use-workspace";
 import { getHotLeads } from "@/lib/workspace.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "@/lib/time";
-// i18n niepotrzebne na tej stronie (MVP).
+import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const Route = createFileRoute("/app/hot-leads")({
   head: () => ({ meta: [{ title: "Hot Leads — VisitorID EU" }] }),
@@ -19,21 +28,85 @@ function scoreColor(score: number): string {
   return "bg-yellow-500/15 text-yellow-500 border-yellow-500/30";
 }
 
+function csvEscape(v: unknown): string {
+  if (v === null || v === undefined) return "";
+  const s = String(v);
+  if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+  return s;
+}
+
+function downloadCsv(rows: any[]) {
+  const headers = [
+    "score",
+    "company_name",
+    "company_domain",
+    "country",
+    "pkd",
+    "pageviews",
+    "duration_min",
+    "max_scroll_pct",
+    "high_intent",
+    "site_domain",
+    "last_seen_at",
+  ];
+  const lines = [headers.join(",")];
+  for (const r of rows) {
+    const c = r.companies ?? {};
+    const minutes = Math.round((r.total_duration_ms ?? 0) / 6000) / 10;
+    lines.push(
+      [
+        r.intent_score,
+        c.name ?? "",
+        c.domain ?? "",
+        c.country ?? r.country ?? "",
+        c.pkd ?? "",
+        r.pageview_count,
+        minutes,
+        r.max_scroll_pct,
+        r.high_intent_hit ? "yes" : "no",
+        r.site_domain ?? "",
+        r.last_seen_at,
+      ]
+        .map(csvEscape)
+        .join(","),
+    );
+  }
+  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `hot-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 function HotLeadsPage() {
-  // const t = useT(); // intentionally unused
   const { data: ws } = useWorkspace();
   const wid = ws?.workspace.id;
   const fn = useServerFn(getHotLeads);
   const qc = useQueryClient();
 
+  const [minScore, setMinScore] = useState(50);
+  const [country, setCountry] = useState<string>("ALL");
+  const [search, setSearch] = useState("");
+
   const { data, isLoading } = useQuery({
-    queryKey: ["hot-leads", wid],
-    queryFn: () => fn({ data: { workspaceId: wid!, minScore: 50 } }),
+    queryKey: ["hot-leads", wid, minScore, country, search],
+    queryFn: () =>
+      fn({
+        data: {
+          workspaceId: wid!,
+          minScore,
+          country: country === "ALL" ? undefined : country,
+          search: search || undefined,
+        },
+      }),
     enabled: !!wid,
     refetchInterval: 10_000,
   });
 
-  // Realtime — invaliduj listę gdy sesja zostanie zmieniona
   useEffect(() => {
     if (!wid) return;
     const ch = supabase
@@ -51,6 +124,15 @@ function HotLeadsPage() {
 
   const rows = data ?? [];
 
+  const countryOptions = useMemo(() => {
+    const set = new Set<string>();
+    for (const r of rows) {
+      const c = (r as any).companies?.country ?? (r as any).country;
+      if (c) set.add(c);
+    }
+    return Array.from(set).sort();
+  }, [rows]);
+
   return (
     <div className="px-8 py-8 max-w-6xl">
       <header className="flex items-center justify-between mb-6">
@@ -65,6 +147,50 @@ function HotLeadsPage() {
           <span className="text-xs text-muted-foreground">Realtime</span>
         </div>
       </header>
+
+      <div className="mb-4 grid grid-cols-1 md:grid-cols-[1fr_200px_180px_auto] gap-4 items-end rounded-lg border border-border/60 bg-card p-4">
+        <div>
+          <label className="text-xs text-muted-foreground block mb-2">
+            Min. score: <span className="font-mono font-semibold text-foreground">{minScore}</span>
+          </label>
+          <Slider
+            value={[minScore]}
+            onValueChange={(v) => setMinScore(v[0])}
+            min={0}
+            max={100}
+            step={5}
+          />
+        </div>
+        <div>
+          <label className="text-xs text-muted-foreground block mb-2">Kraj</label>
+          <Select value={country} onValueChange={setCountry}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">Wszystkie</SelectItem>
+              {countryOptions.map((c) => (
+                <SelectItem key={c} value={c}>{c}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <label className="text-xs text-muted-foreground block mb-2">Szukaj firmy</label>
+          <Input
+            placeholder="nazwa lub domena…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <Button
+          variant="outline"
+          onClick={() => downloadCsv(rows)}
+          disabled={rows.length === 0}
+        >
+          ⬇ CSV ({rows.length})
+        </Button>
+      </div>
 
       <div className="rounded-lg border border-border/60 bg-card overflow-hidden">
         <table className="w-full text-sm">
@@ -96,6 +222,7 @@ function HotLeadsPage() {
                         <div className="text-xs text-muted-foreground">
                           {v.companies.domain}
                           {v.companies.country ? ` · ${v.companies.country}` : ""}
+                          {v.companies.pkd ? ` · PKD ${v.companies.pkd}` : ""}
                         </div>
                       </div>
                     ) : (
@@ -124,8 +251,7 @@ function HotLeadsPage() {
             {!isLoading && rows.length === 0 && (
               <tr>
                 <td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">
-                  Brak gorących leadów. Pojawią się tutaj automatycznie, gdy odwiedzający
-                  przekroczą próg intent score (domyślnie 50).
+                  Brak gorących leadów dla aktualnych filtrów. Zmniejsz próg score albo wyczyść filtry.
                 </td>
               </tr>
             )}
