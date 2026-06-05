@@ -1,10 +1,25 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ExternalLink, Users, MousePointerClick, Eye, Building2, Loader2 } from "lucide-react";
+import {
+  ExternalLink,
+  Users,
+  MousePointerClick,
+  Eye,
+  Building2,
+  Loader2,
+  Flame,
+  Target,
+  Mail,
+} from "lucide-react";
 import { useState } from "react";
 import { useWorkspace } from "@/hooks/use-workspace";
-import { getCompanyDetail, enrichCompanyFromKrs } from "@/lib/workspace.functions";
+import {
+  getCompanyDetail,
+  enrichCompanyFromKrs,
+  addCompanyAsTarget,
+  deleteTargetAccount,
+} from "@/lib/workspace.functions";
 import { formatDistanceToNow } from "@/lib/time";
 import { useT } from "@/i18n";
 import { Input } from "@/components/ui/input";
@@ -33,7 +48,7 @@ function CompanyDetail() {
   if (!q.data)
     return <div className="px-8 py-8 text-sm text-muted-foreground">{t.app.companies.notFound}</div>;
 
-  const { company, sessions, pageviews } = q.data;
+  const { company, sessions, pageviews, people, targetAccount, peakScore } = q.data;
   const c = company as typeof company & {
     description?: string | null;
     nip?: string | null;
@@ -78,8 +93,15 @@ function CompanyDetail() {
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <h1 className="font-display text-3xl tracking-tight truncate">{c.name}</h1>
-          <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-start justify-between gap-3">
+            <h1 className="font-display text-3xl tracking-tight truncate">{c.name}</h1>
+            <TargetToggle
+              workspaceId={wid!}
+              companyId={companyId}
+              targetAccount={targetAccount}
+            />
+          </div>
+          <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
             <a
               href={`https://${c.domain}`}
               target="_blank"
@@ -91,6 +113,12 @@ function CompanyDetail() {
             </a>
             {c.country && (<><span>·</span><span>{c.country}</span></>)}
             {c.industry && (<><span>·</span><span>{c.industry}</span></>)}
+            {peakScore > 0 && (
+              <>
+                <span>·</span>
+                <ScoreBadge score={peakScore} prefix="peak" />
+              </>
+            )}
           </div>
           {c.description && (
             <p className="mt-3 text-sm text-foreground/80 leading-relaxed line-clamp-3">
@@ -113,11 +141,32 @@ function CompanyDetail() {
       />
 
       {/* Stats */}
-      <div className="mt-8 grid grid-cols-3 gap-px rounded-lg overflow-hidden bg-border border border-border">
+      <div className="mt-8 grid grid-cols-4 gap-px rounded-lg overflow-hidden bg-border border border-border">
         <Stat icon={MousePointerClick} label={t.app.companies.sessions} value={sessions.length} />
         <Stat icon={Eye} label={t.app.companies.pageviews} value={pageviews.length} />
         <Stat icon={Users} label={t.app.companies.identified} value={identifiedCount} />
+        <Stat icon={Flame} label="Peak score" value={peakScore} />
       </div>
+
+      {/* People */}
+      {people.length > 0 && (
+        <>
+          <h2 className="font-medium mt-10 mb-4 text-sm uppercase tracking-wider text-muted-foreground">
+            Osoby ({people.length})
+          </h2>
+          <div className="rounded-lg border border-border bg-card divide-y divide-border">
+            {people.map((p) => (
+              <div key={p.id} className="flex items-center gap-3 px-4 py-3 text-sm">
+                <Mail className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                <span className="font-medium truncate">{p.name ?? p.email ?? "—"}</span>
+                {p.name && p.email && (
+                  <span className="text-xs text-muted-foreground truncate">{p.email}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
       {/* Timeline */}
       <h2 className="font-medium mt-10 mb-4 text-sm uppercase tracking-wider text-muted-foreground">
@@ -127,6 +176,7 @@ function CompanyDetail() {
         {sessions.map((s) => {
           const pvs = pvBySession.get(s.id) ?? [];
           const person = s.people as { name?: string | null; email?: string } | null;
+          const minutes = Math.round(((s.total_duration_ms ?? 0) / 60000) * 10) / 10;
           return (
             <div key={s.id} className="group rounded-lg border border-border bg-card p-4 hover:border-foreground/20 transition-colors">
               <div className="flex items-center justify-between gap-3">
@@ -136,10 +186,23 @@ function CompanyDetail() {
                     {person ? person.name ?? person.email : t.app.companies.anonymous}
                   </span>
                   {s.country && (<span className="text-xs text-muted-foreground shrink-0">· {s.country}</span>)}
+                  {s.high_intent_hit && (
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-orange-500 shrink-0">· high-intent</span>
+                  )}
                 </div>
-                <span className="text-xs text-muted-foreground shrink-0 tabular-nums">
-                  {formatDistanceToNow(s.last_seen_at)}
-                </span>
+                <div className="flex items-center gap-2 shrink-0">
+                  {(s.intent_score ?? 0) > 0 && <ScoreBadge score={s.intent_score ?? 0} />}
+                  <span className="text-xs text-muted-foreground tabular-nums">
+                    {formatDistanceToNow(s.last_seen_at)}
+                  </span>
+                </div>
+              </div>
+              <div className="mt-2 ml-3.5 flex items-center gap-3 text-[11px] text-muted-foreground tabular-nums">
+                <span>{s.pageview_count ?? 0} pv</span>
+                <span>·</span>
+                <span>{minutes} min</span>
+                <span>·</span>
+                <span>{s.max_scroll_pct ?? 0}% scroll</span>
               </div>
               {pvs.length > 0 ? (
                 <ul className="mt-3 ml-3.5 space-y-1 border-l border-border pl-3">
@@ -251,5 +314,68 @@ function Stat({
       </div>
       <div className="mt-2 font-display text-2xl tabular-nums">{value}</div>
     </div>
+  );
+}
+
+function ScoreBadge({ score, prefix }: { score: number; prefix?: string }) {
+  const color =
+    score >= 80
+      ? "bg-red-500/15 text-red-500"
+      : score >= 60
+        ? "bg-orange-500/15 text-orange-500"
+        : score >= 40
+          ? "bg-yellow-500/15 text-yellow-600"
+          : "bg-muted text-muted-foreground";
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold tabular-nums ${color}`}>
+      <Flame className="h-3 w-3" />
+      {prefix ? `${prefix} ${score}` : score}
+    </span>
+  );
+}
+
+function TargetToggle({
+  workspaceId,
+  companyId,
+  targetAccount,
+}: {
+  workspaceId: string;
+  companyId: string;
+  targetAccount: { id: string; label: string | null } | null;
+}) {
+  const qc = useQueryClient();
+  const addFn = useServerFn(addCompanyAsTarget);
+  const delFn = useServerFn(deleteTargetAccount);
+  const [busy, setBusy] = useState(false);
+
+  async function toggle() {
+    setBusy(true);
+    try {
+      if (targetAccount) {
+        await delFn({ data: { id: targetAccount.id } });
+        toast.success("Usunięto z target accounts");
+      } else {
+        await addFn({ data: { workspaceId, companyId } });
+        toast.success("Dodano do target accounts");
+      }
+      await qc.invalidateQueries({ queryKey: ["company-detail", workspaceId, companyId] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Nie udało się");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Button
+      size="sm"
+      variant={targetAccount ? "default" : "outline"}
+      onClick={toggle}
+      disabled={busy}
+      className="shrink-0"
+    >
+      {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Target className="h-3.5 w-3.5" />}
+      <span className="ml-1.5">{targetAccount ? "Target" : "Add to targets"}</span>
+    </Button>
   );
 }
