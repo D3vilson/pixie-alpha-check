@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Check, Shield } from "lucide-react";
+import { ArrowRight, Check, Shield, Globe, Database, FileText, TrendingUp } from "lucide-react";
 import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/_marketing/")({
@@ -20,6 +20,7 @@ function HomePage() {
       <Hero />
       <ForWhom />
       <HowItWorks />
+      <FeatureGrid />
       <Compliance />
       <CTA />
     </>
