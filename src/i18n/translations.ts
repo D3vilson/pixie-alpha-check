@@ -78,6 +78,13 @@ export const en = {
     ctaH2: "Free forever while the pixel stays installed.",
     ctaSub: "Install in 5 minutes. See your first identified visit the same day.",
     seeSnippet: "See the snippet",
+    featureGridH2: "What you get",
+    featureGrid: [
+      { title: "Reverse-IP", body: "Foreign traffic resolves via ipinfo, MaxMind and db-ip — 30–40% coverage from day one, no extra setup." },
+      { title: "Crowdsourced PL base", body: "Polish SMEs share Orange / Play / UPC IPs, invisible to off-the-shelf databases. Every pixel grows our own mapping — a moat no late entrant can copy." },
+      { title: "CEIDG + KRS enrichment", body: "Free public Polish registries: NIP, PKD, address, owner from CEIDG; board and capital structure from KRS. Hunter.io adds decision-maker emails." },
+      { title: "Intent scoring", body: "Pages viewed × time on site × scroll depth. High-intent visits trigger Slack/Teams alerts so your sales team moves while the lead is still warm." },
+    ],
   },
   pricing: {
     pill: "Pricing",
