@@ -1,10 +1,25 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ExternalLink, Users, MousePointerClick, Eye, Building2, Loader2 } from "lucide-react";
+import {
+  ExternalLink,
+  Users,
+  MousePointerClick,
+  Eye,
+  Building2,
+  Loader2,
+  Flame,
+  Target,
+  Mail,
+} from "lucide-react";
 import { useState } from "react";
 import { useWorkspace } from "@/hooks/use-workspace";
-import { getCompanyDetail, enrichCompanyFromKrs } from "@/lib/workspace.functions";
+import {
+  getCompanyDetail,
+  enrichCompanyFromKrs,
+  addCompanyAsTarget,
+  deleteTargetAccount,
+} from "@/lib/workspace.functions";
 import { formatDistanceToNow } from "@/lib/time";
 import { useT } from "@/i18n";
 import { Input } from "@/components/ui/input";
