@@ -485,6 +485,13 @@ export const pl: typeof en = {
     ctaH2: "Free forever, dopóki pixel jest zainstalowany.",
     ctaSub: "Instalacja w 5 minut. Pierwsza zidentyfikowana wizyta tego samego dnia.",
     seeSnippet: "Zobacz snippet",
+    featureGridH2: "Co dostajesz",
+    featureGrid: [
+      { title: "Reverse-IP", body: "Ruch zagraniczny rozpoznajemy przez ipinfo, MaxMind i db-ip — 30–40% coverage od pierwszego dnia, bez dodatkowej konfiguracji." },
+      { title: "Crowdsourced PL base", body: "Polskie MŚP dzielą adresy IP Orange / Play / UPC, niewidoczne dla gotowych baz. Każdy pixel rozszerza naszą mapę — przewagę, której późni konkurent nie skopiuje." },
+      { title: "CEIDG + KRS enrichment", body: "Darmowe publiczne rejestry: NIP, PKD, adres, właściciel z CEIDG; zarząd i kapitał z KRS. Hunter.io dokłada maile decydentów." },
+      { title: "Intent scoring", body: "Strony × czas na stronie × scroll depth. Wizyty o wysokim intencie wyzwalają alerty Slack/Teams, więc zespół sprzedaży reaguje, gdy lead jest jeszcze gorący." },
+    ],
   },
   pricing: {
     pill: "Cennik",
