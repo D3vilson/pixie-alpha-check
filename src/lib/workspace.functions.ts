@@ -417,11 +417,14 @@ export const getCompanyDetail = createServerFn({ method: "GET" })
       .select("id")
       .eq("workspace_id", data.workspaceId);
     const siteIds = (sites ?? []).map((s) => s.id);
-    if (siteIds.length === 0) return { company, sessions: [], pageviews: [] };
+    if (siteIds.length === 0)
+      return { company, sessions: [], pageviews: [], people: [], targetAccount: null, peakScore: 0 };
 
     const { data: sessions } = await context.supabase
       .from("sessions")
-      .select("id, started_at, last_seen_at, country, person_id, people(id, email, name)")
+      .select(
+        "id, started_at, last_seen_at, country, person_id, intent_score, high_intent_hit, pageview_count, total_duration_ms, max_scroll_pct, people(id, email, name)",
+      )
       .eq("company_id", data.companyId)
       .in("site_id", siteIds)
       .order("last_seen_at", { ascending: false })
@@ -437,7 +440,64 @@ export const getCompanyDetail = createServerFn({ method: "GET" })
           .limit(100)
       : { data: [] as any[] };
 
-    return { company, sessions: sessions ?? [], pageviews: pageviews ?? [] };
+    const peopleMap = new Map<string, { id: string; email: string | null; name: string | null }>();
+    for (const s of sessions ?? []) {
+      const p = (s as any).people as { id: string; email: string | null; name: string | null } | null;
+      if (p?.id && !peopleMap.has(p.id)) peopleMap.set(p.id, p);
+    }
+
+    const { data: target } = await context.supabase
+      .from("target_accounts")
+      .select("id, label")
+      .eq("workspace_id", data.workspaceId)
+      .eq("company_id", data.companyId)
+      .maybeSingle();
+
+    const peakScore = (sessions ?? []).reduce(
+      (max, s) => Math.max(max, s.intent_score ?? 0),
+      0,
+    );
+
+    return {
+      company,
+      sessions: sessions ?? [],
+      pageviews: pageviews ?? [],
+      people: Array.from(peopleMap.values()),
+      targetAccount: target,
+      peakScore,
+    };
+  });
+
+export const addCompanyAsTarget = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { workspaceId: string; companyId: string }) =>
+    z
+      .object({
+        workspaceId: z.string().uuid(),
+        companyId: z.string().uuid(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: company, error: cErr } = await context.supabase
+      .from("companies")
+      .select("name, domain")
+      .eq("id", data.companyId)
+      .single();
+    if (cErr || !company) throw new Error("Company not found");
+
+    const { data: row, error } = await context.supabase
+      .from("target_accounts")
+      .insert({
+        workspace_id: data.workspaceId,
+        company_id: data.companyId,
+        domain_pattern: company.domain,
+        label: company.name ?? company.domain,
+      })
+      .select("id, label")
+      .single();
+    if (error) throw error;
+    return row;
   });
 
 /**
