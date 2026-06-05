@@ -78,6 +78,13 @@ export const en = {
     ctaH2: "Free forever while the pixel stays installed.",
     ctaSub: "Install in 5 minutes. See your first identified visit the same day.",
     seeSnippet: "See the snippet",
+    featureGridH2: "What you get",
+    featureGrid: [
+      { title: "Reverse-IP", body: "Foreign traffic resolves via ipinfo, MaxMind and db-ip — 30–40% coverage from day one, no extra setup." },
+      { title: "Crowdsourced PL base", body: "Polish SMEs share Orange / Play / UPC IPs, invisible to off-the-shelf databases. Every pixel grows our own mapping — a moat no late entrant can copy." },
+      { title: "CEIDG + KRS enrichment", body: "Free public Polish registries: NIP, PKD, address, owner from CEIDG; board and capital structure from KRS. Hunter.io adds decision-maker emails." },
+      { title: "Intent scoring", body: "Pages viewed × time on site × scroll depth. High-intent visits trigger Slack/Teams alerts so your sales team moves while the lead is still warm." },
+    ],
   },
   pricing: {
     pill: "Pricing",
@@ -478,6 +485,13 @@ export const pl: typeof en = {
     ctaH2: "Free forever, dopóki pixel jest zainstalowany.",
     ctaSub: "Instalacja w 5 minut. Pierwsza zidentyfikowana wizyta tego samego dnia.",
     seeSnippet: "Zobacz snippet",
+    featureGridH2: "Co dostajesz",
+    featureGrid: [
+      { title: "Reverse-IP", body: "Ruch zagraniczny rozpoznajemy przez ipinfo, MaxMind i db-ip — 30–40% coverage od pierwszego dnia, bez dodatkowej konfiguracji." },
+      { title: "Crowdsourced PL base", body: "Polskie MŚP dzielą adresy IP Orange / Play / UPC, niewidoczne dla gotowych baz. Każdy pixel rozszerza naszą mapę — przewagę, której późni konkurent nie skopiuje." },
+      { title: "CEIDG + KRS enrichment", body: "Darmowe publiczne rejestry: NIP, PKD, adres, właściciel z CEIDG; zarząd i kapitał z KRS. Hunter.io dokłada maile decydentów." },
+      { title: "Intent scoring", body: "Strony × czas na stronie × scroll depth. Wizyty o wysokim intencie wyzwalają alerty Slack/Teams, więc zespół sprzedaży reaguje, gdy lead jest jeszcze gorący." },
+    ],
   },
   pricing: {
     pill: "Cennik",

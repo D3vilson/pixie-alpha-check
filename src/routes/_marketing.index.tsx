@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Check, Shield } from "lucide-react";
+import { ArrowRight, Check, Shield, Globe, Database, FileText, TrendingUp } from "lucide-react";
 import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/_marketing/")({
@@ -20,6 +20,7 @@ function HomePage() {
       <Hero />
       <ForWhom />
       <HowItWorks />
+      <FeatureGrid />
       <Compliance />
       <CTA />
     </>
@@ -100,6 +101,28 @@ function HowItWorks() {
             </div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+function FeatureGrid() {
+  const t = useT();
+  const icons = [Globe, Database, FileText, TrendingUp];
+  return (
+    <section className="mx-auto max-w-6xl px-6 py-20 md:py-24">
+      <h2 className="text-3xl md:text-5xl max-w-2xl">{t.home.featureGridH2}</h2>
+      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {t.home.featureGrid.map((f, i) => {
+          const Icon = icons[i];
+          return (
+            <div key={f.title} className="rounded-xl border border-border bg-card p-6">
+              <Icon className="h-6 w-6 text-accent" />
+              <h3 className="mt-4 text-lg">{f.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{f.body}</p>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
