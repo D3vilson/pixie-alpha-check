@@ -316,3 +316,66 @@ function Stat({
     </div>
   );
 }
+
+function ScoreBadge({ score, prefix }: { score: number; prefix?: string }) {
+  const color =
+    score >= 80
+      ? "bg-red-500/15 text-red-500"
+      : score >= 60
+        ? "bg-orange-500/15 text-orange-500"
+        : score >= 40
+          ? "bg-yellow-500/15 text-yellow-600"
+          : "bg-muted text-muted-foreground";
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold tabular-nums ${color}`}>
+      <Flame className="h-3 w-3" />
+      {prefix ? `${prefix} ${score}` : score}
+    </span>
+  );
+}
+
+function TargetToggle({
+  workspaceId,
+  companyId,
+  targetAccount,
+}: {
+  workspaceId: string;
+  companyId: string;
+  targetAccount: { id: string; label: string | null } | null;
+}) {
+  const qc = useQueryClient();
+  const addFn = useServerFn(addCompanyAsTarget);
+  const delFn = useServerFn(deleteTargetAccount);
+  const [busy, setBusy] = useState(false);
+
+  async function toggle() {
+    setBusy(true);
+    try {
+      if (targetAccount) {
+        await delFn({ data: { id: targetAccount.id } });
+        toast.success("Usunięto z target accounts");
+      } else {
+        await addFn({ data: { workspaceId, companyId } });
+        toast.success("Dodano do target accounts");
+      }
+      await qc.invalidateQueries({ queryKey: ["company-detail", workspaceId, companyId] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Nie udało się");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Button
+      size="sm"
+      variant={targetAccount ? "default" : "outline"}
+      onClick={toggle}
+      disabled={busy}
+      className="shrink-0"
+    >
+      {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Target className="h-3.5 w-3.5" />}
+      <span className="ml-1.5">{targetAccount ? "Target" : "Add to targets"}</span>
+    </Button>
+  );
+}
