@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Check, Shield, Globe, Database, FileText, TrendingUp } from "lucide-react";
+import { ArrowRight, Check, Shield, Globe, Database, FileText, TrendingUp, Activity, Network } from "lucide-react";
 import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/_marketing/")({
@@ -20,10 +20,53 @@ function HomePage() {
       <Hero />
       <ForWhom />
       <HowItWorks />
+      <Moat />
       <FeatureGrid />
       <Compliance />
       <CTA />
     </>
+  );
+}
+
+const SAMPLE_VISITS = [
+  { company: "Allegro", pkd: "E-commerce", pages: 3, time: "4 min", last: "2 min ago", flag: "🇵🇱" },
+  { company: "Booksy", pkd: "SaaS", pages: 2, time: "2 min", last: "5 min ago", flag: "🇵🇱" },
+  { company: "LiveChat", pkd: "B2B Tech", pages: 4, time: "6 min", last: "just now", flag: "🇵🇱" },
+];
+
+function SampleVisits() {
+  const t = useT();
+  return (
+    <div className="rounded-xl border border-border bg-card/80 backdrop-blur p-5 shadow-xl">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+          </span>
+          <h3 className="text-sm font-medium">{t.home.samplesH2}</h3>
+        </div>
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground border border-border rounded px-1.5 py-0.5">Demo</span>
+      </div>
+      <ul className="space-y-2">
+        {SAMPLE_VISITS.map((v) => (
+          <li key={v.company} className="flex items-center gap-3 rounded-lg border border-border/60 bg-surface/60 px-3 py-2.5 text-sm">
+            <span className="text-base">{v.flag}</span>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="font-medium truncate">{v.company}</span>
+                <span className="text-xs text-muted-foreground">· {v.pkd}</span>
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {v.pages} pages · {v.time} · {v.last}
+              </div>
+            </div>
+            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+          </li>
+        ))}
+      </ul>
+      <p className="mt-3 text-[11px] text-muted-foreground">{t.home.samplesNote}</p>
+    </div>
   );
 }
 
@@ -32,38 +75,45 @@ function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-surface to-background" aria-hidden />
-      <div className="relative mx-auto max-w-6xl px-6 pt-8 pb-24 md:pt-12 md:pb-32">
-        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs text-muted-foreground">
-          <Shield className="h-3.5 w-3.5 text-accent" />
-          {t.home.pill}
+      <div className="relative mx-auto max-w-6xl px-6 pt-8 pb-20 md:pt-12 md:pb-28">
+        <div className="grid gap-12 md:grid-cols-2 md:items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs text-muted-foreground">
+              <Shield className="h-3.5 w-3.5 text-accent" />
+              {t.home.pill}
+            </div>
+            <h1 className="mt-6 text-4xl leading-[1.05] tracking-tight md:text-6xl">
+              {t.home.h1Pre} <span className="italic text-accent">{t.home.h1Em}</span> {t.home.h1Post}
+            </h1>
+            <p className="mt-6 text-lg text-muted-foreground">{t.home.sub}</p>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Link
+                to="/signup"
+                className="inline-flex items-center gap-2 rounded-md bg-accent px-5 py-3 text-sm font-medium text-accent-foreground hover:opacity-90 transition-opacity"
+              >
+                {t.common.startFreeTrial}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                to="/docs/install"
+                className="inline-flex items-center rounded-md border border-border bg-card px-5 py-3 text-sm font-medium hover:bg-surface"
+              >
+                {t.home.seeSnippet}
+              </Link>
+            </div>
+            <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
+              {t.home.bullets.map((item) => (
+                <li key={item} className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-accent" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="md:pl-4">
+            <SampleVisits />
+          </div>
         </div>
-        <h1 className="mt-6 max-w-3xl text-5xl leading-[1.05] tracking-tight md:text-7xl">
-          {t.home.h1Pre} <span className="italic text-accent">{t.home.h1Em}</span> {t.home.h1Post}
-        </h1>
-        <p className="mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">{t.home.sub}</p>
-        <div className="mt-10 flex flex-wrap items-center gap-3">
-          <Link
-            to="/signup"
-            className="inline-flex items-center gap-2 rounded-md bg-accent px-5 py-3 text-sm font-medium text-accent-foreground hover:opacity-90 transition-opacity"
-          >
-            {t.common.startFreeTrial}
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-          <Link
-            to="/docs/install"
-            className="inline-flex items-center rounded-md border border-border bg-card px-5 py-3 text-sm font-medium hover:bg-surface"
-          >
-            {t.home.seeSnippet}
-          </Link>
-        </div>
-        <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
-          {t.home.bullets.map((item) => (
-            <li key={item} className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-accent" />
-              {item}
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
   );
@@ -86,20 +136,56 @@ function ForWhom() {
   );
 }
 
+const LAYER_STYLES = [
+  "border-l-4 border-l-blue-500/70",
+  "border-l-4 border-l-teal-500/70",
+  "border-l-4 border-l-purple-500/70",
+];
+
 function HowItWorks() {
   const t = useT();
   return (
     <section className="bg-surface/40 border-y border-border/60">
       <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
         <h2 className="text-3xl md:text-5xl max-w-2xl">{t.home.howH2}</h2>
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {t.home.steps.map((s) => (
-            <div key={s.n} className="rounded-xl border border-border bg-card p-6">
-              <div className="font-display text-3xl text-accent">{s.n}</div>
-              <h3 className="mt-3 text-lg">{s.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{s.body}</p>
+        <p className="mt-4 max-w-2xl text-muted-foreground">{t.home.howSub}</p>
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {t.home.layers.map((l, i) => (
+            <div key={l.title} className={`rounded-xl border border-border bg-card p-6 ${LAYER_STYLES[i]}`}>
+              <div className="text-xs uppercase tracking-wider text-muted-foreground">{l.tag}</div>
+              <h3 className="mt-3 text-xl">{l.title}</h3>
+              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{l.body}</p>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Moat() {
+  const t = useT();
+  return (
+    <section className="mx-auto max-w-6xl px-6 py-20 md:py-28">
+      <div className="grid gap-10 md:grid-cols-2 md:items-start">
+        <div>
+          <p className="text-xs uppercase tracking-wider text-accent flex items-center gap-2">
+            <Network className="h-3.5 w-3.5" /> Moat
+          </p>
+          <h2 className="mt-3 text-3xl md:text-5xl">{t.home.moatH2}</h2>
+          <p className="mt-5 text-muted-foreground leading-relaxed">{t.home.moatLead}</p>
+        </div>
+        <div className="space-y-4">
+          {t.home.moatPoints.map((p) => (
+            <div key={p.k} className="rounded-xl border border-border bg-card p-5 flex items-center gap-4">
+              <Activity className="h-6 w-6 text-accent shrink-0" />
+              <div>
+                <div className="font-display text-2xl">{p.k}</div>
+                <div className="text-sm text-muted-foreground mt-1">{p.v}</div>
+              </div>
+            </div>
+          ))}
+          <p className="text-sm text-muted-foreground leading-relaxed pt-2">{t.home.moatExplain}</p>
         </div>
       </div>
     </section>
