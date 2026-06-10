@@ -116,10 +116,17 @@ function FeatureGrid() {
         {t.home.featureGrid.map((f, i) => {
           const Icon = icons[i];
           return (
-            <div key={f.title} className="rounded-xl border border-border bg-card p-6">
+            <div key={f.title} className="rounded-xl border border-border bg-card p-6 flex flex-col">
               <Icon className="h-6 w-6 text-accent" />
               <h3 className="mt-4 text-lg">{f.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{f.body}</p>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed flex-1">{f.body}</p>
+              <Link
+                to={f.link}
+                className="mt-5 inline-flex items-center gap-2 rounded-md border border-border bg-surface px-4 py-2 text-sm font-medium hover:bg-accent/10 transition-colors"
+              >
+                {f.cta}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           );
         })}
