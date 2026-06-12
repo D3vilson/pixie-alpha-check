@@ -451,12 +451,6 @@ export const pl: typeof en = {
       { tag: "Warstwa 2 · Identify", title: "Identyfikacja", body: "Reverse-IP przez ipinfo / MaxMind / db-ip dla ruchu zagranicznego. Nasza własna crowdsourced baza PL dla zakresów Orange / Play / UPC, których nie widzą gotowe bazy." },
       { tag: "Warstwa 3 · Enrich", title: "Wzbogacenie", body: "CEIDG + KRS dla nazwy, NIP, PKD, zarządu, adresu. Hunter.io dodaje maile decydentów. Intent scoring (strony × czas × scroll) wyzwala alerty Slack / Teams na hot leadach." },
     ],
-    moatH2: "Dlaczego nikt tego nie skopiuje w Polsce",
-    moatLead: "Gotowe bazy reverse-IP pokrywają ~30% polskiego ruchu B2B. Pozostałe 70% siedzi za zakresami konsumenckimi (Orange, Play, UPC) — niewidoczne, dopóki ktoś nie zbuduje mapowania od zera.",
-    moatPoints: [
-      { k: "50 klientów", v: "~20% pokrycia polskiej przestrzeni IP MŚP" },
-      { k: "200 klientów", v: "~60% pokrycia — nie do pobicia dla każdego późnego konkurenta" },
-    ],
     samplesH2: "Live visits — teraz",
     samplesNote: "Przykładowe dane z naszego demo workspace.",
     complianceH2: "Compliant by design",
