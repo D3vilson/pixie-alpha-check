@@ -58,12 +58,6 @@ export const en = {
       { tag: "Layer 2 · Identify", title: "Identification", body: "Reverse-IP via ipinfo / MaxMind / db-ip for foreign traffic. Our own crowdsourced PL database for Orange / Play / UPC ranges that off-the-shelf providers miss." },
       { tag: "Layer 3 · Enrich", title: "Enrichment", body: "CEIDG + KRS for company name, NIP, PKD, board, address. Hunter.io adds decision-maker emails. Intent scoring (pages × time × scroll) fires Slack / Teams alerts on hot leads." },
     ],
-    moatH2: "Why nobody can copy this in Poland",
-    moatLead: "Off-the-shelf reverse-IP providers cover ~30% of Polish B2B traffic. The other 70% sits behind consumer-ISP ranges (Orange, Play, UPC) — invisible unless someone builds the mapping from scratch.",
-    moatPoints: [
-      { k: "50 customers", v: "~20% coverage of Polish SME IP space" },
-      { k: "200 customers", v: "~60% coverage — unbeatable for any late entrant" },
-    ],
     samplesH2: "Live visits — right now",
     samplesNote: "Sample data from our demo workspace.",
     complianceH2: "Compliant by design",
