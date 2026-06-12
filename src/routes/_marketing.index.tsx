@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Check, Shield, Globe, Database, FileText, TrendingUp, Activity, Network } from "lucide-react";
+import { ArrowRight, Check, Shield, Activity, Network } from "lucide-react";
 import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/_marketing/")({
@@ -18,10 +18,8 @@ function HomePage() {
   return (
     <>
       <Hero />
-      <ForWhom />
       <HowItWorks />
       <Moat />
-      <FeatureGrid />
       <Compliance />
       <CTA />
     </>
@@ -119,23 +117,6 @@ function Hero() {
   );
 }
 
-function ForWhom() {
-  const t = useT();
-  return (
-    <section className="mx-auto max-w-6xl px-6 py-20 md:py-24">
-      <h2 className="text-3xl md:text-5xl max-w-2xl">{t.home.forWhomH2}</h2>
-      <div className="mt-12 grid gap-6 md:grid-cols-3">
-        {t.home.forWhom.map((w) => (
-          <div key={w.title} className="rounded-xl border border-border bg-card p-6">
-            <h3 className="text-xl">{w.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{w.body}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 const LAYER_STYLES = [
   "border-l-4 border-l-blue-500/70",
   "border-l-4 border-l-teal-500/70",
@@ -148,7 +129,6 @@ function HowItWorks() {
     <section className="bg-surface/40 border-y border-border/60">
       <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
         <h2 className="text-3xl md:text-5xl max-w-2xl">{t.home.howH2}</h2>
-        <p className="mt-4 max-w-2xl text-muted-foreground">{t.home.howSub}</p>
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {t.home.layers.map((l, i) => (
             <div key={l.title} className={`rounded-xl border border-border bg-card p-6 ${LAYER_STYLES[i]}`}>
@@ -185,37 +165,7 @@ function Moat() {
               </div>
             </div>
           ))}
-          <p className="text-sm text-muted-foreground leading-relaxed pt-2">{t.home.moatExplain}</p>
         </div>
-      </div>
-    </section>
-  );
-}
-
-function FeatureGrid() {
-  const t = useT();
-  const icons = [Globe, Database, FileText, TrendingUp];
-  return (
-    <section className="mx-auto max-w-6xl px-6 py-20 md:py-24">
-      <h2 className="text-3xl md:text-5xl max-w-2xl">{t.home.featureGridH2}</h2>
-      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {t.home.featureGrid.map((f, i) => {
-          const Icon = icons[i];
-          return (
-            <div key={f.title} className="rounded-xl border border-border bg-card p-6 flex flex-col">
-              <Icon className="h-6 w-6 text-accent" />
-              <h3 className="mt-4 text-lg">{f.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed flex-1">{f.body}</p>
-              <Link
-                to={f.link}
-                className="mt-5 inline-flex items-center gap-2 rounded-md border border-border bg-surface px-4 py-2 text-sm font-medium hover:bg-accent/10 transition-colors"
-              >
-                {f.cta}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          );
-        })}
       </div>
     </section>
   );
@@ -224,26 +174,28 @@ function FeatureGrid() {
 function Compliance() {
   const t = useT();
   return (
-    <section className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-      <div className="grid gap-10 md:grid-cols-2 md:items-start">
-        <div>
-          <p className="text-xs uppercase tracking-wider text-accent">Privacy</p>
-          <h2 className="mt-3 text-3xl md:text-5xl">{t.home.complianceH2}</h2>
-          <p className="mt-5 text-muted-foreground leading-relaxed">{t.home.complianceLead}</p>
-          <Link to="/gdpr" className="mt-6 inline-flex items-center gap-2 text-sm text-accent hover:underline">
-            {t.nav.gdpr} <ArrowRight className="h-4 w-4" />
-          </Link>
+    <section className="bg-surface/40 border-y border-border/60">
+      <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
+        <div className="grid gap-10 md:grid-cols-2 md:items-start">
+          <div>
+            <p className="text-xs uppercase tracking-wider text-accent">Privacy</p>
+            <h2 className="mt-3 text-3xl md:text-5xl">{t.home.complianceH2}</h2>
+            <p className="mt-5 text-muted-foreground leading-relaxed">{t.home.complianceLead}</p>
+            <Link to="/gdpr" className="mt-6 inline-flex items-center gap-2 text-sm text-accent hover:underline">
+              {t.nav.gdpr} <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <ul className="space-y-3">
+            {t.home.compliancePoints.map((p) => (
+              <li key={p} className="flex items-start gap-3 rounded-lg border border-border bg-card px-4 py-3 text-sm">
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
+                  <Check className="h-3 w-3" />
+                </span>
+                <span>{p}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul className="space-y-3">
-          {t.home.compliancePoints.map((p) => (
-            <li key={p} className="flex items-start gap-3 rounded-lg border border-border bg-card px-4 py-3 text-sm">
-              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
-                <Check className="h-3 w-3" />
-              </span>
-              <span>{p}</span>
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
   );
@@ -252,7 +204,7 @@ function Compliance() {
 function CTA() {
   const t = useT();
   return (
-    <section className="mx-auto max-w-6xl px-6 pb-24">
+    <section className="mx-auto max-w-6xl px-6 py-24">
       <div className="rounded-2xl border border-border bg-gradient-to-br from-surface to-card p-10 md:p-16 text-center">
         <h2 className="text-3xl md:text-5xl max-w-2xl mx-auto">{t.home.ctaH2}</h2>
         <p className="mt-4 text-muted-foreground max-w-xl mx-auto">{t.home.ctaSub}</p>
