@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Check, Shield, Activity, Network } from "lucide-react";
+import { ArrowRight, Check, Shield } from "lucide-react";
 import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/_marketing/")({
@@ -19,7 +19,6 @@ function HomePage() {
     <>
       <Hero />
       <HowItWorks />
-      <Moat />
       <Compliance />
       <CTA />
     </>
@@ -135,34 +134,6 @@ function HowItWorks() {
               <div className="text-xs uppercase tracking-wider text-muted-foreground">{l.tag}</div>
               <h3 className="mt-3 text-xl">{l.title}</h3>
               <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{l.body}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Moat() {
-  const t = useT();
-  return (
-    <section className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-      <div className="grid gap-10 md:grid-cols-2 md:items-start">
-        <div>
-          <p className="text-xs uppercase tracking-wider text-accent flex items-center gap-2">
-            <Network className="h-3.5 w-3.5" /> Moat
-          </p>
-          <h2 className="mt-3 text-3xl md:text-5xl">{t.home.moatH2}</h2>
-          <p className="mt-5 text-muted-foreground leading-relaxed">{t.home.moatLead}</p>
-        </div>
-        <div className="space-y-4">
-          {t.home.moatPoints.map((p) => (
-            <div key={p.k} className="rounded-xl border border-border bg-card p-5 flex items-center gap-4">
-              <Activity className="h-6 w-6 text-accent shrink-0" />
-              <div>
-                <div className="font-display text-2xl">{p.k}</div>
-                <div className="text-sm text-muted-foreground mt-1">{p.v}</div>
-              </div>
             </div>
           ))}
         </div>
