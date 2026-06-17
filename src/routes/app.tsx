@@ -8,7 +8,7 @@ import { useT } from "@/i18n";
 import { LanguageSwitcher } from "@/components/language-switcher";
 
 export const Route = createFileRoute("/app")({
-  head: () => ({ meta: [{ title: "Dashboard — VisitorID EU" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Pixie" }] }),
   beforeLoad: async () => {
     const { data } = await supabase.auth.getSession();
     if (!data.session) throw redirect({ to: "/login" });
@@ -48,7 +48,7 @@ function AppLayout() {
                   <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12Z" />
                 </svg>
               </span>
-              <span className="font-display text-base">VisitorID <span className="text-accent">EU</span></span>
+              <span className="font-display text-base">Pixie</span>
             </Link>
             <p className="mt-3 text-xs uppercase tracking-wider text-muted-foreground">{t.app.workspace}</p>
             <p className="text-sm font-medium truncate">{ws.name}</p>
