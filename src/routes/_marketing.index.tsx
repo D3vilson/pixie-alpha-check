@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Check, Shield } from "lucide-react";
+import { toast } from "sonner";
 import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/_marketing/")({
