@@ -63,6 +63,7 @@ function AppLayout() {
             <NavItem to="/app/integrations" label={t.app.nav.integrations} />
             <NavItem to="/app/consent-audit" label={t.app.nav.consentAudit} />
             <NavItem to="/app/settings" label={t.app.nav.settings} />
+            <NavItem to="/app/account" label="👤 Konto" />
           </nav>
           <div className="mt-auto pt-6 border-t border-border/60 space-y-3">
             <LanguageSwitcher className="w-full justify-center" />
