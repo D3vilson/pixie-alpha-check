@@ -25,7 +25,7 @@ function Header() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link to="/" className="flex items-center gap-2 group">
           <Logo />
-          <span className="font-display text-xl tracking-tight">VisitorID <span className="text-accent">EU</span></span>
+          <span className="font-display text-xl tracking-tight">Pixie</span>
         </Link>
         <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
           <Link to="/features" className="hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>{t.nav.features}</Link>
@@ -61,7 +61,7 @@ function Footer() {
         <div className="col-span-2 md:col-span-1">
           <div className="flex items-center gap-2">
             <Logo />
-            <span className="font-display text-lg">VisitorID <span className="text-accent">EU</span></span>
+            <span className="font-display text-lg">Pixie</span>
           </div>
           <p className="mt-3 text-sm text-muted-foreground max-w-xs">{t.footer.tagline}</p>
         </div>
@@ -82,7 +82,7 @@ function Footer() {
       </div>
       <div className="border-t border-border/60">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-5 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
-          <span>© {new Date().getFullYear()} VisitorID EU. {t.footer.builtInEU}</span>
+          <span>© {new Date().getFullYear()} Pixie. {t.footer.builtInEU}</span>
           <span>{t.footer.lawfulBasis}</span>
         </div>
       </div>

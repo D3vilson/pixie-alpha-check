@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/app/settings")({
-  head: () => ({ meta: [{ title: "Settings — VisitorID EU" }] }),
+  head: () => ({ meta: [{ title: "Settings — Pixie" }] }),
   component: Settings,
 });
 

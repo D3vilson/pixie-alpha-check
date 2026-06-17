@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 
 export const Route = createFileRoute("/app/hot-leads")({
-  head: () => ({ meta: [{ title: "Hot Leads — VisitorID EU" }] }),
+  head: () => ({ meta: [{ title: "Hot Leads — Pixie" }] }),
   component: HotLeadsPage,
 });
 

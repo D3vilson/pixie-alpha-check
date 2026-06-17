@@ -17,7 +17,7 @@ import { Switch } from "@/components/ui/switch";
 import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/app/integrations")({
-  head: () => ({ meta: [{ title: "Integrations — VisitorID EU" }] }),
+  head: () => ({ meta: [{ title: "Integrations — Pixie" }] }),
   component: Integrations,
 });
 

@@ -10,7 +10,7 @@ import { AuthShell, Field, Divider, GoogleIcon } from "./_marketing.login";
 export const Route = createFileRoute("/_marketing/signup")({
   head: () => ({
     meta: [
-      { title: "Create your workspace — VisitorID EU" },
+      { title: "Create your workspace — Pixie" },
       { name: "description", content: "Start free for 14 days. EU-hosted, GDPR-compliant visitor identification." },
     ],
   }),

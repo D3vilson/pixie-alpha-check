@@ -4,7 +4,7 @@ import { useT } from "@/i18n";
 export const Route = createFileRoute("/_marketing/docs/install")({
   head: () => ({
     meta: [
-      { title: "Install the tracking snippet — VisitorID EU" },
+      { title: "Install the tracking snippet — Pixie" },
       { name: "description", content: "Drop one script tag in your <head>. First-party, GDPR-compliant, honours Global Privacy Control." },
     ],
   }),

@@ -9,8 +9,8 @@ import { useT } from "@/i18n";
 export const Route = createFileRoute("/_marketing/login")({
   head: () => ({
     meta: [
-      { title: "Log in — VisitorID EU" },
-      { name: "description", content: "Log in to your VisitorID EU workspace." },
+      { title: "Log in — Pixie" },
+      { name: "description", content: "Log in to your Pixie workspace." },
     ],
   }),
   component: LoginPage,

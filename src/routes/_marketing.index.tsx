@@ -5,9 +5,9 @@ import { useT } from "@/i18n";
 export const Route = createFileRoute("/_marketing/")({
   head: () => ({
     meta: [
-      { title: "VisitorID EU — GDPR-compliant website visitor identification" },
+      { title: "Pixie — See which Polish companies visit your website" },
       { name: "description", content: "See which Polish companies visit your website. Organization-level identification, no cookies, no personal data." },
-      { property: "og:title", content: "VisitorID EU — GDPR-compliant visitor identification" },
+      { property: "og:title", content: "Pixie — GDPR-compliant visitor identification" },
       { property: "og:description", content: "One line of JavaScript. Company-level reveal, hot lead alerts, no cookies." },
     ],
   }),

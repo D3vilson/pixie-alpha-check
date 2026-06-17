@@ -7,7 +7,7 @@ import { formatDistanceToNow } from "@/lib/time";
 import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/app/companies")({
-  head: () => ({ meta: [{ title: "Companies — VisitorID EU" }] }),
+  head: () => ({ meta: [{ title: "Companies — Pixie" }] }),
   component: Companies,
 });
 

@@ -5,7 +5,7 @@ import { useT } from "@/i18n";
 export const Route = createFileRoute("/_marketing/pricing")({
   head: () => ({
     meta: [
-      { title: "Pricing — VisitorID EU" },
+      { title: "Pricing — Pixie" },
       { name: "description", content: "Transparent pricing. Tiered by monthly identified companies. EU-billed in EUR, VAT-compliant invoices." },
     ],
   }),
