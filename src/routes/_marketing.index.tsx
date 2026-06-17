@@ -5,10 +5,10 @@ import { useT } from "@/i18n";
 export const Route = createFileRoute("/_marketing/")({
   head: () => ({
     meta: [
-      { title: "Pixie — See which Polish companies visit your website" },
-      { name: "description", content: "See which Polish companies visit your website. Organization-level identification, no cookies, no personal data." },
-      { property: "og:title", content: "Pixie — GDPR-compliant visitor identification" },
-      { property: "og:description", content: "One line of JavaScript. Company-level reveal, hot lead alerts, no cookies." },
+      { title: "Pixie — Zobacz, która polska firma odwiedza Twoją stronę" },
+      { name: "description", content: "High-intent leady B2B zanim wypełnią formularz. Pixie rozpoznaje polskie firmy odwiedzające Twoją stronę i daje sprzedaży kontekst do semi-cold outreachu. Bez cookies, zgodne z RODO." },
+      { property: "og:title", content: "Pixie — High-intent leady B2B zanim wypełnią formularz" },
+      { property: "og:description", content: "Sprzedaż widzi, która polska firma czyta cennik i case studies — z kontekstem do semi-cold outreachu tego samego dnia." },
     ],
   }),
   component: HomePage,
@@ -26,9 +26,9 @@ function HomePage() {
 }
 
 const SAMPLE_VISITS = [
-  { company: "Allegro", pkd: "E-commerce", pages: 3, last: "2 min ago" },
-  { company: "Booksy", pkd: "SaaS", pages: 2, last: "5 min ago" },
-  { company: "LiveChat", pkd: "B2B Tech", pages: 4, last: "just now" },
+  { company: "Allegro", pkd: "E-commerce", pages: 3, last: "2 min temu" },
+  { company: "Booksy", pkd: "SaaS", pages: 2, last: "5 min temu" },
+  { company: "LiveChat", pkd: "B2B Tech", pages: 4, last: "przed chwilą" },
 ];
 
 function SampleVisits() {
@@ -40,7 +40,7 @@ function SampleVisits() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
           </span>
-          <h3 className="text-sm font-semibold tracking-tight">Live visits</h3>
+          <h3 className="text-sm font-semibold tracking-tight">Wizyty na żywo</h3>
         </div>
         <span className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground border border-border rounded-full px-2 py-0.5">Demo</span>
       </div>
@@ -56,7 +56,7 @@ function SampleVisits() {
                 <span className="text-xs text-muted-foreground">· {v.pkd}</span>
               </div>
               <div className="text-xs text-muted-foreground mt-0.5">
-                {v.pages} pages · {v.last}
+                {v.pages} podstron · {v.last}
               </div>
             </div>
             <ArrowUpRight className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -125,7 +125,7 @@ function HowItWorks() {
     <section className="border-b border-border bg-background">
       <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
         <div className="max-w-2xl">
-          <p className="text-xs uppercase tracking-[0.18em] text-primary font-semibold">How it works</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-primary font-semibold">Jak to działa</p>
           <h2 className="mt-4 text-4xl md:text-6xl tracking-[-0.03em] font-semibold leading-[1.02]">
             {t.home.howH2}
           </h2>
@@ -158,7 +158,7 @@ function Compliance() {
       <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
         <div className="grid gap-16 md:grid-cols-12 md:items-start">
           <div className="md:col-span-5">
-            <p className="text-xs uppercase tracking-[0.18em] text-primary font-semibold">Compliance</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-primary font-semibold">Zgodność</p>
             <h2 className="mt-4 text-4xl md:text-6xl tracking-[-0.03em] font-semibold leading-[1.02] text-ink-foreground">
               {t.home.complianceH2}
             </h2>
