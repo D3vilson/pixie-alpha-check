@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDistanceToNow } from "@/lib/time";
 
 export const Route = createFileRoute("/app/install")({
-  head: () => ({ meta: [{ title: "Install pixel — VisitorID EU" }] }),
+  head: () => ({ meta: [{ title: "Install pixel — Pixie" }] }),
   component: InstallPage,
 });
 

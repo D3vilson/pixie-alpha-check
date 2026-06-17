@@ -15,7 +15,7 @@ import { formatDistanceToNow } from "@/lib/time";
 import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/app/consent-audit")({
-  head: () => ({ meta: [{ title: "Consent audit — VisitorID EU" }] }),
+  head: () => ({ meta: [{ title: "Consent audit — Pixie" }] }),
   component: ConsentAudit,
 });
 
