@@ -77,13 +77,17 @@ function SlackPreview() {
                   <span className="text-muted-foreground w-20 shrink-0">Decydenci:</span>
                   <span className="font-medium">Head of Growth, CMO</span>
                 </div>
+                <div className="flex gap-2">
+                  <span className="text-muted-foreground w-20 shrink-0">Telefony:</span>
+                  <span className="font-medium">+48 22 123 45 67, +48 501 234 567</span>
+                </div>
               </div>
               <div className="mt-3 flex gap-2">
                 <span className="inline-flex items-center rounded bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
                   Otwórz w Pixie
                 </span>
                 <span className="inline-flex items-center rounded border border-border bg-card px-3 py-1 text-xs font-semibold">
-                  Skopiuj e-maile
+                  Skopiuj e-maile & numery
                 </span>
               </div>
             </div>
