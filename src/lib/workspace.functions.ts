@@ -307,7 +307,7 @@ export const testIntegration = createServerFn({ method: "POST" })
               "*Acme Sp. z o.o.* (acme.pl, PL)\n" +
               "📄 6 stron · ⏱ 4.2 min · 📜 92% scroll\n" +
               "🔗 Ostatnio: https://example.com/pricing\n" +
-              "_To jest wiadomość testowa z VisitorID EU._",
+              "_To jest wiadomość testowa z Pixie._",
           },
         },
       ],
