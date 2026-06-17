@@ -21,6 +21,7 @@ import { Route as AppInstallRouteImport } from './routes/app.install'
 import { Route as AppHotLeadsRouteImport } from './routes/app.hot-leads'
 import { Route as AppConsentAuditRouteImport } from './routes/app.consent-audit'
 import { Route as AppCompaniesRouteImport } from './routes/app.companies'
+import { Route as AppAccountRouteImport } from './routes/app.account'
 import { Route as MarketingSignupRouteImport } from './routes/_marketing.signup'
 import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricing'
 import { Route as MarketingLoginRouteImport } from './routes/_marketing.login'
@@ -92,6 +93,11 @@ const AppCompaniesRoute = AppCompaniesRouteImport.update({
   path: '/companies',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAccountRoute = AppAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AppRoute,
+} as any)
 const MarketingSignupRoute = MarketingSignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -156,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof MarketingLoginRoute
   '/pricing': typeof MarketingPricingRoute
   '/signup': typeof MarketingSignupRoute
+  '/app/account': typeof AppAccountRoute
   '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/consent-audit': typeof AppConsentAuditRoute
   '/app/hot-leads': typeof AppHotLeadsRoute
@@ -178,6 +185,7 @@ export interface FileRoutesByTo {
   '/login': typeof MarketingLoginRoute
   '/pricing': typeof MarketingPricingRoute
   '/signup': typeof MarketingSignupRoute
+  '/app/account': typeof AppAccountRoute
   '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/consent-audit': typeof AppConsentAuditRoute
   '/app/hot-leads': typeof AppHotLeadsRoute
@@ -204,6 +212,7 @@ export interface FileRoutesById {
   '/_marketing/login': typeof MarketingLoginRoute
   '/_marketing/pricing': typeof MarketingPricingRoute
   '/_marketing/signup': typeof MarketingSignupRoute
+  '/app/account': typeof AppAccountRoute
   '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/consent-audit': typeof AppConsentAuditRoute
   '/app/hot-leads': typeof AppHotLeadsRoute
@@ -231,6 +240,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/pricing'
     | '/signup'
+    | '/app/account'
     | '/app/companies'
     | '/app/consent-audit'
     | '/app/hot-leads'
@@ -253,6 +263,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/pricing'
     | '/signup'
+    | '/app/account'
     | '/app/companies'
     | '/app/consent-audit'
     | '/app/hot-leads'
@@ -278,6 +289,7 @@ export interface FileRouteTypes {
     | '/_marketing/login'
     | '/_marketing/pricing'
     | '/_marketing/signup'
+    | '/app/account'
     | '/app/companies'
     | '/app/consent-audit'
     | '/app/hot-leads'
@@ -389,6 +401,13 @@ declare module '@tanstack/react-router' {
       path: '/companies'
       fullPath: '/app/companies'
       preLoaderRoute: typeof AppCompaniesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/account': {
+      id: '/app/account'
+      path: '/account'
+      fullPath: '/app/account'
+      preLoaderRoute: typeof AppAccountRouteImport
       parentRoute: typeof AppRoute
     }
     '/_marketing/signup': {
@@ -508,6 +527,7 @@ const AppCompaniesRouteWithChildren = AppCompaniesRoute._addFileChildren(
 )
 
 interface AppRouteChildren {
+  AppAccountRoute: typeof AppAccountRoute
   AppCompaniesRoute: typeof AppCompaniesRouteWithChildren
   AppConsentAuditRoute: typeof AppConsentAuditRoute
   AppHotLeadsRoute: typeof AppHotLeadsRoute
@@ -520,6 +540,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAccountRoute: AppAccountRoute,
   AppCompaniesRoute: AppCompaniesRouteWithChildren,
   AppConsentAuditRoute: AppConsentAuditRoute,
   AppHotLeadsRoute: AppHotLeadsRoute,
