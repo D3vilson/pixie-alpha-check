@@ -6,33 +6,20 @@ export type Lang = "en" | "pl";
 const dicts: Record<Lang, Dict> = { en, pl };
 const STORAGE_KEY = "vid-lang";
 
-function detectBrowserLang(): Lang {
-  if (typeof navigator === "undefined") return "en";
-  const langs = navigator.languages ?? [navigator.language];
-  for (const l of langs) {
-    if (l?.toLowerCase().startsWith("pl")) return "pl";
-  }
-  return "en";
-}
-
 type Ctx = { lang: Lang; setLang: (l: Lang) => void; t: Dict };
-const I18nContext = createContext<Ctx>({ lang: "en", setLang: () => {}, t: en });
+const I18nContext = createContext<Ctx>({ lang: "pl", setLang: () => {}, t: pl });
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  // SSR + initial client render: always "en" to avoid hydration mismatch.
-  const [lang, setLangState] = useState<Lang>("en");
+  // EN czasowo wyłączone — wymuszamy PL na całej aplikacji.
+  const [lang] = useState<Lang>("pl");
 
   useEffect(() => {
-    const stored = (typeof localStorage !== "undefined" && localStorage.getItem(STORAGE_KEY)) as Lang | null;
-    const next = stored === "en" || stored === "pl" ? stored : detectBrowserLang();
-    if (next !== "en") setLangState(next);
-    if (typeof document !== "undefined") document.documentElement.lang = next;
+    if (typeof document !== "undefined") document.documentElement.lang = "pl";
+    if (typeof localStorage !== "undefined") localStorage.setItem(STORAGE_KEY, "pl");
   }, []);
 
-  const setLang = (l: Lang) => {
-    setLangState(l);
-    if (typeof localStorage !== "undefined") localStorage.setItem(STORAGE_KEY, l);
-    if (typeof document !== "undefined") document.documentElement.lang = l;
+  const setLang = (_l: Lang) => {
+    // no-op: tylko PL
   };
 
   return (
