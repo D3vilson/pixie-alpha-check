@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { useT } from "@/i18n";
-import { LanguageSwitcher } from "@/components/language-switcher";
+
 
 export const Route = createFileRoute("/_marketing")({
   component: MarketingLayout,
@@ -34,7 +34,6 @@ function Header() {
           <Link to="/docs/install" className="hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>{t.nav.install}</Link>
         </nav>
         <div className="flex items-center gap-2">
-          <LanguageSwitcher />
           <Link
             to="/login"
             className="hidden sm:inline-flex items-center justify-center rounded-md border border-border bg-card/50 px-4 py-2 text-sm font-medium text-foreground hover:bg-card transition-colors"
