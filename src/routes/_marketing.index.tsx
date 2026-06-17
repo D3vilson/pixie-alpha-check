@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Check, Shield } from "lucide-react";
+import { toast } from "sonner";
 import { useT } from "@/i18n";
 
 export const Route = createFileRoute("/_marketing/")({
@@ -86,9 +87,28 @@ function SlackPreview() {
                 <span className="inline-flex items-center rounded bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
                   Otwórz w Pixie
                 </span>
-                <span className="inline-flex items-center rounded border border-border bg-card px-3 py-1 text-xs font-semibold">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const lines = [
+                      "Allegro",
+                      "E-commerce · Warszawa",
+                      "Podstrony: /cennik, /case-studies, /integracje",
+                      "Czas: 4 min 12 s",
+                      "Intent: 87 / 100 · high",
+                      "Decydenci: Head of Growth, CMO",
+                      "Telefony: +48 22 123 45 67, +48 501 234 567",
+                    ];
+                    const text = lines.join("\n");
+                    if (typeof navigator !== "undefined" && navigator.clipboard) {
+                      await navigator.clipboard.writeText(text);
+                      toast.success("Skopiowano e-maile i numery");
+                    }
+                  }}
+                  className="inline-flex items-center rounded border border-border bg-card px-3 py-1 text-xs font-semibold hover:bg-surface transition-colors cursor-pointer"
+                >
                   Skopiuj e-maile & numery
-                </span>
+                </button>
               </div>
             </div>
           </div>
