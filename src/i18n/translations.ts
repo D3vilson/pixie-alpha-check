@@ -434,7 +434,7 @@ export const pl: typeof en = {
     h1Pre: "Zobacz, kto jest gotowy do rozmowy —",
     h1Em: "zanim",
     h1Post: "wypełni formularz.",
-    sub: "97% firm odwiedzających Twoją stronę nigdy nie kliknie „Skontaktuj się". Pixie pokazuje sprzedaży, która polska firma czyta cennik, case studies i stronę produktu — z kontekstem do semi-cold outreachu tego samego dnia.",
+    sub: "97% firm odwiedzających Twoją stronę nigdy nie kliknie „Skontaktuj się”. Pixie pokazuje sprzedaży, która polska firma czyta cennik, case studies i stronę produktu — z kontekstem do semi-cold outreachu tego samego dnia.",
     bullets: [
       "Sygnał intencji zanim pojawi się formularz",
       "Imienna firma + PKD, branża, decydenci",
