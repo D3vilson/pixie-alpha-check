@@ -25,44 +25,71 @@ function HomePage() {
   );
 }
 
-const SAMPLE_VISITS = [
-  { company: "Allegro", pkd: "E-commerce", pages: 3, last: "2 min temu" },
-  { company: "Booksy", pkd: "SaaS", pages: 2, last: "5 min temu" },
-  { company: "LiveChat", pkd: "B2B Tech", pages: 4, last: "przed chwilą" },
-];
-
-function SampleVisits() {
+function SlackPreview() {
   return (
-    <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_30px_80px_-30px_rgba(15,23,42,0.25)]">
-      <div className="flex items-center justify-between mb-5">
-        <div className="flex items-center gap-2.5">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
-          </span>
-          <h3 className="text-sm font-semibold tracking-tight">Wizyty na żywo</h3>
+    <div className="rounded-2xl border border-border bg-card shadow-[0_30px_80px_-30px_rgba(15,23,42,0.3)] overflow-hidden">
+      {/* Slack-like header */}
+      <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-surface">
+        <div className="flex items-center gap-2 text-sm">
+          <span className="text-muted-foreground">#</span>
+          <span className="font-semibold tracking-tight">sales-signals</span>
         </div>
-        <span className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground border border-border rounded-full px-2 py-0.5">Demo</span>
+        <div className="flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-[#ed6a5e]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#f5bf4f]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#62c554]" />
+        </div>
       </div>
-      <ul className="space-y-1.5">
-        {SAMPLE_VISITS.map((v) => (
-          <li key={v.company} className="flex items-center gap-3 rounded-xl bg-surface px-3.5 py-3 text-sm">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary text-xs font-semibold">
-              {v.company.slice(0, 2).toUpperCase()}
-            </span>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold truncate text-foreground">{v.company}</span>
-                <span className="text-xs text-muted-foreground">· {v.pkd}</span>
+
+      {/* Message */}
+      <div className="p-5">
+        <div className="flex gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground text-xs font-bold">
+            Px
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-baseline gap-2">
+              <span className="font-semibold text-sm">Pixie</span>
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground border border-border rounded px-1 py-0.5">APP</span>
+              <span className="text-xs text-muted-foreground">10:42</span>
+            </div>
+            <p className="mt-1 text-sm text-foreground">
+              🔥 <span className="font-semibold">Allegro</span> właśnie odwiedził Twoją stronę
+            </p>
+
+            {/* Slack attachment card */}
+            <div className="mt-2 rounded-md border-l-4 border-primary bg-surface/60 pl-3 pr-3 py-3">
+              <div className="text-xs text-muted-foreground">allegro.pl · E-commerce · Warszawa</div>
+              <div className="mt-2 space-y-1 text-sm">
+                <div className="flex gap-2">
+                  <span className="text-muted-foreground w-20 shrink-0">Podstrony:</span>
+                  <span className="font-medium">/cennik, /case-studies, /integracje</span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-muted-foreground w-20 shrink-0">Czas:</span>
+                  <span className="font-medium">4 min 12 s</span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-muted-foreground w-20 shrink-0">Intent score:</span>
+                  <span className="font-semibold text-primary">87 / 100 · high</span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-muted-foreground w-20 shrink-0">Decydenci:</span>
+                  <span className="font-medium">Head of Growth, CMO</span>
+                </div>
               </div>
-              <div className="text-xs text-muted-foreground mt-0.5">
-                {v.pages} podstron · {v.last}
+              <div className="mt-3 flex gap-2">
+                <span className="inline-flex items-center rounded bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
+                  Otwórz w Pixie
+                </span>
+                <span className="inline-flex items-center rounded border border-border bg-card px-3 py-1 text-xs font-semibold">
+                  Skopiuj e-maile
+                </span>
               </div>
             </div>
-            <ArrowUpRight className="h-4 w-4 text-muted-foreground shrink-0" />
-          </li>
-        ))}
-      </ul>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -79,45 +106,46 @@ function Hero() {
         }}
         aria-hidden
       />
-      <div className="mx-auto max-w-6xl px-6 pt-16 pb-24 md:pt-24 md:pb-32">
-        <div className="grid gap-16 md:grid-cols-12 md:items-center">
-          <div className="md:col-span-7">
+      <div className="mx-auto max-w-6xl px-6 pt-12 pb-16 md:pt-16 md:pb-20">
+        <div className="grid gap-12 md:grid-cols-12 md:items-center">
+          <div className="md:col-span-6">
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
               <Shield className="h-3.5 w-3.5 text-primary" />
               {t.home.pill}
             </div>
-            <h1 className="mt-6 text-5xl md:text-7xl leading-[0.98] tracking-[-0.035em] font-semibold">
+            <h1 className="mt-5 text-4xl md:text-6xl leading-[1.0] tracking-[-0.035em] font-semibold">
               {t.home.h1Pre}{" "}
               <span className="text-primary">{t.home.h1Em}</span>{" "}
               {t.home.h1Post}
             </h1>
-            <p className="mt-7 text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed">
+            <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed">
               {t.home.sub}
             </p>
-            <div className="mt-9 flex flex-wrap items-center gap-3">
+            <div className="mt-7 flex flex-wrap items-center gap-3">
               <Link
                 to="/signup"
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
               >
                 {t.common.startFreeTrial}
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 to="/docs/install"
-                className="inline-flex items-center rounded-full border border-border bg-card px-6 py-3.5 text-sm font-semibold hover:bg-surface transition-colors"
+                className="inline-flex items-center rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold hover:bg-surface transition-colors"
               >
                 {t.home.seeSnippet}
               </Link>
             </div>
           </div>
-          <div className="md:col-span-5">
-            <SampleVisits />
+          <div className="md:col-span-6">
+            <SlackPreview />
           </div>
         </div>
       </div>
     </section>
   );
 }
+
 
 function HowItWorks() {
   const t = useT();
