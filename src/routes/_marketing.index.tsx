@@ -133,10 +133,6 @@ function Hero() {
       <div className="mx-auto max-w-6xl px-6 pt-12 pb-16 md:pt-16 md:pb-20">
         <div className="grid gap-12 md:grid-cols-12 md:items-center">
           <div className="md:col-span-6">
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
-              <Shield className="h-3.5 w-3.5 text-primary" />
-              {t.home.pill}
-            </div>
             <h1 className="mt-5 text-4xl md:text-6xl leading-[1.0] tracking-[-0.035em] font-semibold">
               {t.home.h1Pre}{" "}
               <span className="text-primary">{t.home.h1Em}</span>{" "}
