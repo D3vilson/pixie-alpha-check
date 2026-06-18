@@ -16,12 +16,44 @@ import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
   const t = useT();
+  const router = useRouter();
+  const pathname = typeof window !== "undefined" ? window.location.pathname + window.location.search : "(SSR)";
+  const matches = router.state.matches.map((m) => m.routeId);
+  const allRoutes = Object.keys((router as unknown as { routesById?: Record<string, unknown> }).routesById ?? {}).sort();
+
+  useEffect(() => {
+    console.warn("[Router 404] No route matched", {
+      pathname,
+      matchedRouteIds: matches,
+      registeredRoutes: allRoutes,
+    });
+  }, [pathname]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">{t.app.notFound.h2}</h2>
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
+      <div className="w-full max-w-3xl">
+        <h1 className="text-5xl font-bold text-foreground">404</h1>
+        <h2 className="mt-3 text-lg font-semibold text-foreground">{t.app.notFound.h2}</h2>
         <p className="mt-2 text-sm text-muted-foreground">{t.app.notFound.body}</p>
+
+        <div className="mt-6 rounded-md border border-destructive/40 bg-destructive/10 p-4 text-left text-xs font-mono">
+          <div className="mb-2 text-sm font-semibold text-destructive">🔎 Router diagnostics</div>
+          <div><span className="opacity-70">pathname:</span> {pathname}</div>
+          <div className="mt-1">
+            <span className="opacity-70">matched routeIds:</span>{" "}
+            {matches.length ? matches.join(" → ") : "(none)"}
+          </div>
+          <details className="mt-2">
+            <summary className="cursor-pointer opacity-70">Registered routes ({allRoutes.length})</summary>
+            <ul className="mt-2 max-h-64 overflow-auto">
+              {allRoutes.map((r) => (
+                <li key={r}>{r}</li>
+              ))}
+            </ul>
+          </details>
+          <div className="mt-2 opacity-70">Pełny log w konsoli przeglądarki (filter: "[Router 404]").</div>
+        </div>
+
         <div className="mt-6">
           <Link
             to="/"
