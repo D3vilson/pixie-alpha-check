@@ -130,20 +130,27 @@ function Hero() {
         }}
         aria-hidden
       />
-      <div className="mx-auto max-w-6xl px-6 pt-24 pb-32 md:pt-32 md:pb-40 text-center">
-        <h1 className="text-4xl md:text-6xl lg:text-7xl leading-[1.05] tracking-[-0.035em] font-semibold max-w-3xl mx-auto">
-          {t.home.h1Pre}{" "}
-          <span className="text-primary">{t.home.h1Em}</span>{" "}
-          {t.home.h1Post}
-        </h1>
-        <div className="mt-10">
-          <Link
-            to="/signup"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            {t.common.startFreeTrial}
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+      <div className="mx-auto max-w-6xl px-6 pt-16 pb-20 md:pt-24 md:pb-28">
+        <div className="grid gap-12 md:grid-cols-12 md:items-center">
+          <div className="md:col-span-5">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-[-0.035em] font-semibold">
+              {t.home.h1Pre}{" "}
+              <span className="text-primary">{t.home.h1Em}</span>{" "}
+              {t.home.h1Post}
+            </h1>
+            <div className="mt-8">
+              <Link
+                to="/signup"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                {t.common.startFreeTrial}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+          <div className="md:col-span-7">
+            <SlackPreview />
+          </div>
         </div>
       </div>
     </section>
