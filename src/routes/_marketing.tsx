@@ -71,8 +71,6 @@ function Footer() {
         ]} />
         <FooterCol title={t.footer.trust} items={[
           { to: "/gdpr", label: "GDPR & DPA" },
-          { to: "/gdpr", label: t.footer.subprocessors },
-          { to: "/gdpr", label: t.footer.dataDeletion },
         ]} />
         <FooterCol title={t.footer.company} items={[
           { to: "/login", label: t.common.logIn },
