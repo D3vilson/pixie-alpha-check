@@ -67,16 +67,16 @@ function AppLayout() {
             <p className="text-sm font-medium truncate">{ws.name}</p>
           </div>
           <nav className="flex flex-col gap-0.5 text-sm">
-            <NavItem to="/app" label={t.app.nav.liveVisits} exact />
-            <NavItem to="/app/install" label="📌 Instalacja" />
-            <NavItem to="/app/hot-leads" label="🔥 Hot Leads" />
-            <NavItem to="/app/companies" label={t.app.nav.companies} />
-            <NavItem to="/app/people" label={t.app.nav.people} />
-            <NavItem to="/app/target-accounts" label={t.app.nav.targetAccounts} />
-            <NavItem to="/app/integrations" label={t.app.nav.integrations} />
-            <NavItem to="/app/consent-audit" label={t.app.nav.consentAudit} />
-            <NavItem to="/app/settings" label={t.app.nav.settings} />
-            <NavItem to="/app/account" label="👤 Konto" />
+            <NavItem to="/app" icon={Activity} label={t.app.nav.liveVisits} exact />
+            <NavItem to="/app/install" icon={Terminal} label="Instalacja" />
+            <NavItem to="/app/hot-leads" icon={Flame} label="Hot Leads" />
+            <NavItem to="/app/companies" icon={Building2} label={t.app.nav.companies} />
+            <NavItem to="/app/people" icon={Users} label={t.app.nav.people} />
+            <NavItem to="/app/target-accounts" icon={Target} label={t.app.nav.targetAccounts} />
+            <NavItem to="/app/integrations" icon={Plug} label={t.app.nav.integrations} />
+            <NavItem to="/app/consent-audit" icon={ScrollText} label={t.app.nav.consentAudit} />
+            <NavItem to="/app/settings" icon={Settings} label={t.app.nav.settings} />
+            <NavItem to="/app/account" icon={User} label="Konto" />
           </nav>
           <div className="mt-auto pt-6 border-t border-border/60 space-y-3">
             <LanguageSwitcher className="w-full justify-center" />
@@ -96,15 +96,18 @@ function AppLayout() {
   );
 }
 
-function NavItem({ to, label, exact }: { to: string; label: string; exact?: boolean }) {
+type IconType = ComponentType<SVGProps<SVGSVGElement>>;
+
+function NavItem({ to, label, exact, icon: Icon }: { to: string; label: string; exact?: boolean; icon: IconType }) {
   return (
     <Link
       to={to}
       activeOptions={{ exact }}
-      className="rounded-md px-3 py-2 text-muted-foreground hover:bg-background hover:text-foreground transition-colors"
-      activeProps={{ className: "rounded-md px-3 py-2 bg-background text-foreground font-medium" }}
+      className="flex items-center gap-2.5 rounded-md px-3 py-2 text-muted-foreground hover:bg-background hover:text-foreground transition-colors"
+      activeProps={{ className: "flex items-center gap-2.5 rounded-md px-3 py-2 bg-background text-foreground font-medium" }}
     >
-      {label}
+      <Icon className="h-4 w-4 shrink-0" aria-hidden />
+      <span>{label}</span>
     </Link>
   );
 }
