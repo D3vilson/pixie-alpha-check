@@ -1,7 +1,20 @@
 import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect } from "react";
+import { useEffect, type ComponentType, type SVGProps } from "react";
+import {
+  Activity,
+  Building2,
+  Flame,
+  Plug,
+  ScrollText,
+  Settings,
+  ShieldCheck,
+  Target,
+  Terminal,
+  User,
+  Users,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { bootstrapWorkspace } from "@/lib/workspace.functions";
 import { useT } from "@/i18n";
