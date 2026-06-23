@@ -38,10 +38,11 @@ export const en = {
   },
   home: {
     pill: "Polish B2B SME focus · No cookies · Free forever with pixel",
-    h1Pre: "See which",
+    h1Pre: "Know which",
     h1Em: "Polish",
-    h1Post: "companies visit your website.",
+    h1Post: "companies visit your site.",
     sub: "One line of JavaScript. We resolve the visiting organization, enrich it with CEIDG/KRS and notify your sales team — without cookies and without personal data.",
+    heroSub: "Identified companies with sales-ready context — no cookies, GDPR-safe.",
     bullets: [
       "No cookies, no browser fingerprinting",
       "Organization-level identification only",
@@ -431,10 +432,11 @@ export const pl: typeof en = {
   },
   home: {
     pill: "High-intent leady · Bez cookies · Zgodne z RODO",
-    h1Pre: "Zobacz, kto jest gotowy do rozmowy —",
-    h1Em: "zanim",
-    h1Post: "wypełni formularz.",
+    h1Pre: "Sprzedaż wie,",
+    h1Em: "kto",
+    h1Post: "czyta Twoją stronę.",
     sub: "97% firm odwiedzających Twoją stronę nigdy nie kliknie „Skontaktuj się”. Pixie pokazuje sprzedaży, która polska firma czyta cennik, case studies i stronę produktu — z kontekstem do semi-cold outreachu tego samego dnia.",
+    heroSub: "Rozpoznane polskie firmy z kontekstem do outreachu — bez cookies, zgodnie z RODO.",
     bullets: [
       "Sygnał intencji zanim pojawi się formularz",
       "Imienna firma + PKD, branża, decydenci",

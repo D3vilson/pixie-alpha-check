@@ -138,6 +138,9 @@ function Hero() {
               <span className="text-primary">{t.home.h1Em}</span>{" "}
               {t.home.h1Post}
             </h1>
+            <p className="mt-5 text-base md:text-lg text-muted-foreground leading-relaxed max-w-md">
+              {t.home.heroSub}
+            </p>
             <div className="mt-8">
               <Link
                 to="/signup"
