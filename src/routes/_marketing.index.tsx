@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Check, Shield } from "lucide-react";
+import { ArrowRight, Bell, Building2, Check, Code2 } from "lucide-react";
+
 import { toast } from "sonner";
 import { useT } from "@/i18n";
 
@@ -163,35 +164,53 @@ function Hero() {
 
 function HowItWorks() {
   const t = useT();
+  const icons = [Code2, Building2, Bell];
   return (
     <section className="border-b border-border bg-background">
       <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
         <div className="max-w-2xl">
           <p className="text-xs uppercase tracking-[0.18em] text-primary font-semibold">Jak to działa</p>
-          <h2 className="mt-4 text-4xl md:text-6xl tracking-[-0.03em] font-semibold leading-[1.02]">
+          <h2 className="mt-4 text-4xl md:text-5xl tracking-[-0.03em] font-semibold leading-[1.05]">
             {t.home.howH2}
           </h2>
+          {"howSub" in t.home && (
+            <p className="mt-5 text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl">
+              {(t.home as { howSub: string }).howSub}
+            </p>
+          )}
         </div>
-        <div className="mt-16 grid gap-px bg-border rounded-2xl overflow-hidden border border-border md:grid-cols-3">
-          {t.home.layers.map((l, i) => (
-            <div key={l.title} className="bg-card p-8 md:p-10 flex flex-col">
-              <div className="flex items-center gap-3">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-sm font-semibold">
-                  {i + 1}
-                </span>
-                <span className="text-xs uppercase tracking-[0.12em] text-muted-foreground font-medium">
-                  {l.tag.split("·")[1]?.trim() ?? l.tag}
-                </span>
+        <div className="mt-16 grid gap-6 md:grid-cols-3 md:gap-4 relative">
+          {t.home.layers.map((l, i) => {
+            const Icon = icons[i] ?? Code2;
+            return (
+              <div key={l.title} className="relative">
+                <div className="h-full rounded-2xl border border-border bg-card p-8 transition-colors hover:border-primary/40">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground font-semibold">
+                      {l.tag}
+                    </span>
+                  </div>
+                  <h3 className="mt-6 text-xl font-semibold tracking-tight">{l.title}</h3>
+                  <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed">{l.body}</p>
+                </div>
+                {i < t.home.layers.length - 1 && (
+                  <ArrowRight
+                    aria-hidden
+                    className="hidden md:block absolute top-1/2 -right-3 -translate-y-1/2 h-5 w-5 text-muted-foreground/50 z-10"
+                  />
+                )}
               </div>
-              <h3 className="mt-6 text-2xl font-semibold tracking-tight">{l.title}</h3>
-              <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed">{l.body}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
   );
 }
+
 
 function Compliance() {
   const t = useT();
