@@ -38,11 +38,11 @@ export const en = {
   },
   home: {
     pill: "Polish B2B SME focus · No cookies · Free forever with pixel",
-    h1Pre: "Know which",
-    h1Em: "Polish",
-    h1Post: "companies visit your site.",
+    h1Pre: "We know who's visiting your",
+    h1Em: "website",
+    h1Post: ".",
     sub: "One line of JavaScript. We resolve the visiting organization, enrich it with CEIDG/KRS and notify your sales team — without cookies and without personal data.",
-    heroSub: "Identified companies with sales-ready context — no cookies, GDPR-safe.",
+    heroSub: "We identify Polish companies and send alerts to Slack, Teams, or email. No cookies. No contact forms.",
     bullets: [
       "No cookies, no browser fingerprinting",
       "Organization-level identification only",
