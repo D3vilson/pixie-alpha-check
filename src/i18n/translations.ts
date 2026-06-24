@@ -63,13 +63,12 @@ export const en = {
 
     samplesH2: "Live visits — right now",
     samplesNote: "Sample data from our demo workspace.",
-    complianceH2: "Compliant by design",
-    complianceLead: "Organization-level metadata only. No cookies, no fingerprinting, no profiles of individuals.",
+    complianceH2: "GDPR-ready.",
+    complianceLead: "Organizations, not people. Zero cookies, zero fingerprinting.",
     compliancePoints: [
-      "No cookies, no localStorage, no fingerprinting.",
-      "Raw IPs used once to resolve the organization, then discarded.",
-      "People are only stored after explicit consent (form fill).",
-      "Aligned with the NSA ruling of 16 October 2025 — pixel source on GitHub.",
+      "No cookies, no consent, no banner.",
+      "IP used once, then discarded.",
+      "Aligned with NSA ruling 16.10.2025.",
     ],
     ctaH2: "Free forever while the pixel stays installed.",
     ctaSub: "Install in 5 minutes. See your first identified visit the same day.",
