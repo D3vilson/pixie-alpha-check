@@ -21,6 +21,7 @@ import { Route as AppInstallRouteImport } from './routes/app.install'
 import { Route as AppHotLeadsRouteImport } from './routes/app.hot-leads'
 import { Route as AppConsentAuditRouteImport } from './routes/app.consent-audit'
 import { Route as AppCompaniesRouteImport } from './routes/app.companies'
+import { Route as AppAdminRouteImport } from './routes/app.admin'
 import { Route as AppAccountRouteImport } from './routes/app.account'
 import { Route as MarketingSignupRouteImport } from './routes/_marketing.signup'
 import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricing'
@@ -93,6 +94,11 @@ const AppCompaniesRoute = AppCompaniesRouteImport.update({
   path: '/companies',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdminRoute = AppAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAccountRoute = AppAccountRouteImport.update({
   id: '/account',
   path: '/account',
@@ -163,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof MarketingPricingRoute
   '/signup': typeof MarketingSignupRoute
   '/app/account': typeof AppAccountRoute
+  '/app/admin': typeof AppAdminRoute
   '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/consent-audit': typeof AppConsentAuditRoute
   '/app/hot-leads': typeof AppHotLeadsRoute
@@ -186,6 +193,7 @@ export interface FileRoutesByTo {
   '/pricing': typeof MarketingPricingRoute
   '/signup': typeof MarketingSignupRoute
   '/app/account': typeof AppAccountRoute
+  '/app/admin': typeof AppAdminRoute
   '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/consent-audit': typeof AppConsentAuditRoute
   '/app/hot-leads': typeof AppHotLeadsRoute
@@ -213,6 +221,7 @@ export interface FileRoutesById {
   '/_marketing/pricing': typeof MarketingPricingRoute
   '/_marketing/signup': typeof MarketingSignupRoute
   '/app/account': typeof AppAccountRoute
+  '/app/admin': typeof AppAdminRoute
   '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/consent-audit': typeof AppConsentAuditRoute
   '/app/hot-leads': typeof AppHotLeadsRoute
@@ -241,6 +250,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/signup'
     | '/app/account'
+    | '/app/admin'
     | '/app/companies'
     | '/app/consent-audit'
     | '/app/hot-leads'
@@ -264,6 +274,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/signup'
     | '/app/account'
+    | '/app/admin'
     | '/app/companies'
     | '/app/consent-audit'
     | '/app/hot-leads'
@@ -290,6 +301,7 @@ export interface FileRouteTypes {
     | '/_marketing/pricing'
     | '/_marketing/signup'
     | '/app/account'
+    | '/app/admin'
     | '/app/companies'
     | '/app/consent-audit'
     | '/app/hot-leads'
@@ -401,6 +413,13 @@ declare module '@tanstack/react-router' {
       path: '/companies'
       fullPath: '/app/companies'
       preLoaderRoute: typeof AppCompaniesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/admin': {
+      id: '/app/admin'
+      path: '/admin'
+      fullPath: '/app/admin'
+      preLoaderRoute: typeof AppAdminRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/account': {
@@ -528,6 +547,7 @@ const AppCompaniesRouteWithChildren = AppCompaniesRoute._addFileChildren(
 
 interface AppRouteChildren {
   AppAccountRoute: typeof AppAccountRoute
+  AppAdminRoute: typeof AppAdminRoute
   AppCompaniesRoute: typeof AppCompaniesRouteWithChildren
   AppConsentAuditRoute: typeof AppConsentAuditRoute
   AppHotLeadsRoute: typeof AppHotLeadsRoute
@@ -541,6 +561,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAccountRoute: AppAccountRoute,
+  AppAdminRoute: AppAdminRoute,
   AppCompaniesRoute: AppCompaniesRouteWithChildren,
   AppConsentAuditRoute: AppConsentAuditRoute,
   AppHotLeadsRoute: AppHotLeadsRoute,
@@ -565,13 +586,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

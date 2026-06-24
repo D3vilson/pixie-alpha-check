@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { bootstrapWorkspace } from "@/lib/workspace.functions";
+import { checkIsAdmin } from "@/lib/admin.functions";
 import { useT } from "@/i18n";
 import { LanguageSwitcher } from "@/components/language-switcher";
 
@@ -33,10 +34,16 @@ function AppLayout() {
   const t = useT();
   const navigate = useNavigate();
   const bootstrap = useServerFn(bootstrapWorkspace);
+  const adminCheck = useServerFn(checkIsAdmin);
   const { data, isLoading, error } = useQuery({
     queryKey: ["workspace-bootstrap"],
     queryFn: () => bootstrap(),
   });
+  const { data: adminData } = useQuery({
+    queryKey: ["is-admin"],
+    queryFn: () => adminCheck(),
+  });
+  const isAdmin = adminData?.isAdmin ?? false;
 
   useEffect(() => { if (error) console.error(error); }, [error]);
 
@@ -77,6 +84,9 @@ function AppLayout() {
             <NavItem to="/app/consent-audit" icon={ScrollText} label={t.app.nav.consentAudit} />
             <NavItem to="/app/settings" icon={Settings} label={t.app.nav.settings} />
             <NavItem to="/app/account" icon={User} label="Konto" />
+            {isAdmin && (
+              <NavItem to="/app/admin" icon={ShieldCheck} label="Admin" />
+            )}
           </nav>
           <div className="mt-auto pt-6 border-t border-border/60 space-y-3">
             <LanguageSwitcher className="w-full justify-center" />
