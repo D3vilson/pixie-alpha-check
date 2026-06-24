@@ -527,6 +527,27 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       workspace_members: {
         Row: {
           created_at: string
@@ -585,6 +606,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       has_workspace_role: {
         Args: {
           _roles: Database["public"]["Enums"]["workspace_role"][]
@@ -604,6 +632,7 @@ export type Database = {
     }
     Enums: {
       alert_channel: "slack" | "teams" | "webhook"
+      app_role: "admin"
       consent_source: "form_submit" | "email_link" | "logged_in" | "cmp_signal"
       integration_type: "slack" | "teams" | "webhook"
       workspace_role: "owner" | "admin" | "member"
@@ -735,6 +764,7 @@ export const Constants = {
   public: {
     Enums: {
       alert_channel: ["slack", "teams", "webhook"],
+      app_role: ["admin"],
       consent_source: ["form_submit", "email_link", "logged_in", "cmp_signal"],
       integration_type: ["slack", "teams", "webhook"],
       workspace_role: ["owner", "admin", "member"],
