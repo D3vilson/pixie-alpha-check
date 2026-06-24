@@ -34,10 +34,16 @@ function AppLayout() {
   const t = useT();
   const navigate = useNavigate();
   const bootstrap = useServerFn(bootstrapWorkspace);
+  const adminCheck = useServerFn(checkIsAdmin);
   const { data, isLoading, error } = useQuery({
     queryKey: ["workspace-bootstrap"],
     queryFn: () => bootstrap(),
   });
+  const { data: adminData } = useQuery({
+    queryKey: ["is-admin"],
+    queryFn: () => adminCheck(),
+  });
+  const isAdmin = adminData?.isAdmin ?? false;
 
   useEffect(() => { if (error) console.error(error); }, [error]);
 
