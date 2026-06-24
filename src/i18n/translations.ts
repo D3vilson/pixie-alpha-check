@@ -460,13 +460,12 @@ export const pl: typeof en = {
 
     samplesH2: "Live visits — teraz",
     samplesNote: "Przykładowe dane z naszego demo workspace.",
-    complianceH2: "Zgodne z RODO. Bez kompromisów.",
-    complianceLead: "Identyfikujemy firmy, nie osoby. Żadnych cookies, żadnego fingerprintingu, żadnych profili behawioralnych. Sprzedaż ma sygnał, prawnicy mają spokój.",
+    complianceH2: "RODO-ready.",
+    complianceLead: "Firmy, nie osoby. Zero cookies, zero fingerprintingu.",
     compliancePoints: [
-      "Bez cookies, bez localStorage, bez fingerprintingu — banner cookie niepotrzebny.",
-      "Surowe IP użyte raz do rozpoznania firmy, potem natychmiast usuwane.",
-      "Dane osób tylko po wyraźnej zgodzie (np. wypełniony formularz).",
-      "Zgodnie z wyrokiem NSA z 16 października 2025 — kod pixela publiczny na GitHubie.",
+      "Bez cookies, bez zgody, bez bannera.",
+      "IP użyte raz, potem usuwane.",
+      "Zgodne z wyrokiem NSA z 16.10.2025.",
     ],
     ctaH2: "Twoja sprzedaż dzwoni do firm, które już Cię czytają.",
     ctaSub: "Instalacja w 5 minut. Pierwsza rozpoznana wizyta tego samego dnia.",
