@@ -84,6 +84,9 @@ function AppLayout() {
             <NavItem to="/app/consent-audit" icon={ScrollText} label={t.app.nav.consentAudit} />
             <NavItem to="/app/settings" icon={Settings} label={t.app.nav.settings} />
             <NavItem to="/app/account" icon={User} label="Konto" />
+            {isAdmin && (
+              <NavItem to="/app/admin" icon={ShieldCheck} label="Admin" />
+            )}
           </nav>
           <div className="mt-auto pt-6 border-t border-border/60 space-y-3">
             <LanguageSwitcher className="w-full justify-center" />
