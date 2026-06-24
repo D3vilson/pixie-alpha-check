@@ -216,26 +216,26 @@ function Compliance() {
   const t = useT();
   return (
     <section className="bg-ink text-ink-foreground">
-      <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
-        <div className="grid gap-16 md:grid-cols-12 md:items-start">
+      <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
+        <div className="grid gap-10 md:grid-cols-12 md:items-start">
           <div className="md:col-span-5">
             <p className="text-xs uppercase tracking-[0.18em] text-primary font-semibold">Zgodność</p>
-            <h2 className="mt-4 text-4xl md:text-6xl tracking-[-0.03em] font-semibold leading-[1.02] text-ink-foreground">
+            <h2 className="mt-3 text-3xl md:text-4xl tracking-[-0.03em] font-semibold leading-[1.05] text-ink-foreground">
               {t.home.complianceH2}
             </h2>
-            <p className="mt-6 text-base md:text-lg text-ink-foreground/70 leading-relaxed max-w-md">
+            <p className="mt-4 text-sm text-ink-foreground/70 leading-relaxed max-w-md">
               {t.home.complianceLead}
             </p>
             <Link
               to="/gdpr"
-              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:gap-3 transition-all"
+              className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:gap-3 transition-all"
             >
               {t.nav.gdpr} <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-          <ul className="md:col-span-7 grid gap-px bg-white/10 rounded-2xl overflow-hidden border border-white/10 sm:grid-cols-2">
+          <ul className="md:col-span-7 grid gap-px bg-white/10 rounded-2xl overflow-hidden border border-white/10 sm:grid-cols-3">
             {t.home.compliancePoints.map((p) => (
-              <li key={p} className="flex items-start gap-3 bg-ink px-5 py-5 text-sm">
+              <li key={p} className="flex items-start gap-3 bg-ink px-5 py-4 text-sm">
                 <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
                   <Check className="h-3 w-3" />
                 </span>
