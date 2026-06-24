@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { bootstrapWorkspace } from "@/lib/workspace.functions";
+import { checkIsAdmin } from "@/lib/admin.functions";
 import { useT } from "@/i18n";
 import { LanguageSwitcher } from "@/components/language-switcher";
 
