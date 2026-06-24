@@ -434,11 +434,11 @@ export const pl: typeof en = {
   },
   home: {
     pill: "High-intent leady · Bez cookies · Zgodne z RODO",
-    h1Pre: "Wiedz, kto",
-    h1Em: "naprawdę",
-    h1Post: "odwiedza Twoją stronę.",
+    h1Pre: "Wiemy, kto odwiedza",
+    h1Em: "Twoja",
+    h1Post: "stronę.",
     sub: "97% firm odwiedzających Twoją stronę nigdy nie kliknie „Skontaktuj się”. Pixie pokazuje sprzedaży, która polska firma czyta cennik, case studies i stronę produktu — z kontekstem do semi-cold outreachu tego samego dnia.",
-    heroSub: "Identyfikujemy polskie firmy i wysyłamy alert do Slacka lub Teams. Bez cookies.",
+    heroSub: "Identyfikujemy polskie firmy i wysylamy powiadomienie na Slacku, Teams lub mailowo. Bez cookies. Bez formularza kontaktowego.",
 
     bullets: [
       "Sygnał intencji zanim pojawi się formularz",
