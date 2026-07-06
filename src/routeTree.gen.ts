@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as MarketingRouteImport } from './routes/_marketing'
 import { Route as AppIndexRouteImport } from './routes/app.index'
@@ -28,13 +29,22 @@ import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricin
 import { Route as MarketingLoginRouteImport } from './routes/_marketing.login'
 import { Route as MarketingGdprRouteImport } from './routes/_marketing.gdpr'
 import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.features'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AppCompaniesCompanyIdRouteImport } from './routes/app.companies.$companyId'
 import { Route as ApiPublicTDotjsRouteImport } from './routes/api.public.t[.]js'
 import { Route as ApiPublicIdentifyRouteImport } from './routes/api.public.identify'
 import { Route as ApiPublicEraseRouteImport } from './routes/api.public.erase'
 import { Route as ApiPublicCollectRouteImport } from './routes/api.public.collect'
 import { Route as MarketingDocsInstallRouteImport } from './routes/_marketing.docs.install'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRoute = AppRouteImport.update({
   id: '/app',
   path: '/app',
@@ -129,6 +139,18 @@ const MarketingFeaturesRoute = MarketingFeaturesRouteImport.update({
   path: '/features',
   getParentRoute: () => MarketingRoute,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AppCompaniesCompanyIdRoute = AppCompaniesCompanyIdRouteImport.update({
   id: '/$companyId',
   path: '/$companyId',
@@ -159,10 +181,24 @@ const MarketingDocsInstallRoute = MarketingDocsInstallRouteImport.update({
   path: '/docs/install',
   getParentRoute: () => MarketingRoute,
 } as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof MarketingIndexRoute
   '/app': typeof AppRouteWithChildren
+  '/mcp': typeof McpRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/features': typeof MarketingFeaturesRoute
   '/gdpr': typeof MarketingGdprRoute
   '/login': typeof MarketingLoginRoute
@@ -179,6 +215,8 @@ export interface FileRoutesByFullPath {
   '/app/settings': typeof AppSettingsRoute
   '/app/target-accounts': typeof AppTargetAccountsRoute
   '/app/': typeof AppIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/docs/install': typeof MarketingDocsInstallRoute
   '/api/public/collect': typeof ApiPublicCollectRoute
   '/api/public/erase': typeof ApiPublicEraseRoute
@@ -187,6 +225,9 @@ export interface FileRoutesByFullPath {
   '/app/companies/$companyId': typeof AppCompaniesCompanyIdRoute
 }
 export interface FileRoutesByTo {
+  '/mcp': typeof McpRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/features': typeof MarketingFeaturesRoute
   '/gdpr': typeof MarketingGdprRoute
   '/login': typeof MarketingLoginRoute
@@ -204,6 +245,8 @@ export interface FileRoutesByTo {
   '/app/target-accounts': typeof AppTargetAccountsRoute
   '/': typeof MarketingIndexRoute
   '/app': typeof AppIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/docs/install': typeof MarketingDocsInstallRoute
   '/api/public/collect': typeof ApiPublicCollectRoute
   '/api/public/erase': typeof ApiPublicEraseRoute
@@ -215,6 +258,9 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_marketing': typeof MarketingRouteWithChildren
   '/app': typeof AppRouteWithChildren
+  '/mcp': typeof McpRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_marketing/features': typeof MarketingFeaturesRoute
   '/_marketing/gdpr': typeof MarketingGdprRoute
   '/_marketing/login': typeof MarketingLoginRoute
@@ -232,6 +278,8 @@ export interface FileRoutesById {
   '/app/target-accounts': typeof AppTargetAccountsRoute
   '/_marketing/': typeof MarketingIndexRoute
   '/app/': typeof AppIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_marketing/docs/install': typeof MarketingDocsInstallRoute
   '/api/public/collect': typeof ApiPublicCollectRoute
   '/api/public/erase': typeof ApiPublicEraseRoute
@@ -244,6 +292,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/app'
+    | '/mcp'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/features'
     | '/gdpr'
     | '/login'
@@ -260,6 +311,8 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app/target-accounts'
     | '/app/'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/docs/install'
     | '/api/public/collect'
     | '/api/public/erase'
@@ -268,6 +321,9 @@ export interface FileRouteTypes {
     | '/app/companies/$companyId'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/mcp'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/features'
     | '/gdpr'
     | '/login'
@@ -285,6 +341,8 @@ export interface FileRouteTypes {
     | '/app/target-accounts'
     | '/'
     | '/app'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/docs/install'
     | '/api/public/collect'
     | '/api/public/erase'
@@ -295,6 +353,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_marketing'
     | '/app'
+    | '/mcp'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/_marketing/features'
     | '/_marketing/gdpr'
     | '/_marketing/login'
@@ -312,6 +373,8 @@ export interface FileRouteTypes {
     | '/app/target-accounts'
     | '/_marketing/'
     | '/app/'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/_marketing/docs/install'
     | '/api/public/collect'
     | '/api/public/erase'
@@ -323,6 +386,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   MarketingRoute: typeof MarketingRouteWithChildren
   AppRoute: typeof AppRouteWithChildren
+  McpRoute: typeof McpRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicCollectRoute: typeof ApiPublicCollectRoute
   ApiPublicEraseRoute: typeof ApiPublicEraseRoute
   ApiPublicIdentifyRoute: typeof ApiPublicIdentifyRoute
@@ -331,6 +399,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app': {
       id: '/app'
       path: '/app'
@@ -464,6 +539,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketingFeaturesRouteImport
       parentRoute: typeof MarketingRoute
     }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/companies/$companyId': {
       id: '/app/companies/$companyId'
       path: '/$companyId'
@@ -505,6 +594,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/docs/install'
       preLoaderRoute: typeof MarketingDocsInstallRouteImport
       parentRoute: typeof MarketingRoute
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -578,6 +681,12 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   MarketingRoute: MarketingRouteWithChildren,
   AppRoute: AppRouteWithChildren,
+  McpRoute: McpRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicCollectRoute: ApiPublicCollectRoute,
   ApiPublicEraseRoute: ApiPublicEraseRoute,
   ApiPublicIdentifyRoute: ApiPublicIdentifyRoute,
