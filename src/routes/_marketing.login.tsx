@@ -13,12 +13,24 @@ export const Route = createFileRoute("/_marketing/login")({
       { name: "description", content: "Log in to your Pixie workspace." },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s.next === "string" ? s.next : undefined,
+  }),
   component: LoginPage,
 });
+
+// Only accept same-origin relative paths so an attacker can't smuggle
+// an external URL through ?next=.
+function safeNext(next: string | undefined): string | null {
+  if (!next || !next.startsWith("/") || next.startsWith("//")) return null;
+  return next;
+}
 
 function LoginPage() {
   const t = useT();
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
+  const returnTo = safeNext(next);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,11 +40,17 @@ function LoginPage() {
     password: z.string().min(8, t.auth.errPw).max(72),
   });
 
+  const goNext = () => {
+    if (returnTo) window.location.href = returnTo;
+    else navigate({ to: "/app" });
+  };
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/app" });
+      if (data.session) goNext();
     });
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,15 +63,18 @@ function LoginPage() {
     const { error } = await supabase.auth.signInWithPassword(parsed.data);
     setLoading(false);
     if (error) { toast.error(error.message); return; }
-    navigate({ to: "/app" });
+    goNext();
   };
 
   const google = async () => {
     setLoading(true);
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/app" });
+    const redirectTarget = returnTo
+      ? window.location.origin + returnTo
+      : window.location.origin + "/app";
+    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: redirectTarget });
     if (result.error) { setLoading(false); toast.error(t.auth.googleFailed); return; }
     if (result.redirected) return;
-    navigate({ to: "/app" });
+    goNext();
   };
 
   return (
