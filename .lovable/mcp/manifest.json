@@ -1,0 +1,164 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://lnnxshvrqwgcmewnjsoo.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "pixie-mcp",
+      "version": "0.1.0",
+      "title": "Pixie"
+    },
+    "tools": [
+      {
+        "name": "list_sites",
+        "title": "List sites",
+        "description": "List all tracked sites in the signed-in user's workspace, with domain, tracking ID and alert threshold.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_hot_leads",
+        "title": "List hot leads",
+        "description": "Return recent sessions with the highest intent score, joined with the resolved company. Use this to answer 'who visited us today with buying intent?'.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "hours": {
+              "default": 24,
+              "description": "Lookback window in hours (default 24).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 720
+            },
+            "min_score": {
+              "default": 60,
+              "description": "Minimum intent score (0-100).",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "limit": {
+              "default": 20,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_companies",
+        "title": "List companies",
+        "description": "List companies that visited the workspace's sites, most recent first. Optionally filter by domain substring.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "search": {
+              "description": "Substring match on domain or name.",
+              "type": "string",
+              "maxLength": 200
+            },
+            "limit": {
+              "default": 50,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_target_accounts",
+        "title": "List target accounts",
+        "description": "List target account domain patterns for the workspace.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "add_target_account",
+        "title": "Add target account",
+        "description": "Add a target-account domain pattern (e.g. 'acme.com' or '*.acme.com') so hits from matching companies trigger alerts.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "domain_pattern": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 255,
+              "description": "Exact domain or wildcard pattern like *.acme.com"
+            },
+            "label": {
+              "type": "string",
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "domain_pattern"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_workspace_stats",
+        "title": "Get workspace stats",
+        "description": "High-level counts for the workspace: sites, sessions in the last 24h, sessions in the last 7d, identified companies.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
