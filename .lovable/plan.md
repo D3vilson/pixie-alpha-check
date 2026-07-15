@@ -1,41 +1,68 @@
-# Uproszczenie landing page
+# CRM push — HubSpot + Pipedrive (Fala 1, #10)
 
-Tnę landing do absolutnego minimum. Cztery sekcje, koniec.
+## Cel
+Gdy Pixie wykryje hot lead (score ≥ threshold), obok Slack/Teams/email trafia on jako **Company + Contact + Note/Activity** do CRM handlowca. Bez ręcznego kopiowania.
 
-## Nowa struktura
+## Scope MVP
+1. **HubSpot** (priorytet — ~40% rynku SMB PL) i **Pipedrive** (drugi wybór polskich sprzedażówek).
+2. **Push per workspace**, jedno konto CRM na workspace (App connector, nie per-user).
+3. Kierunek jednostronny: **Pixie → CRM**. Bez importu wstecznego (na razie).
+4. Trigger: ten sam co Slack alerts — `intent_score ≥ threshold` + debounce 1h/company.
 
-1. **Hero — CO + DLA KOGO**
-   - H1, sub (1 zdanie: dla kogo)
-   - 2 CTA (Start free / See snippet)
-   - SampleVisits po prawej (zostawiam — pokazuje produkt)
-   - Bullets pod CTA (3 max, twarde fakty)
+## Architektura
 
-2. **Jak to działa — JAK** (3 warstwy: Pixel / Identify / Enrich)
-   - Bez podtytułu, bez ozdobników. 3 karty.
+### Connectors
+- **HubSpot**: `standard_connectors--connect` (`connector_id: hubspot`) — gateway, service key `pat-...` z scope: `crm.objects.contacts.write`, `crm.objects.companies.write`, `crm.objects.deals.read`, `crm.objects.notes.write`.
+- **Pipedrive**: `standard_connectors--connect` (`connector_id: pipedrive`) — gateway, api token.
+- Sekrety trafiają jako `HUBSPOT_API_KEY` / `PIPEDRIVE_API_KEY` do env (workspace-wide → dostępne dla wszystkich workspace'ów w projekcie; per-workspace routing rozwiążemy w Fali 2).
 
-3. **Dlaczego to działa — DLACZEGO** (Moat)
-   - Network effect w 1 zdaniu + 2 liczby (50 / 200 klientów)
+### Schema
+Nowa tabela `crm_integrations`:
+- `workspace_id`, `provider` (`hubspot|pipedrive`), `enabled bool`, `min_score int default 70`, `owner_email text` (do przypisania w CRM), `last_push_at timestamptz`, `last_error text`.
+- RLS: workspace members read/write, service_role full.
 
-4. **Compliance** (skrócone)
-   - 4 bullety, link do /gdpr. Bez osobnej sekcji "Privacy" w nagłówku.
+Rozszerzenie `sessions` / hot-leads: dodać kolumnę `pushed_to_crm jsonb` (log providerów, do których poszło) — zapobiega duplikatom.
 
-5. **CTA** (final)
+### Kod
+- `src/lib/crm/hubspot.server.ts` — `upsertCompanyAndContact(lead)` przez gateway (`/crm/v3/objects/companies/search` → create/update, potem `/contacts` + `/objects/notes` z linkiem do wizyty w Pixie).
+- `src/lib/crm/pipedrive.server.ts` — analogicznie: `/organizations/search` → create, `/persons`, `/activities` (typ: `call`, subject: "Hot lead z Twojej strony").
+- `src/lib/crm/dispatch.server.ts` — wywołanie z istniejącego `alerts.server.ts`, obok Slack/Teams: iteruj po enabled integrations, wywołaj providera, zapisz result do `pushed_to_crm`.
+- Retry: 1 próba + log do `last_error` (bez kolejki na start).
 
-## Co wycinam
+### UI
+Rozbudowa `app.integrations.tsx`:
+- Karta **HubSpot**: status connection (z `list_connections`), toggle enabled, slider `min_score`, input `owner_email`, button "Test push" (wysyła fake leada Allegro), link "Ostatnie 5 pushy" z logiem.
+- Karta **Pipedrive**: identycznie.
+- Komunikat: "Aby połączyć, poproś Pixie w czacie: *Połącz HubSpot*" (bo connector picker to tool).
 
-- `ForWhom` sekcja (3 karty) — DLA KOGO przenoszę do sub w Hero (1 zdanie)
-- `FeatureGrid` (Reverse-IP / Crowdsourced / CEIDG+KRS / Intent scoring) — wycinam całkowicie. Te detale są na `/features`. Landing nie potrzebuje 4 dodatkowych kart obok 3 warstw How.
-- `howSub` (podtytuł nad warstwami) — wycinam
-- `moatExplain` (drugi akapit pod liczbami) — wycinam, zostaje sam lead
-- Samples-related dekoracje — zostaje sam komponent
+### Data mapping (co ląduje w CRM)
+| Pixie | HubSpot | Pipedrive |
+|---|---|---|
+| `company.name` + `nip` | Company (`name`, `domain`, `nip_pl` custom) | Organization (`name`, custom field `nip`) |
+| pierwsza osoba z `people` | Contact (`email`, `firstname`, `lastname`) | Person |
+| Note z linkiem do `app/companies/{id}` + timeline sesji | Note na Company | Activity typu "note" |
+| `intent_score` | Custom property `pixie_score` | Custom field |
 
-## Pliki
+## Poza scope (Fala 2)
+- Salesforce, Zoho, Freshsales.
+- Bi-directional sync (statusy z CRM → Pixie).
+- Kolejka + exponential backoff.
+- Per-user CRM (każdy handlowiec swoje konto → App User Connector).
 
-- `src/routes/_marketing.index.tsx` — usuwam `ForWhom`, `FeatureGrid`, upraszczam `Moat`, `HowItWorks`, `Compliance`
-- `src/i18n/translations.ts` — usuwam klucze: `forWhomH2`, `forWhom`, `featureGridH2`, `featureGrid`, `howSub`, `moatExplain`. Skracam `compliancePoints` do 4.
+## Kolejność wykonania
+1. Migracja: `crm_integrations` + `sessions.pushed_to_crm`.
+2. `list_app_connectors` → potwierdzić dostępność HubSpot i Pipedrive, potem `connect` dla obu (wymaga akcji usera).
+3. `hubspot.server.ts` + testowy fetch companies przez gateway.
+4. `pipedrive.server.ts` + test.
+5. `dispatch.server.ts` + integracja w `alerts.server.ts`.
+6. UI w `app.integrations.tsx` + "Test push".
+7. Weryfikacja: trigger `testIntegration` → sprawdź, że w CRM pojawia się firma "Pixie Test — Allegro" z notatką.
 
-## Czego NIE ruszam
+## Ryzyka
+- **HubSpot scopes**: user musi wygenerować `pat-...` z prawidłowymi scope'ami — inaczej `MISSING_SCOPES`. Instrukcja w UI.
+- **Duplikaty**: HubSpot deduplikuje po `domain` — używamy `company.domain` z rejestru CEIDG/KRS. Firmy bez domeny → search po `name` + `nip` custom property.
+- **Rate limits**: HubSpot 100 req/10s, Pipedrive 100 req/10s — MVP nie zbliża się.
+- **NIP jako custom property**: user musi ją utworzyć w CRM ręcznie (albo tworzymy programatycznie przy pierwszym push — Fala 2).
 
-- `/features`, `/gdpr`, `/docs/install`, `/pricing` — bez zmian
-- Nav, footer, routing
-- Backend, schema, serverFns
+## Estymacja
+2–3 tury implementacji (migracja + 2 connectory + dispatch + UI). Testy end-to-end zależne od realnego konta HubSpot/Pipedrive u usera.

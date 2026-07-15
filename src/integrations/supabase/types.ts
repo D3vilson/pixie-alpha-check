@@ -122,6 +122,53 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_integrations: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          id: string
+          last_error: string | null
+          last_push_at: string | null
+          min_score: number
+          owner_email: string | null
+          provider: Database["public"]["Enums"]["crm_provider"]
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          last_error?: string | null
+          last_push_at?: string | null
+          min_score?: number
+          owner_email?: string | null
+          provider: Database["public"]["Enums"]["crm_provider"]
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          last_error?: string | null
+          last_push_at?: string | null
+          min_score?: number
+          owner_email?: string | null
+          provider?: Database["public"]["Enums"]["crm_provider"]
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_integrations_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       identify_events: {
         Row: {
           consent_proof: Json | null
@@ -382,6 +429,7 @@ export type Database = {
           max_scroll_pct: number
           pageview_count: number
           person_id: string | null
+          pushed_to_crm: Json
           site_id: string
           started_at: string
           total_duration_ms: number
@@ -400,6 +448,7 @@ export type Database = {
           max_scroll_pct?: number
           pageview_count?: number
           person_id?: string | null
+          pushed_to_crm?: Json
           site_id: string
           started_at?: string
           total_duration_ms?: number
@@ -418,6 +467,7 @@ export type Database = {
           max_scroll_pct?: number
           pageview_count?: number
           person_id?: string | null
+          pushed_to_crm?: Json
           site_id?: string
           started_at?: string
           total_duration_ms?: number
@@ -634,6 +684,7 @@ export type Database = {
       alert_channel: "slack" | "teams" | "webhook"
       app_role: "admin"
       consent_source: "form_submit" | "email_link" | "logged_in" | "cmp_signal"
+      crm_provider: "hubspot" | "pipedrive"
       integration_type: "slack" | "teams" | "webhook"
       workspace_role: "owner" | "admin" | "member"
     }
@@ -766,6 +817,7 @@ export const Constants = {
       alert_channel: ["slack", "teams", "webhook"],
       app_role: ["admin"],
       consent_source: ["form_submit", "email_link", "logged_in", "cmp_signal"],
+      crm_provider: ["hubspot", "pipedrive"],
       integration_type: ["slack", "teams", "webhook"],
       workspace_role: ["owner", "admin", "member"],
     },
