@@ -145,6 +145,11 @@ export const Route = createFileRoute("/api/public/collect")({
           null;
         const ua = request.headers.get("user-agent") ?? null;
 
+        // IP lookup (raz) — daje country/asn/org niezależnie od dopasowania firmy
+        const ipInfo = ip ? await lookupIp(ip) : null;
+        const ipCountry = ipInfo?.country ?? null;
+
+
         // Company resolution — 2 warstwy
         const ipinfoCompany = await resolveCompanyByIp(ip);
         const hintCompany = ipinfoCompany ? null : await resolveCompanyByHint(ip);
@@ -154,6 +159,7 @@ export const Route = createFileRoute("/api/public/collect")({
           : hintCompany
             ? "hint"
             : "none";
+
 
         // Background: enrichment
         if (company) enrichCompany(company.id).catch((e) => console.error(e));
@@ -210,7 +216,7 @@ export const Route = createFileRoute("/api/public/collect")({
             .update({
               last_seen_at: now,
               company_id: company?.id ?? null,
-              country: company?.country ?? null,
+              country: company?.country ?? ipCountry,
               pageview_count: newPageviewCount,
               max_scroll_pct: newMaxScroll,
               total_duration_ms: newDuration,
@@ -226,7 +232,7 @@ export const Route = createFileRoute("/api/public/collect")({
               anon_id: data.anon_id,
               ip_hash: hashIp(ip),
               user_agent: ua,
-              country: company?.country ?? null,
+              country: company?.country ?? ipCountry,
               company_id: company?.id ?? null,
               pageview_count: newPageviewCount,
               max_scroll_pct: newMaxScroll,
