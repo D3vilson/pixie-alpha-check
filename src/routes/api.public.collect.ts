@@ -146,8 +146,9 @@ export const Route = createFileRoute("/api/public/collect")({
         const ua = request.headers.get("user-agent") ?? null;
 
         // IP lookup (raz) — daje country/asn/org niezależnie od dopasowania firmy
-        const ipInfo = await lookupIp(ip);
+        const ipInfo = ip ? await lookupIp(ip) : null;
         const ipCountry = ipInfo?.country ?? null;
+
 
         // Company resolution — 2 warstwy
         const ipinfoCompany = await resolveCompanyByIp(ip);
