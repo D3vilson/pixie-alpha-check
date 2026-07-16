@@ -145,6 +145,10 @@ export const Route = createFileRoute("/api/public/collect")({
           null;
         const ua = request.headers.get("user-agent") ?? null;
 
+        // IP lookup (raz) — daje country/asn/org niezależnie od dopasowania firmy
+        const ipInfo = await lookupIp(ip);
+        const ipCountry = ipInfo?.country ?? null;
+
         // Company resolution — 2 warstwy
         const ipinfoCompany = await resolveCompanyByIp(ip);
         const hintCompany = ipinfoCompany ? null : await resolveCompanyByHint(ip);
@@ -154,6 +158,7 @@ export const Route = createFileRoute("/api/public/collect")({
           : hintCompany
             ? "hint"
             : "none";
+
 
         // Background: enrichment
         if (company) enrichCompany(company.id).catch((e) => console.error(e));
