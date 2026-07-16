@@ -216,7 +216,7 @@ export const Route = createFileRoute("/api/public/collect")({
             .update({
               last_seen_at: now,
               company_id: company?.id ?? null,
-              country: company?.country ?? null,
+              country: company?.country ?? ipCountry,
               pageview_count: newPageviewCount,
               max_scroll_pct: newMaxScroll,
               total_duration_ms: newDuration,
@@ -232,7 +232,7 @@ export const Route = createFileRoute("/api/public/collect")({
               anon_id: data.anon_id,
               ip_hash: hashIp(ip),
               user_agent: ua,
-              country: company?.country ?? null,
+              country: company?.country ?? ipCountry,
               company_id: company?.id ?? null,
               pageview_count: newPageviewCount,
               max_scroll_pct: newMaxScroll,
