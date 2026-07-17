@@ -308,9 +308,11 @@ function IpDebugPanel({ workspaceId, siteId }: { workspaceId: string; siteId: st
                         className={`inline-flex rounded px-1.5 py-0.5 text-[10px] font-medium ${
                           r.layer === "ipinfo"
                             ? "bg-primary/10 text-primary"
-                            : r.layer === "hint"
-                              ? "bg-blue-500/10 text-blue-600"
-                              : "bg-amber-500/10 text-amber-700"
+                            : r.layer === "asn"
+                              ? "bg-emerald-500/10 text-emerald-700"
+                              : r.layer === "hint"
+                                ? "bg-blue-500/10 text-blue-600"
+                                : "bg-amber-500/10 text-amber-700"
                         }`}
                       >
                         {r.layer}
