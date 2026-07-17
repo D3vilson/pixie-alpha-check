@@ -59,6 +59,39 @@ export type Database = {
           },
         ]
       }
+      asn_companies: {
+        Row: {
+          asn: string
+          company_domain: string
+          company_name: string
+          country: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          asn: string
+          company_domain: string
+          company_name: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          asn?: string
+          company_domain?: string
+          company_name?: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       companies: {
         Row: {
           address: string | null
