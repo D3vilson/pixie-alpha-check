@@ -4,6 +4,7 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { resolveCompanyByIp, lookupIp } from "@/lib/ipinfo.server";
 import { resolveCompanyByHint } from "@/lib/ip-hints.server";
+import { resolveCompanyByAsn } from "@/lib/asn-map.server";
 import { enrichCompany } from "@/lib/enrich.server";
 import { computeIntentScore, matchesHighIntent } from "@/lib/scoring.server";
 import { maybeFireHotLeadAlert } from "@/lib/alerts.server";
@@ -44,7 +45,7 @@ async function logIpLookup(
   siteId: string,
   ip: string | null,
   resolvedCompanyId: string | null,
-  layer: "ipinfo" | "hint" | "none",
+  layer: "ipinfo" | "asn" | "hint" | "none",
 ) {
   try {
     const info = ip ? await lookupIp(ip) : null;
@@ -150,15 +151,18 @@ export const Route = createFileRoute("/api/public/collect")({
         const ipCountry = ipInfo?.country ?? null;
 
 
-        // Company resolution — 2 warstwy
+        // Company resolution — 3 warstwy: ipinfo company → mapa ASN → crowdsourced hint /24
         const ipinfoCompany = await resolveCompanyByIp(ip);
-        const hintCompany = ipinfoCompany ? null : await resolveCompanyByHint(ip);
-        const company = ipinfoCompany ?? hintCompany;
-        const resolutionLayer: "ipinfo" | "hint" | "none" = ipinfoCompany
+        const asnCompany = ipinfoCompany ? null : await resolveCompanyByAsn(ip);
+        const hintCompany = ipinfoCompany || asnCompany ? null : await resolveCompanyByHint(ip);
+        const company = ipinfoCompany ?? asnCompany ?? hintCompany;
+        const resolutionLayer: "ipinfo" | "asn" | "hint" | "none" = ipinfoCompany
           ? "ipinfo"
-          : hintCompany
-            ? "hint"
-            : "none";
+          : asnCompany
+            ? "asn"
+            : hintCompany
+              ? "hint"
+              : "none";
 
 
         // Background: enrichment
