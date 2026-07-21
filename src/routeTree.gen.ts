@@ -32,6 +32,7 @@ import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.featu
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AppCompaniesCompanyIdRouteImport } from './routes/app.companies.$companyId'
+import { Route as AppAdminAsnRouteImport } from './routes/app.admin.asn'
 import { Route as ApiPublicTDotjsRouteImport } from './routes/api.public.t[.]js'
 import { Route as ApiPublicIdentifyRouteImport } from './routes/api.public.identify'
 import { Route as ApiPublicEraseRouteImport } from './routes/api.public.erase'
@@ -156,6 +157,11 @@ const AppCompaniesCompanyIdRoute = AppCompaniesCompanyIdRouteImport.update({
   path: '/$companyId',
   getParentRoute: () => AppCompaniesRoute,
 } as any)
+const AppAdminAsnRoute = AppAdminAsnRouteImport.update({
+  id: '/asn',
+  path: '/asn',
+  getParentRoute: () => AppAdminRoute,
+} as any)
 const ApiPublicTDotjsRoute = ApiPublicTDotjsRouteImport.update({
   id: '/api/public/t.js',
   path: '/api/public/t.js',
@@ -205,7 +211,7 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof MarketingPricingRoute
   '/signup': typeof MarketingSignupRoute
   '/app/account': typeof AppAccountRoute
-  '/app/admin': typeof AppAdminRoute
+  '/app/admin': typeof AppAdminRouteWithChildren
   '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/consent-audit': typeof AppConsentAuditRoute
   '/app/hot-leads': typeof AppHotLeadsRoute
@@ -222,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/api/public/erase': typeof ApiPublicEraseRoute
   '/api/public/identify': typeof ApiPublicIdentifyRoute
   '/api/public/t.js': typeof ApiPublicTDotjsRoute
+  '/app/admin/asn': typeof AppAdminAsnRoute
   '/app/companies/$companyId': typeof AppCompaniesCompanyIdRoute
 }
 export interface FileRoutesByTo {
@@ -234,7 +241,7 @@ export interface FileRoutesByTo {
   '/pricing': typeof MarketingPricingRoute
   '/signup': typeof MarketingSignupRoute
   '/app/account': typeof AppAccountRoute
-  '/app/admin': typeof AppAdminRoute
+  '/app/admin': typeof AppAdminRouteWithChildren
   '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/consent-audit': typeof AppConsentAuditRoute
   '/app/hot-leads': typeof AppHotLeadsRoute
@@ -252,6 +259,7 @@ export interface FileRoutesByTo {
   '/api/public/erase': typeof ApiPublicEraseRoute
   '/api/public/identify': typeof ApiPublicIdentifyRoute
   '/api/public/t.js': typeof ApiPublicTDotjsRoute
+  '/app/admin/asn': typeof AppAdminAsnRoute
   '/app/companies/$companyId': typeof AppCompaniesCompanyIdRoute
 }
 export interface FileRoutesById {
@@ -267,7 +275,7 @@ export interface FileRoutesById {
   '/_marketing/pricing': typeof MarketingPricingRoute
   '/_marketing/signup': typeof MarketingSignupRoute
   '/app/account': typeof AppAccountRoute
-  '/app/admin': typeof AppAdminRoute
+  '/app/admin': typeof AppAdminRouteWithChildren
   '/app/companies': typeof AppCompaniesRouteWithChildren
   '/app/consent-audit': typeof AppConsentAuditRoute
   '/app/hot-leads': typeof AppHotLeadsRoute
@@ -285,6 +293,7 @@ export interface FileRoutesById {
   '/api/public/erase': typeof ApiPublicEraseRoute
   '/api/public/identify': typeof ApiPublicIdentifyRoute
   '/api/public/t.js': typeof ApiPublicTDotjsRoute
+  '/app/admin/asn': typeof AppAdminAsnRoute
   '/app/companies/$companyId': typeof AppCompaniesCompanyIdRoute
 }
 export interface FileRouteTypes {
@@ -318,6 +327,7 @@ export interface FileRouteTypes {
     | '/api/public/erase'
     | '/api/public/identify'
     | '/api/public/t.js'
+    | '/app/admin/asn'
     | '/app/companies/$companyId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -348,6 +358,7 @@ export interface FileRouteTypes {
     | '/api/public/erase'
     | '/api/public/identify'
     | '/api/public/t.js'
+    | '/app/admin/asn'
     | '/app/companies/$companyId'
   id:
     | '__root__'
@@ -380,6 +391,7 @@ export interface FileRouteTypes {
     | '/api/public/erase'
     | '/api/public/identify'
     | '/api/public/t.js'
+    | '/app/admin/asn'
     | '/app/companies/$companyId'
   fileRoutesById: FileRoutesById
 }
@@ -560,6 +572,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCompaniesCompanyIdRouteImport
       parentRoute: typeof AppCompaniesRoute
     }
+    '/app/admin/asn': {
+      id: '/app/admin/asn'
+      path: '/asn'
+      fullPath: '/app/admin/asn'
+      preLoaderRoute: typeof AppAdminAsnRouteImport
+      parentRoute: typeof AppAdminRoute
+    }
     '/api/public/t.js': {
       id: '/api/public/t.js'
       path: '/api/public/t.js'
@@ -636,6 +655,18 @@ const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
   MarketingRouteChildren,
 )
 
+interface AppAdminRouteChildren {
+  AppAdminAsnRoute: typeof AppAdminAsnRoute
+}
+
+const AppAdminRouteChildren: AppAdminRouteChildren = {
+  AppAdminAsnRoute: AppAdminAsnRoute,
+}
+
+const AppAdminRouteWithChildren = AppAdminRoute._addFileChildren(
+  AppAdminRouteChildren,
+)
+
 interface AppCompaniesRouteChildren {
   AppCompaniesCompanyIdRoute: typeof AppCompaniesCompanyIdRoute
 }
@@ -650,7 +681,7 @@ const AppCompaniesRouteWithChildren = AppCompaniesRoute._addFileChildren(
 
 interface AppRouteChildren {
   AppAccountRoute: typeof AppAccountRoute
-  AppAdminRoute: typeof AppAdminRoute
+  AppAdminRoute: typeof AppAdminRouteWithChildren
   AppCompaniesRoute: typeof AppCompaniesRouteWithChildren
   AppConsentAuditRoute: typeof AppConsentAuditRoute
   AppHotLeadsRoute: typeof AppHotLeadsRoute
@@ -664,7 +695,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAccountRoute: AppAccountRoute,
-  AppAdminRoute: AppAdminRoute,
+  AppAdminRoute: AppAdminRouteWithChildren,
   AppCompaniesRoute: AppCompaniesRouteWithChildren,
   AppConsentAuditRoute: AppConsentAuditRoute,
   AppHotLeadsRoute: AppHotLeadsRoute,
