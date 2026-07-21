@@ -1,7 +1,7 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { CheckCircle2, XCircle, ShieldCheck } from "lucide-react";
+import { CheckCircle2, XCircle, ShieldCheck, Network } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getAdminStats } from "@/lib/admin.functions";
 
@@ -51,14 +51,22 @@ function AdminPage() {
 
   return (
     <div className="mx-auto max-w-7xl p-8 space-y-8">
-      <header className="flex items-center gap-3">
-        <ShieldCheck className="h-6 w-6 text-primary" />
-        <div>
-          <h1 className="text-2xl font-display">Admin platformy</h1>
-          <p className="text-sm text-muted-foreground">
-            Auto-refresh co 30s
-          </p>
+      <header className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <ShieldCheck className="h-6 w-6 text-primary" />
+          <div>
+            <h1 className="text-2xl font-display">Admin platformy</h1>
+            <p className="text-sm text-muted-foreground">
+              Auto-refresh co 30s
+            </p>
+          </div>
         </div>
+        <Link
+          to="/app/admin/asn"
+          className="inline-flex items-center gap-2 rounded-md border border-border/60 bg-surface px-3 py-2 text-sm hover:bg-background"
+        >
+          <Network className="h-4 w-4" /> Mapa ASN
+        </Link>
       </header>
 
       {/* Totals */}
