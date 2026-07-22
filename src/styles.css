@@ -125,9 +125,9 @@
   --card-foreground: oklch(0.97 0.005 240);
   --popover: oklch(0.2 0.025 260);
   --popover-foreground: oklch(0.97 0.005 240);
-  --primary: oklch(0.7 0.17 262);
+  --primary: oklch(0.82 0.19 155);
   --primary-foreground: oklch(0.14 0.02 260);
-  --accent: oklch(0.7 0.17 262);
+  --accent: oklch(0.82 0.19 155);
   --accent-foreground: oklch(0.14 0.02 260);
   --ink: oklch(0.08 0.015 260);
   --ink-foreground: oklch(0.97 0.005 240);
